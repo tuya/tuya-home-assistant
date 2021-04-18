@@ -1,0 +1,9 @@
+{
+  "domain": "tuya",
+  "name": "TuyaNG",
+  "version": "2.0",
+  "documentation": "https://www.home-assistant.io/integrations/tuya",
+  "requirements": ["tuya-iot-app-sdk-python"],
+  "codeowners": ["qianqi"],
+  "config_flow": true
+}
