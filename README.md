@@ -1,7 +1,7 @@
 # tuya-official-homeassistant
 [Chinese](README_zh.md) | [English](README.md)
 
-tuya-official-homeassistant is the official home assistant  intergration maintained by Tuya.
+tuya-official-homeassistant is the official home assistant integration maintained by Tuya.
 
 ## Supported Device Types
 The following Home Assistant device types are currently supported.
