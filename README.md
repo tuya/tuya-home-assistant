@@ -13,10 +13,13 @@ The following Home Assistant device types are currently supported.
 Refer to the [Home Assistant Installation](https://www.home-assistant.io/installation/) documentation to install **Home Assistant Core**.
 ### tuya-official-homeassistant plugin installation
 Create the **custom_components/tuya** directory in the HomeAssistant configuration directory, e.g. ~/.homeassistant in macos, download the intergration and unzip it in the directory
-<img src="https://images.tuyacn.com/smart/hass/hass_integrations_1.png" />
+
+<img src="https://images.tuyacn.com/smart/hass/hass_integrations_1.png" width="300" />
+
 ### tuya-official-homeassistant configuration
 Refer to xxx to get the application information and configure it in the configuration.yaml in the configuration directory
-<img src="https://images.tuyacn.com/smart/hass/hass_integrations_2.png" />
+
+<img src="https://images.tuyacn.com/smart/hass/hass_integrations_2.png" width="300" />
 
 ## Start
 Refer to the **Home Assistant Core** tutorial for the startup process and run
