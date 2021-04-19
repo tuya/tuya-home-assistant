@@ -13,10 +13,13 @@ tuya-official-homeassistant是涂鸦官方维护的home assistant 插件。
 参考 [Home Assistant Installation](https://www.home-assistant.io/installation/) 文档，安装**Home Assistant Core**
 ### tuya-official-homeassistant 插件安装
 在HomeAssistant配置目录下，如macos中 ~/.homeassistant 中创建 custom_components/tuya目录，将插件下载后在改目录解压
-<img src="https://images.tuyacn.com/smart/hass/hass_integrations_1.png" />
+
+<img src="https://images.tuyacn.com/smart/hass/hass_integrations_1.png" width="300"/>
+
 ### tuya-official-homeassistant 配置
 参考 xxx 获取应用信息，并在配置目录下的configuration.yaml中配置
-<img src="https://images.tuyacn.com/smart/hass/hass_integrations_2.png" />
+
+<img src="https://images.tuyacn.com/smart/hass/hass_integrations_2.png" width="300"/>
 
 ## 启动
 参考**Home Assistant Core**教程中启动流程，运行
