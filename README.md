@@ -1,4 +1,4 @@
-# tuya-official-homeassistant
+# tuya-home-assistant
 [Chinese](README_zh.md) | [English](README.md)
 
 tuya-official-homeassistant is the official home assistant integration maintained by Tuya.
