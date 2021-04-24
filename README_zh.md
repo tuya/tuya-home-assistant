@@ -8,18 +8,41 @@ tuya-official-homeassistant是涂鸦官方维护的home assistant 插件。
 - Light: 支持主流涂鸦wifi灯设备
 - Switch: 支持主要涂鸦wifi 开关设备
 
-## 安装
-### Home Assistant安装
-参考 [Home Assistant Installation](https://www.home-assistant.io/installation/) 文档，安装**Home Assistant Core**
-### tuya-official-homeassistant 插件安装
-在HomeAssistant配置目录下，如macos中 ~/.homeassistant 中创建 custom_components/tuya目录，将插件下载后在改目录解压
+## Installation
+### 1. Home Assistant 安装
+参考[Home Assistant Installation](https://www.home-assistant.io/installation/) 文档进行安装 **Home Assistant Core**.
+### 2. tuya-home-assistant 插件安装
+tuya-home-assistant 支持两种方式进行安装
+1. 通过Home Assistant Custom Components 方式进行安装
+2. 通过[HACS](https://hacs.xyz/) 进行安装
+#### 2.1 Home Assistant Custom Components 安装
+从github上下载 tuya-home-assistant，解压缩，复制到HomeAssistant 设置目录, 如 **~/.homeassistant**
 
-<img src="https://images.tuyacn.com/smart/hass/hass_integrations_1.png" width="300"/>
+<img src="https://images.tuyacn.com/smart/hass/hass_integrations_1.png" height="300" />
 
-### tuya-official-homeassistant 配置
-参考 xxx 获取应用信息，并在配置目录下的configuration.yaml中配置
+#### 2.2 通过HACS安装
+1. [HACS安装](https://hacs.xyz/docs/installation/installation/)
+2. [HACS初始配置](https://hacs.xyz/docs/configuration/basic)
+3. HACS -> Integrations -> ... -> Custom repositories 
+<img src="./imgs/hacs_install_custom.png" height="250" />
+4. 输入 tuya-home-assistant github https url 并在Category中选择Integration, 点击 "ADD"
+<img src="./imgs/hacs_custom_repositories.png" height="150" />
+5. 点击 "INSTALL"
+<img src="./imgs/hacs_tuya_install.png" height="200"/>
+#### 2.3 Restart Home Assistant
+Configuration -> Server Controls -> RESTART
+#### 2.4 Activate tuya-home-assistant
+Configuration -> Integrations -> ADD INTEGRATION -> Tuya Integration
+<img src="./imgs/hacs_tuya_set_up.png" height="200"/>
 
-<img src="https://images.tuyacn.com/smart/hass/hass_integrations_2.png" width="300"/>
+### 3. Enter your Tuya credential
+<img src="./imgs/hacs_tuya_credential.png" height="300"/>
+
+
+### tuya-official-homeassistant configuration
+Refer to xxx to get the application information and configure it in the configuration.yaml in the configuration directory
+
+<img src="https://images.tuyacn.com/smart/hass/hass_integrations_2.png" width="300" />
 
 ## 启动
 参考**Home Assistant Core**教程中启动流程，运行
