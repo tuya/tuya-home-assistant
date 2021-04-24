@@ -1,5 +1,4 @@
-# tuya-home-assistant
-[Chinese](README_zh.md) | [English](README.md)
+# Tuya Home Assistant Integration
 
 tuya-official-homeassistant is the official home assistant integration maintained by Tuya.
 
@@ -9,12 +8,15 @@ The following Home Assistant device types are currently supported.
 - Switch: Supports wifi switch devices
 
 ## Installation
+
 ### 1. Home Assistant Installation
 Refer to the [Home Assistant Installation](https://www.home-assistant.io/installation/) documentation to install **Home Assistant Core**.
+
 ### 2. tuya-home-assistant Installation
 tuya-home-assistant support two ways to install
 1. Home Assistant Custom Components Install
 2. Install by [HACS](https://hacs.xyz/)
+
 #### 2.1 Home Assistant Custom Components Install
 Download tuya-home-assistant from github, unzip, copy to HomeAssistant configuration directory, e.g. ~/.homeassistant
 
@@ -29,20 +31,19 @@ Download tuya-home-assistant from github, unzip, copy to HomeAssistant configura
 <img src="./imgs/hacs_custom_repositories.png" height="150" />
 5. Click "INSTALL"
 <img src="./imgs/hacs_tuya_install.png" height="200"/>
+
 #### 2.3 Restart Home Assistant
+
 Configuration -> Server Controls -> RESTART
+
 #### 2.4 Activate tuya-home-assistant
+
 Configuration -> Integrations -> ADD INTEGRATION -> Tuya Integration
 <img src="./imgs/hacs_tuya_set_up.png" height="200"/>
 
 ### 3. Enter your Tuya credential
+
 <img src="./imgs/hacs_tuya_credential.png" height="300"/>
-
-
-### tuya-official-homeassistant configuration
-Refer to xxx to get the application information and configure it in the configuration.yaml in the configuration directory
-
-<img src="https://images.tuyacn.com/smart/hass/hass_integrations_2.png" width="300" />
 
 ## Start
 Refer to the **Home Assistant Core** tutorial for the startup process and run
@@ -52,7 +53,7 @@ Refer to the **Home Assistant Core** tutorial for the startup process and run
 Refer to [Contributing.md](./Contributing.md)
 
 ## Issue feedback
-You can give feedback on issues you encounter via **Github Issue** or via [**Work Order**](https://service.console.tuya.com)
+You can give feedback on issues you encounter via **Github Issue** or via [**Ticket**](https://service.console.tuya.com)
 
 ## LICENSE
 For more information, please refer to the [LICENSE](LICENSE) file
