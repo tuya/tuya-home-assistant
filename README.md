@@ -55,7 +55,7 @@ Refer to the **Home Assistant Core** tutorial for the startup process and run
 **hass**
 
 ## Develop plugins, contribute code
-Refer to [Contributing.md](./Contributing.md)
+Refer to [Contributing.md](./contributing.md)
 
 ## Issue feedback
 You can give feedback on issues you encounter via **Github Issue** or via [**Ticket**](https://service.console.tuya.com)
