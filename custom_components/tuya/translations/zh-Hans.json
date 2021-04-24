@@ -16,8 +16,7 @@
                     "access_id": "Access ID",
                     "access_secret": "Access Secret",
                     "username": "账号",
-                    "password": "密码",
-                    "asset_id": "资产ID"
+                    "password": "密码"
                 },
                 "description": "请输入涂鸦账户信息。",
                 "title": "涂鸦"

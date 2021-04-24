@@ -14,6 +14,7 @@ from .const import (
     CONF_ACCESS_SECRET,
     CONF_USERNAME,
     CONF_PASSWORD,
+    TUYA_ENDPOINT
 )
 
 from tuya_iot import TuyaOpenAPI
@@ -23,7 +24,7 @@ _LOGGER = logging.getLogger(__name__)
 
 DATA_SCHEMA_USER = vol.Schema(
     {
-        vol.Required(CONF_ENDPOINT): str,
+        vol.Required(CONF_ENDPOINT): vol.In(TUYA_ENDPOINT),
         vol.Required(CONF_ACCESS_ID): str,
         vol.Required(CONF_ACCESS_SECRET): str,
         vol.Required(CONF_USERNAME): str,

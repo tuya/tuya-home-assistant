@@ -16,8 +16,7 @@
                     "access_id": "Access ID",
                     "access_secret": "Access Secret",
                     "username": "Account",
-                    "password": "Password",
-                    "asset_id": "Asset ID"
+                    "password": "Password"
                 },
                 "description": "Enter your Tuya credential.",
                 "title": "Tuya"
