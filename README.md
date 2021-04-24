@@ -1,4 +1,4 @@
-# tuya-home-assistant
+# Tuya Home Assistant Integration
 
 tuya-official-homeassistant is the official home assistant integration maintained by Tuya.
 
