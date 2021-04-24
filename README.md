@@ -9,6 +9,16 @@ The following Home Assistant device types are currently supported.
 - Light: Supports major graffiti wifi light devices
 - Switch: Supports wifi switch devices
 
+## Workflow
+
+<img src="https://images.tuyacn.com/app/hass/hass_diagram.png" height="300" />
+
+<img src="https://images.tuyacn.com/app/hass/workflow.png" width="50%" />
+
+## Sequence Diagram
+
+<img src="https://images.tuyacn.com/app/hass/hass_diagram2.png" width="60%" />
+
 ## Installation
 
 ### 1. Home Assistant Installation
