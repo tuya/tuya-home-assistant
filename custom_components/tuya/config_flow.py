@@ -37,6 +37,7 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         print('TuyaConfigFlow._try_login start, user_input:', user_input)
 
         api = TuyaOpenAPI(user_input[CONF_ENDPOINT], user_input[CONF_ACCESS_ID], user_input[CONF_ACCESS_SECRET])
+        api.set_dev_channel('hass')
         response = api.login(user_input[CONF_USERNAME], user_input[CONF_PASSWORD])
 
         print('TuyaConfigFlow._try_login finish, response:', response)

@@ -3,7 +3,7 @@
   "name": "TuyaNG",
   "version": "2.0",
   "documentation": "https://www.home-assistant.io/integrations/tuya",
-  "requirements": ["tuya-iot-app-sdk-python"],
+  "requirements": ["tuya-iot-py-sdk==0.1.1.2"],
   "codeowners": ["qianqi"],
   "config_flow": true
 }

@@ -58,6 +58,8 @@ CONFIG_SCHEMA = vol.Schema(
 def _init_tuya_sdk(hass: HomeAssistant, entry_data: dict) -> TuyaDeviceManager:
     api = TuyaOpenAPI(
         entry_data[CONF_ENDPOINT], entry_data[CONF_ACCESS_ID], entry_data[CONF_ACCESS_SECRET])
+    api.set_dev_channel('hass')
+
     response = api.login(entry_data[CONF_USERNAME], entry_data[CONF_PASSWORD])
     if response.get('success', False) == False:
         _LOGGER.error(
