@@ -1,6 +1,10 @@
 # Tuya Home Assistant Integration
 
-The tuya-home-assistant Github repo is the official home assistant integration maintained by Tuya Developer Team.
+<p align="center">
+    <img src="https://images.tuyacn.com/app/hass/ha_tuya.png" width="70%">
+</p>
+
+This repo is the official home assistant integration for Tuya Open API, maintained by the Tuya Developer Team.
 
 ## Supported Device Types
 
