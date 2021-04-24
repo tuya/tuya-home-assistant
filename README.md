@@ -1,9 +1,11 @@
 # Tuya Home Assistant Integration
 
-tuya-official-homeassistant is the official home assistant integration maintained by Tuya.
+The tuya-home-assistant Github repo is the official home assistant integration maintained by Tuya Developer Team.
 
 ## Supported Device Types
+
 The following Home Assistant device types are currently supported.
+
 - Light: Supports major graffiti wifi light devices
 - Switch: Supports wifi switch devices
 
@@ -27,8 +29,8 @@ Download tuya-home-assistant from github, unzip, copy to HomeAssistant configura
 2. [HACS Initial Configuration](https://hacs.xyz/docs/configuration/basic)
 3. HACS -> Integrations -> ... -> Custom repositories 
 <img src="./imgs/hacs_install_custom.png" height="250" />
-4. Input tuya-home-assistant github https url and select Integration in Category, click "ADD"
-<img src="./imgs/hacs_custom_repositories.png" height="150" />
+4. Input tuya-home-assistant github https url and select Integration in Category, click "Add"
+<img src="https://images.tuyacn.com/app/hass/custom_repos.png" width="70%" />
 5. Click "INSTALL"
 <img src="./imgs/hacs_tuya_install.png" height="200"/>
 
@@ -39,9 +41,12 @@ Configuration -> Server Controls -> RESTART
 #### 2.4 Activate tuya-home-assistant
 
 Configuration -> Integrations -> ADD INTEGRATION -> Tuya Integration
+
 <img src="./imgs/hacs_tuya_set_up.png" height="200"/>
 
 ### 3. Enter your Tuya credential
+
+Please get the Tuya credential info by following the **Configure Cloud Development Project** part in [Tuya IoT Platform Configuration Guide](https://github.com/tuya/tuya-android-iot-app-sdk-sample/blob/activator_tool/Tuya_IoT_Platform_Configuration_Guide.md).
 
 <img src="./imgs/hacs_tuya_credential.png" height="300"/>
 
