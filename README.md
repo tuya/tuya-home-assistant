@@ -9,12 +9,35 @@ The following Home Assistant device types are currently supported.
 - Switch: Supports wifi switch devices
 
 ## Installation
-### Home Assistant Installation
+### 1. Home Assistant Installation
 Refer to the [Home Assistant Installation](https://www.home-assistant.io/installation/) documentation to install **Home Assistant Core**.
-### tuya-official-homeassistant plugin installation
-Create the **custom_components/tuya** directory in the HomeAssistant configuration directory, e.g. ~/.homeassistant in macos, download the intergration and unzip it in the directory
+### 2. tuya-home-assistant Installation
+tuya-home-assistant support two ways to install
+1. Home Assistant Custom Components Install
+2. Install by [HACS](https://hacs.xyz/)
+#### 2.1 Home Assistant Custom Components Install
+Download tuya-home-assistant from github, unzip, copy to HomeAssistant configuration directory, e.g. ~/.homeassistant
 
-<img src="https://images.tuyacn.com/smart/hass/hass_integrations_1.png" width="300" />
+<img src="https://images.tuyacn.com/smart/hass/hass_integrations_1.png" height="300" />
+
+#### 2.2 Install by HACS
+1. [HACS Install](https://hacs.xyz/docs/installation/installation/)
+2. [HACS Initial Configuration](https://hacs.xyz/docs/configuration/basic)
+3. HACS -> Integrations -> ... -> Custom repositories 
+<img src="./imgs/hacs_install_custom.png" height="250" />
+4. Input tuya-home-assistant github https url and select Integration in Category, click "ADD"
+<img src="./imgs/hacs_custom_repositories.png" height="150" />
+5. Click "INSTALL"
+<img src="./imgs/hacs_tuya_install.png" height="200"/>
+#### 2.3 Restart Home Assistant
+Configuration -> Server Controls -> RESTART
+#### 2.4 Activate tuya-home-assistant
+Configuration -> Integrations -> ADD INTEGRATION -> Tuya Integration
+<img src="./imgs/hacs_tuya_set_up.png" height="200"/>
+
+### 3. Enter your Tuya credential
+<img src="./imgs/hacs_tuya_credential.png" height="300"/>
+
 
 ### tuya-official-homeassistant configuration
 Refer to xxx to get the application information and configure it in the configuration.yaml in the configuration directory
