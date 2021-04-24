@@ -11,7 +11,7 @@ The following Home Assistant device types are currently supported.
 
 ## Workflow
 
-<img src="https://images.tuyacn.com/app/hass/hass_diagram1.png" width="60%" />
+<img src="./imgs/hass_diagram1.png" width="60%"/>
 
 <img src="https://images.tuyacn.com/app/hass/workflow.png" width="35%" />
 
