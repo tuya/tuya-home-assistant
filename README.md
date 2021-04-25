@@ -47,7 +47,7 @@ Download this tuya-home-assistant repo, unzip it, and copy the **custom_componen
 2. [HACS Initial Configuration](https://hacs.xyz/docs/configuration/basic)
 3. HACS -> Integrations -> ... -> Custom repositories 
 <img src="./imgs/hacs_install_custom.png" height="250" />
-4. Input the tuya-home-assistant github https url: https://github.com/tuya/tuya-home-assistant.gi and select "Integration" as the Category type,  then click "ADD"
+4. Input the tuya-home-assistant github https url: https://github.com/tuya/tuya-home-assistant.git and select "Integration" as the Category type,  then click "ADD"
 <img src="https://images.tuyacn.com/app/hass/custom_repos.png" width="70%" />
 5. Click "INSTALL"
 <img src="./imgs/hacs_tuya_install.png" width="70%"/>
