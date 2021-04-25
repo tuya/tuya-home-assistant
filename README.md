@@ -104,7 +104,7 @@ You can check [Tuya Device Manager App (Android)](https://github.com/tuya/tuya-a
 Please refer to the [Contributing.md](./contributing.md) for contributing guide.
 
 ## Issue feedback
-You can give feedback on issues you encounter via **Github Issue** or via [**Ticket**](https://service.console.tuya.com)
+You can give feedback on issues you encounter via **Github Issue**.
 
 ## LICENSE
 For more information, please refer to the [LICENSE](LICENSE) file
