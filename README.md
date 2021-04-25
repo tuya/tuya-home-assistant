@@ -4,7 +4,7 @@
     <img src="https://images.tuyacn.com/app/hass/ha_tuya.png" width="70%">
 </p>
 
-This repo is the official home assistant integration for Tuya Open API, maintained by the Tuya Developer Team.
+This repo is the official home assistant integration for [Tuya Open API](https://developer.tuya.com/en/docs/cloud/?_source=github), maintained by the Tuya Developer Team.
 
 ## Supported Device Types
 
