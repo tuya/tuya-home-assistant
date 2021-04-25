@@ -4,20 +4,20 @@
     <img src="https://images.tuyacn.com/app/hass/ha_tuya.png" width="70%">
 </p>
 
-This repo is the official home assistant integration for [Tuya Open API](https://developer.tuya.com/en/docs/cloud/?_source=github), maintained by the Tuya Developer Team.
+Home Assistant custom integration for controlling **Powered by Tuya (PBT)** devices using [Tuya Open API](https://developer.tuya.com/en/docs/cloud/?_source=github), officially maintained by the Tuya Developer Team.
 
-## Supported Device Types
+## Supported Tuya Device Types
 
-The following Home Assistant device types are currently supported.
+The following Tuya Device types are currently supported by this integration:
 
-- [Light](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya/light.py): Supports Tuya wifi light devices
-- [Switch](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya/switch.py): Supports Tuya wifi switch devices
+- [Light](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya/light.py): Supports Tuya WiFi light devices
+- [Switch](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya/switch.py): Supports Tuya WiFi switch devices
 
-Please check the [Develop Tuya-Compatible Home Assistant Drivers](https://developer.tuya.com/en/demo/devhomeassistantplugin/?_source=github) and [Home Assistant Entity](https://developers.home-assistant.io/docs/core/entity) tutorials to develop more drivers for the Tuya Home Assistant Integration. 
+Please check the [Develop Tuya-Compatible Home Assistant Drivers](https://developer.tuya.com/en/demo/devhomeassistantplugin/?_source=github) and [Home Assistant Entity](https://developers.home-assistant.io/docs/core/entity) tutorials to develop more drivers for the Tuya Home Assistant Integration and support more Tuya devices.
 
 ## Workflow
 
-<img src="./imgs/hass_diagram1.png" width="60%"/> <img src="https://images.tuyacn.com/app/hass/workflow.png" width="35%" />
+<img src="https://images.tuyacn.com/app/hass/hass_diagram1.png" width="60%"/> <img src="https://images.tuyacn.com/app/hass/workflow.png" width="35%" />
 
 ## Sequence Diagram
 
@@ -51,7 +51,8 @@ Download this tuya-home-assistant repo, unzip it, and copy the **custom_componen
 **2.** [HACS Initial Configuration](https://hacs.xyz/docs/configuration/basic)
 
 **3.** HACS -> Integrations -> ... -> Custom repositories 
-<img src="./imgs/hacs_install_custom.png" height="250" />
+
+<img src="https://images.tuyacn.com/app/hass/hacs_install_custom.png" width="90%" />
 
 **4.** Input the tuya-home-assistant github https url: **https://github.com/tuya/tuya-home-assistant.git** and select **Integration** as the Category type,  then click **ADD**.
 
@@ -59,7 +60,7 @@ Download this tuya-home-assistant repo, unzip it, and copy the **custom_componen
 
 **5.** Click "INSTALL"
 
-<img src="./imgs/hacs_tuya_install.png" width="70%"/>
+<img src="https://images.tuyacn.com/app/hass/hacs_tuya_install.png" width="90%" />
 
 #### 2.3 Restart Home Assistant
 
@@ -69,13 +70,13 @@ Configuration -> Server Controls -> RESTART
 
 Configuration -> Integrations -> ADD INTEGRATION -> Tuya Integration
 
-<img src="./imgs/hacs_tuya_set_up.png" height="200"/>
+<img src="https://images.tuyacn.com/app/hass/hacs_tuya_setup.png" width="90%" />
 
 ### 3. Enter your Tuya credential
 
 Please get the Tuya credential info by following the **Configure Cloud Development Project** part in [Tuya IoT Platform Configuration Guide](https://github.com/tuya/tuya-android-iot-app-sdk-sample/blob/activator_tool/Tuya_IoT_Platform_Configuration_Guide.md).
 
-<img src="./imgs/hacs_tuya_credential.png" height="300"/>
+<img src="https://images.tuyacn.com/app/hass/hacs_tuya_credential.png" height="300"/>
 
 ## Start Home Assistant
 
@@ -86,9 +87,19 @@ Go to the home assistant installation folder `~/hass` and use the following comm
 (hass) ➜  hass hass
 ~~~
 
-<img src="./imgs/command_line.png" width="80%"/>
+<img src="https://images.tuyacn.com/app/hass/command_line.png" width="80%"/>
 
 For more information, please refer to the [Home Assistant Core](https://www.home-assistant.io/installation/) tutorial for the startup process and run **hass**.
+
+## Link Tuya Devices to Home Assistant
+
+Please download and use the [Tuya Device Manager App](https://github.com/tuya/tuya-android-iot-app-sdk-sample/releases/) to pair Tuya devices to the Home Assistant for controlling. 
+
+<img src="https://images.tuyacn.com/app/Hanh/login.jpg" width="30%" />
+<img src="https://images.tuyacn.com/app/Hanh/devicemanager.jpg"  width="30%" />
+<img src="https://images.tuyacn.com/app/Hanh/ez.jpg" width="30%" />
+
+You can check [Tuya Device Manager App (Android)](https://github.com/tuya/tuya-android-iot-app-sdk-sample/blob/activator_tool/Tuya_IoT_Platform_Configuration_Guide.md#tuya-device-manager-app-android) part of the the Tuya IoT Platform Configuration Guide for more information.
 
 ## Contributing
 
