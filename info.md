@@ -70,7 +70,7 @@ Configuration -> Integrations -> ADD INTEGRATION -> Tuya Integration
 
 Please get the Tuya credential info by following the **Configure Cloud Development Project** part in [Tuya IoT Platform Configuration Guide](https://github.com/tuya/tuya-android-iot-app-sdk-sample/blob/activator_tool/Tuya_IoT_Platform_Configuration_Guide.md#tuya-device-manager-app-android).
 
-<img src="./imgs/hacs_tuya_credential.png" height="300"/>
+<img src="https://images.tuyacn.com/app/hass/hacs_tuya_credential.png" height="300"/>
 
 ## Start Home Assistant
 
@@ -90,8 +90,6 @@ For more information, please refer to the [Home Assistant Core](https://www.home
 Please download and use the [Tuya Device Manager App](https://github.com/tuya/tuya-android-iot-app-sdk-sample/releases/) to pair Tuya devices to the Home Assistant for controlling. 
 
 <img src="https://images.tuyacn.com/app/Hanh/login.jpg" width="30%" />
-<img src="https://images.tuyacn.com/app/Hanh/devicemanager.jpg"  width="30%" />
-<img src="https://images.tuyacn.com/app/Hanh/ez.jpg" width="30%" />
 
 You can check [Tuya Device Manager App (Android)](https://github.com/tuya/tuya-android-iot-app-sdk-sample/blob/activator_tool/Tuya_IoT_Platform_Configuration_Guide.md#tuya-device-manager-app-android) part of the the Tuya IoT Platform Configuration Guide for more information.
 
