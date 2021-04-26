@@ -10,8 +10,8 @@ Home Assistant custom integration for controlling **Powered by Tuya (PBT)** devi
 
 The following Tuya Device types are currently supported by this integration:
 
-- [Light](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya/light.py): Supports Tuya WiFi light devices
-- [Switch](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya/switch.py): Supports Tuya WiFi switch devices
+- [Light](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya/light.py): Supports Tuya Wi-Fi light devices.
+- [Switch](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya/switch.py): Supports Tuya Wi-Fi switch devices.
 
 Please check the [Develop Tuya-Compatible Home Assistant Drivers](https://developer.tuya.com/en/demo/devhomeassistantplugin/?_source=github) and [Home Assistant Entity](https://developers.home-assistant.io/docs/core/entity) tutorials to develop more drivers for the Tuya Home Assistant Integration and support more Tuya devices.
 
@@ -21,13 +21,13 @@ Please check the [Develop Tuya-Compatible Home Assistant Drivers](https://develo
 
 ## Sequence Diagram
 
-<img src="https://images.tuyacn.com/app/hass/hass_diagram2.png" width="60%" />
+<img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16194063817c985ee4c2f.png" width="60%" />
 
 ## Installation
 
 ### 1. Home Assistant Installation
 
-Please refer to the [Home Assistant Offcial Installation](https://www.home-assistant.io/installation/) documentation to install **Home Assistant Core**.
+Please refer to the [Home Assistant Official Installation](https://www.home-assistant.io/installation/) documentation to install **Home Assistant Core**.
 
 You can also get help from [Set up Home Assistant Development Environment on Raspberry Pi](https://developer.tuya.com/en/demo/setuphomeassistantdevenv/?_source=github) in Tuya Developer Demo Center.
 
@@ -42,7 +42,7 @@ There are two methods to install the integration:
 
 Download this tuya-home-assistant repo, unzip it, and copy the **custom_components/tuya/** folder to the HomeAssistant configuration directory, e.g. ~/.homeassistant
 
-<img src="https://images.tuyacn.com/smart/hass/hass_integrations_1.png" height="300" />
+<img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/1619406706bb7cb5eb66b.png" height="300" />
 
 #### 2.2 Install by HACS
 
@@ -54,11 +54,11 @@ Download this tuya-home-assistant repo, unzip it, and copy the **custom_componen
 
 <img src="https://images.tuyacn.com/app/hass/hacs_install_custom.png" width="90%" />
 
-**4.** Input the tuya-home-assistant github https url: **https://github.com/tuya/tuya-home-assistant.git** and select **Integration** as the Category type,  then click **ADD**.
+**4.** Input the tuya-home-assistant GitHub URL: **https://github.com/tuya/tuya-home-assistant.git** and select **Integration** as the Category type,  then click **ADD**.
 
 <img src="https://images.tuyacn.com/app/hass/custom_repos.png" width="70%" />
 
-**5.** Click "INSTALL"
+**5.** Click **INSTALL**
 
 <img src="https://images.tuyacn.com/app/hass/hacs_tuya_install.png" width="90%" />
 
@@ -97,14 +97,14 @@ Please download and use the [Tuya Device Manager App](https://github.com/tuya/tu
 
 <img src="https://images.tuyacn.com/app/Hanh/login.jpg" width="30%" />
 
-You can check [Tuya Device Manager App (Android)](https://github.com/tuya/tuya-android-iot-app-sdk-sample/blob/activator_tool/Tuya_IoT_Platform_Configuration_Guide.md#tuya-device-manager-app-android) part of the the Tuya IoT Platform Configuration Guide for more information.
+You can check [Tuya Device Manager App (Android)](https://github.com/tuya/tuya-android-iot-app-sdk-sample/blob/activator_tool/Tuya_IoT_Platform_Configuration_Guide.md#tuya-device-manager-app-android) part of the Tuya IoT Platform Configuration Guide for more information.
 
 ## Contributing
 
 Please refer to the [Contributing.md](./contributing.md) for contributing guide.
 
 ## Issue feedback
-You can give feedback on issues you encounter via **Github Issue**.
+You can give feedback on issues you encounter via **GitHub Issue**.
 
 ## LICENSE
 For more information, please refer to the [LICENSE](LICENSE) file
