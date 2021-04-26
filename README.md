@@ -21,7 +21,7 @@ Please check the [Develop Tuya-Compatible Home Assistant Drivers](https://develo
 
 ## Sequence Diagram
 
-<img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16194063817c985ee4c2f.png" width="60%" />
+<img src="https://images.tuyacn.com/rms-static/646523f0-a670-11eb-9adb-1b12f902f79d-1619428721583.png?tyName=Diagram.png" width="60%" />
 
 ## Installation
 
@@ -42,7 +42,7 @@ There are two methods to install the integration:
 
 Download this tuya-home-assistant repo, unzip it, and copy the **custom_components/tuya/** folder to the HomeAssistant configuration directory, e.g. ~/.homeassistant
 
-<img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/1619406706bb7cb5eb66b.png" height="300" />
+<img src="https://images.tuyacn.com/rms-static/009f5790-a671-11eb-8b85-1990e48a4eb7-1619428983689.png?tyName=Directory.png" height="300" />
 
 #### 2.2 Install by HACS
 
