@@ -11,7 +11,7 @@ Home Assistant custom integration for controlling **Powered by Tuya (PBT)** devi
 The following Tuya Device types are currently supported by this integration:
 
 - [Light](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya/light.py): Supports Tuya Wi-Fi light devices.
-- [Switch](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya/switch.py): Supports Tuya Wi-Fi switch devices.
+- [Switch & Socket](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya/switch.py): Supports Tuya Wi-Fi switch & socket devices.
 
 Please check the [Develop Tuya-Compatible Home Assistant Drivers](https://developer.tuya.com/en/demo/devhomeassistantplugin/?_source=github) and [Home Assistant Entity](https://developers.home-assistant.io/docs/core/entity) tutorials to develop more drivers for the Tuya Home Assistant Integration and support more Tuya devices.
 
