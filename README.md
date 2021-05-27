@@ -77,7 +77,19 @@ Configuration -> Integrations -> ADD INTEGRATION -> Tuya Integration
 
 ### 3. Enter your Tuya credential
 
-Please get the Tuya credential info by following the **Configure Cloud Development Project** part in [Tuya IoT Platform Configuration Guide](https://github.com/tuya/tuya-android-iot-app-sdk-sample/blob/activator_tool/Tuya_IoT_Platform_Configuration_Guide.md).
+##### 3.1 Smart Home PaaS Development Method
+
+In the Tuya Integration window, select **Smart Home PaaS**.
+
+Get the Tuya credential info by following the  [Tuya IoT Platform Configuration Guide Using Smart Home PaaS](https://developer.tuya.com/en/docs/iot/Platform_Configuration_smarthome?id=Kamcgamwoevrx) and fill in the following window.
+
+<img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16221259465700799e80d.png" height="300"/>
+
+##### 3.2 Custom Development Method
+
+In the Tuya Integration window, select **Custom Development**.
+
+Please get the Tuya credential info by following the  [Tuya IoT Platform Configuration Guide Using Custom Development Method](https://developer.tuya.com/en/docs/iot/Configuration_Guide_custom?id=Kamcfx6g5uyot) and fill in the following window.
 
 <img src="https://images.tuyacn.com/app/hass/hacs_tuya_credential.png" height="300"/>
 
@@ -100,6 +112,8 @@ Please download and use the Tuya Smart or Tuya Smart Life apps to pair Tuya devi
 
 - Tuya Smart App: [iOS App](https://apps.apple.com/us/app/tuyasmart/id1034649547) | [Android App](https://play.google.com/store/apps/details?id=com.tuya.smart&hl=en_US&gl=US)
 - Tuya Smart Life App: [iOS App](https://apps.apple.com/us/app/smart-life-smart-living/id1115101477) | [Android App](https://play.google.com/store/apps/details?id=com.tuya.smartlife&hl=en_US&gl=US)
+
+For more information, please check [How to Use Tuya Home Assistant Integration](https://developer.tuya.com/en/docs/iot/Home_Assistant_Integration?id=Kamcjcbvk2mu8).
 
 ## Contributing
 
