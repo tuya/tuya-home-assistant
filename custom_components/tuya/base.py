@@ -53,12 +53,12 @@ class TuyaHaDevice:
         }
         return _device_info
 
-    @property
-    def icon(self) -> Optional[str]:
-        """Return Tuya device icon."""
-        cdn_url = 'https://images.tuyacn.com/'
-        # TODO customize cdn url
-        return cdn_url + self.tuyaDevice.icon
+    # @property
+    # def icon(self) -> Optional[str]:
+    #     """Return Tuya device icon."""
+    #     cdn_url = 'https://images.tuyacn.com/'
+    #     # TODO customize cdn url
+    #     return cdn_url + self.tuyaDevice.icon
 
     @property
     def available(self) -> bool:
