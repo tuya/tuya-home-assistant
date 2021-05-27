@@ -10,9 +10,18 @@ CONF_ACCESS_SECRET = "access_secret"
 CONF_USERNAME = "username"
 CONF_PASSWORD = "password"
 
+TUYA_ENDPOINT = {
+    "https://openapi.tuyaus.com": "America",
+    "https://openapi.tuyacn.com": "China",
+    "https://openapi.tuyaeu.com": "Europe",
+    "https://openapi.tuyain.com": "India",
+    "https://openapi-ueaz.tuyaus.com": "EasternAmerica",
+    "https://openapi-weaz.tuyaeu.com": "WesternEurope"
+}
+
 TUYA_TYPE_TO_HA = {
-    "dj": "light", # 灯具
-    "kg": "switch", # 开关
-    "cz": "switch", # 插座
-    "pc": "switch", # 排插
+    "dj": "light",  # 灯具
+    "kg": "switch",  # 开关
+    "cz": "switch",  # 插座
+    "pc": "switch",  # 排插
 }

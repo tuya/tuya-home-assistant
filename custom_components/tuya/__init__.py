@@ -20,7 +20,7 @@ from .const import (
     CONF_ACCESS_SECRET,
     CONF_USERNAME,
     CONF_PASSWORD,
-    TUYA_TYPE_TO_HA,
+    TUYA_TYPE_TO_HA
 )
 
 from .factory import crete_tuya_ha_device
@@ -42,7 +42,7 @@ CONFIG_SCHEMA = vol.Schema(
         {
             DOMAIN: vol.Schema(
                 {
-                    vol.Required(CONF_ENDPOINT): cv.url,
+                    vol.Required(CONF_ENDPOINT): cv.string,
                     vol.Required(CONF_ACCESS_ID): cv.string,
                     vol.Required(CONF_ACCESS_SECRET): cv.string,
                     vol.Required(CONF_USERNAME): cv.string,

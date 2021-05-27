@@ -10,8 +10,7 @@
           "access_id": "Access ID",
           "access_secret": "Access Secret",
           "username": "Account",
-          "password": "Password",
-          "asset_id": "Asset Id"
+          "password": "Password"
         }
       }
     },
