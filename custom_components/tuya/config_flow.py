@@ -33,7 +33,7 @@ RESULT_AUTH_FAILED = "invalid_auth"
 # Project Type
 DATA_SCHEMA_PROJECT_TYPE = vol.Schema(
     {
-        vol.Required(CONF_PROJECT_TYPE): vol.In(TUYA_PROJECT_TYPE)
+        vol.Required(CONF_PROJECT_TYPE, default=0): vol.In(TUYA_PROJECT_TYPE)
     }
 )
 

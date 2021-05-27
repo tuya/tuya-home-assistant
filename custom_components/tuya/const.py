@@ -28,8 +28,8 @@ TUYA_ENDPOINT = {
 }
 
 TUYA_PROJECT_TYPE = {
-    1: "INDUSTY_SOLUTIONS",
-    0: "SMART_HOME"
+    1: "Custom Development",
+    0: "Smart Home PaaS"
 }
 
 TUYA_APP_TYPE = {
