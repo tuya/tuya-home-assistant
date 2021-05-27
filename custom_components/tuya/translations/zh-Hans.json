@@ -15,6 +15,7 @@
                     "endpoint": "接入地址",
                     "access_id": "Access ID",
                     "access_secret": "Access Secret",
+                    "app_type": "App",
                     "country_code": "国家码",
                     "username": "账号",
                     "password": "密码"

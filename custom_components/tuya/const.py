@@ -11,6 +11,7 @@ CONF_ACCESS_SECRET = "access_secret"
 CONF_USERNAME = "username"
 CONF_PASSWORD = "password"
 CONF_COUNTRY_CODE = "country_code"
+CONF_APP_TYPE = "tuya_app_type"
 
 TUYA_DISCOVERY_NEW = "tuya_discovery_new_{}"
 TUYA_DEVICE_MANAGER = "tuya_device_manager"
@@ -29,6 +30,11 @@ TUYA_ENDPOINT = {
 TUYA_PROJECT_TYPE = {
     1: "INDUSTY_SOLUTIONS",
     0: "SMART_HOME"
+}
+
+TUYA_APP_TYPE = {
+    'tuyaSmart': 'TuyaSmart',
+    'smartlife': 'Smart Life'
 }
 
 TUYA_SUPPORT_HA_TYPE = [

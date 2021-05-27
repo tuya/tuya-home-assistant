@@ -285,7 +285,7 @@ class TuyaHaLight(TuyaHaDevice, LightEntity):
         supports = 0
         if self.dp_code_bright in self.tuyaDevice.status:
             supports = supports | SUPPORT_BRIGHTNESS
-        if self.dp_code_colour in self.tuyaDevice.status:
+        if self.dp_code_colour in self.tuyaDevice.status and len(self.tuyaDevice.status[self.dp_code_colour]) > 0:
             supports = supports | SUPPORT_COLOR
         if self.dp_code_temp in self.tuyaDevice.status:
             supports = supports | SUPPORT_COLOR_TEMP

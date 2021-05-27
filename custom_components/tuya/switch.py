@@ -90,6 +90,7 @@ def _setup_entities(hass, device_ids: List):
                 entities.append(TuyaHaSwitch(device, device_manager, channel))
         elif len(switch_set) == 1:
             entities.append(TuyaHaSwitch(device, device_manager))
+        
     return entities
 
 class TuyaHaSwitch(TuyaHaDevice, SwitchEntity):
@@ -103,7 +104,13 @@ class TuyaHaSwitch(TuyaHaDevice, SwitchEntity):
         super().__init__(device, deviceManager)
         
         self.channel = channel
-        self.dp_code_switch = DPCODE_SWITCH + self.channel
+        if len(channel) > 0:
+            self.dp_code_switch = DPCODE_SWITCH + self.channel
+        else:
+            for function in device.function:
+                if function.startswith(DPCODE_SWITCH):
+                    self.dp_code_switch = function
+            
     # ToggleEntity
 
     @property

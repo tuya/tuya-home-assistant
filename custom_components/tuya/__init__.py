@@ -7,6 +7,7 @@ import logging
 import voluptuous as vol
 import json
 from urllib.request import urlopen
+import time
 
 from homeassistant.config_entries import ConfigEntry, SOURCE_IMPORT
 from homeassistant.core import HomeAssistant
@@ -29,6 +30,7 @@ from .const import (
     CONF_PASSWORD,
     CONF_COUNTRY_CODE,
     CONF_PROJECT_TYPE,
+    CONF_APP_TYPE,
     TUYA_DEVICE_MANAGER,
     TUYA_HA_TUYA_MAP,
     TUYA_DISCOVERY_NEW,
@@ -62,7 +64,8 @@ CONFIG_SCHEMA = vol.Schema(
                     vol.Required(CONF_ACCESS_SECRET): cv.string,
                     CONF_USERNAME: cv.string,
                     CONF_PASSWORD: cv.string,
-                    CONF_COUNTRY_CODE: cv.string
+                    CONF_COUNTRY_CODE: cv.string,
+                    CONF_APP_TYPE: cv.string
                 }
             )
         },
@@ -87,7 +90,8 @@ async def _init_tuya_sdk(hass: HomeAssistant, entry_data: dict) -> TuyaDeviceMan
         await hass.async_add_executor_job(api.login,
                                           entry_data[CONF_USERNAME],
                                           entry_data[CONF_PASSWORD],
-                                          entry_data[CONF_COUNTRY_CODE])
+                                          entry_data[CONF_COUNTRY_CODE],
+                                          entry_data[CONF_APP_TYPE])
     if response.get('success', False) == False:
         _LOGGER.error(
             "Tuya login error response: %s",
@@ -115,13 +119,23 @@ async def _init_tuya_sdk(hass: HomeAssistant, entry_data: dict) -> TuyaDeviceMan
         def addDevice(self, device: TuyaDevice):
             print("tuya device add-->", device)
 
+            device_add = False
+
             if device.category in hass.data[DOMAIN][TUYA_HA_TUYA_MAP].keys():
                 ha_type = hass.data[DOMAIN][TUYA_HA_TUYA_MAP][device.category]
 
                 remove_device(hass, device.id)
 
+                device_add = True
                 async_dispatcher_send(
                     hass, TUYA_DISCOVERY_NEW.format(ha_type), [device.id])
+            
+            if device_add:
+                device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
+                device_manager.mq.stop()
+                mq = TuyaOpenMQ(device_manager.api)
+                mq.start()
+                hass.data[DOMAIN][TUYA_DEVICE_MANAGER].mq = mq
 
         def removeDevice(self, id: str):
             print('tuya remove device:', id)

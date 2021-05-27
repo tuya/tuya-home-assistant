@@ -10,6 +10,7 @@ from homeassistant.helpers import config_entry_oauth2_flow
 
 from .const import (
     CONF_COUNTRY_CODE,
+    CONF_APP_TYPE,
     DOMAIN,
     CONF_ENDPOINT,
     CONF_ACCESS_ID,
@@ -17,6 +18,7 @@ from .const import (
     CONF_USERNAME,
     CONF_PASSWORD,
     CONF_PROJECT_TYPE,
+    TUYA_APP_TYPE,
     TUYA_ENDPOINT,
     TUYA_PROJECT_TYPE
 )
@@ -26,17 +28,18 @@ from tuya_iot import TuyaOpenAPI, ProjectType
 RESULT_SINGLE_INSTANCE = "single_instance_allowed"
 
 _LOGGER = logging.getLogger(__name__)
+RESULT_AUTH_FAILED = "invalid_auth"
 
-## Project Type 
+# Project Type
 DATA_SCHEMA_PROJECT_TYPE = vol.Schema(
     {
         vol.Required(CONF_PROJECT_TYPE): vol.In(TUYA_PROJECT_TYPE)
     }
 )
 
-## INDUSTY_SOLUTIONS Schema
+# INDUSTY_SOLUTIONS Schema
 DATA_SCHEMA_INDUSTY_SOLUTIONS = vol.Schema(
-    {     
+    {
         vol.Required(CONF_ENDPOINT): vol.In(TUYA_ENDPOINT),
         vol.Required(CONF_ACCESS_ID): str,
         vol.Required(CONF_ACCESS_SECRET): str,
@@ -45,13 +48,14 @@ DATA_SCHEMA_INDUSTY_SOLUTIONS = vol.Schema(
     }
 )
 
-## SMART_HOME Schema
+# SMART_HOME Schema
 DATA_SCHEMA_SMART_HOME = vol.Schema(
-    {     
+    {
         vol.Required(CONF_ENDPOINT): vol.In(TUYA_ENDPOINT),
-        vol.Required(CONF_COUNTRY_CODE): str,
         vol.Required(CONF_ACCESS_ID): str,
         vol.Required(CONF_ACCESS_SECRET): str,
+        vol.Required(CONF_APP_TYPE): vol.In(TUYA_APP_TYPE),
+        vol.Required(CONF_COUNTRY_CODE): str,
         vol.Required(CONF_USERNAME): str,
         vol.Required(CONF_PASSWORD): str,
     }
@@ -83,11 +87,15 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     def _try_login(self, user_input):
         print('TuyaConfigFlow._try_login start, user_input:', user_input)
         project_type = ProjectType(user_input[CONF_PROJECT_TYPE])
-        api = TuyaOpenAPI(user_input[CONF_ENDPOINT], user_input[CONF_ACCESS_ID], user_input[CONF_ACCESS_SECRET], project_type)
+        api = TuyaOpenAPI(user_input[CONF_ENDPOINT], user_input[CONF_ACCESS_ID],
+                          user_input[CONF_ACCESS_SECRET], project_type)
         api.set_dev_channel('hass')
 
         response = api.login(user_input[CONF_USERNAME], user_input[CONF_PASSWORD]) if project_type == ProjectType.INDUSTY_SOLUTIONS else\
-             api.login(user_input[CONF_USERNAME], user_input[CONF_PASSWORD], user_input[CONF_COUNTRY_CODE])
+            api.login(user_input[CONF_USERNAME],
+                      user_input[CONF_PASSWORD], 
+                      user_input[CONF_COUNTRY_CODE],
+                      user_input[CONF_APP_TYPE])
 
         print('TuyaConfigFlow._try_login finish, response:', response)
         return response
@@ -108,7 +116,7 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(self, user_input=None, is_import=False):
         print('TuyaConfigFlow.async_step_user start, is_import=', user_input)
-        
+
         if self._async_current_entries():
             return self.async_abort(reason=RESULT_SINGLE_INSTANCE)
 
@@ -126,13 +134,22 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     data=user_input,
                 )
             else:
-                errors['base'] = 'code={}, msg={}'.format(response.get('code', 0), response.get('msg', ''))
+                errors['base'] = RESULT_AUTH_FAILED
                 if is_import == True:
                     return self.async_abort(reason=errors['base'])
-        
+                else:
+                    return self.async_show_form(
+                        step_id='user',
+                        data_schema=DATA_SCHEMA_SMART_HOME,
+                        errors=errors
+                    ) if self.project_type == ProjectType.SMART_HOME else self.async_show_form(
+                        step_id='user',
+                        data_schema=DATA_SCHEMA_INDUSTY_SOLUTIONS,
+                        errors=errors
+                    )
+
         return self.async_show_form(
             step_id='project_type',
             data_schema=DATA_SCHEMA_PROJECT_TYPE,
             errors=errors
         )
-
