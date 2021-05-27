@@ -10,12 +10,18 @@
         },
         "flow_title": "Tuya configuration",
         "step": {
+            "project_type":{
+                "title":"Tuya Integration",
+                "data":{
+                  "tuya_project_type": "Tuya cloud project type"
+                }
+            },
             "user": {
                 "data": {
-                    "endpoint": "Endpoint URL",
+                    "endpoint": "Region",
                     "access_id": "Access ID",
                     "access_secret": "Access Secret",
-                    "app_type": "App",
+                    "tuya_app_type": "Mobile App",
                     "country_code": "Country Code",
                     "username": "Account",
                     "password": "Password"

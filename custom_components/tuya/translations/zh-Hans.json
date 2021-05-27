@@ -10,12 +10,18 @@
         },
         "flow_title": "涂鸦配置",
         "step": {
+            "project_type":{
+                "title":"Tuya插件",
+                "data":{
+                  "tuya_project_type": "涂鸦云项目类型"
+                }
+            },
             "user": {
                 "data": {
-                    "endpoint": "接入地址",
+                    "endpoint": "地区",
                     "access_id": "Access ID",
                     "access_secret": "Access Secret",
-                    "app_type": "App",
+                    "tuya_app_type": "移动应用",
                     "country_code": "国家码",
                     "username": "账号",
                     "password": "密码"
