@@ -4,11 +4,12 @@
     "step": {
       "user": {
         "title": "Tuya",
-        "description": "Enter your Tuya credential.",
+        "description": "Enter your Tuya credential.xxxxx",
         "data": {
           "endpoint": "Endpoint URL",
           "access_id": "Access ID",
           "access_secret": "Access Secret",
+          "country_code": "Country Code",
           "username": "Account",
           "password": "Password"
         }
