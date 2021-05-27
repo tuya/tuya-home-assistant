@@ -26,6 +26,10 @@ Please check the [Develop Tuya-Compatible Home Assistant Drivers](https://develo
 
 <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16194063817c985ee4c2f.png" width="60%" />
 
+## Tuya Home Assistant Integration User Guide
+
+For more information, please check [How to Use Tuya Home Assistant Integration](https://developer.tuya.com/en/docs/iot/Home_Assistant_Integration?id=Kamcjcbvk2mu8). 
+
 ## Installation
 
 ### 1. Home Assistant Installation
@@ -77,7 +81,7 @@ Configuration -> Integrations -> ADD INTEGRATION -> Tuya Integration
 
 ### 3. Enter your Tuya credential
 
-##### 3.1 Smart Home PaaS Development Method
+##### 3.1 Smart Home PaaS Development Type
 
 In the Tuya Integration window, select **Smart Home PaaS**.
 
@@ -85,7 +89,7 @@ Get the Tuya credential info by following the  [Tuya IoT Platform Configuration 
 
 <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16221259465700799e80d.png" height="300"/>
 
-##### 3.2 Custom Development Method
+##### 3.2 Custom Development Type
 
 In the Tuya Integration window, select **Custom Development**.
 
