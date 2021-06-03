@@ -8,6 +8,7 @@ import voluptuous as vol
 import json
 from urllib.request import urlopen
 import time
+import itertools
 
 from homeassistant.config_entries import ConfigEntry, SOURCE_IMPORT
 from homeassistant.core import HomeAssistant
@@ -121,14 +122,18 @@ async def _init_tuya_sdk(hass: HomeAssistant, entry_data: dict) -> TuyaDeviceMan
 
             device_add = False
 
-            if device.category in hass.data[DOMAIN][TUYA_HA_TUYA_MAP].keys():
-                ha_type = hass.data[DOMAIN][TUYA_HA_TUYA_MAP][device.category]
+            print('add device category->', device.category, '; keys->', hass.data[DOMAIN][TUYA_HA_TUYA_MAP].keys())
+            if device.category in itertools.chain(*hass.data[DOMAIN][TUYA_HA_TUYA_MAP].values()):
+                map = hass.data[DOMAIN][TUYA_HA_TUYA_MAP]
 
                 remove_device(hass, device.id)
 
-                device_add = True
-                async_dispatcher_send(
-                    hass, TUYA_DISCOVERY_NEW.format(ha_type), [device.id])
+                for key, list in map.items():
+                    print('add device key->', key, '; value->', list)
+                    if device.category in list:
+                        device_add = True
+                        async_dispatcher_send(
+                            hass, TUYA_DISCOVERY_NEW.format(key), [device.id])
             
             if device_add:
                 device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
@@ -171,7 +176,8 @@ def remove_device(hass: HomeAssistant, device_id: str):
     for entity in list(entity_registry.entities.values()):
         if entity.unique_id.startswith(device_id):
             entity_registry.async_remove(entity.entity_id)
-            device_registry.async_remove_device(entity.device_id)
+            if device_registry.async_get(entity.device_id):
+                device_registry.async_remove_device(entity.device_id)
 
 
 async def async_setup(hass, config):

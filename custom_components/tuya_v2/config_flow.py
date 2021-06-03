@@ -130,7 +130,7 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if response.get('success', False):
                 print('TuyaConfigFlow.async_step_user login success')
                 return self.async_create_entry(
-                    title=user_input[CONF_ACCESS_ID],
+                    title=user_input[CONF_USERNAME],
                     data=user_input,
                 )
             else:

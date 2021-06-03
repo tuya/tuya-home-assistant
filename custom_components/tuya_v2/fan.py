@@ -42,8 +42,8 @@ DPCODE_MODE = 'mode'
 DPCODE_SWITCH_HORIZONTAL = 'switch_horizontal'
 DPCODE_FAN_DIRECTION = 'fan_direction'
 
-TUYA_HA_MAP = {
-    "fs": "fan",  # Fan
+TUYA_SUPPORT_TYPE = {
+    "fs"  # Fan
 }
 
 
@@ -51,7 +51,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     """Set up tuya fan dynamically through tuya discovery."""
     print("fan init")
 
-    hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update(TUYA_HA_MAP)
+    hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update({DEVICE_DOMAIN: TUYA_SUPPORT_TYPE})
 
     async def async_discover_device(dev_ids):
         """Discover and add a discovered tuya fan."""
@@ -74,7 +74,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
     device_ids = []
     for (device_id, device) in device_manager.deviceMap.items():
-        if device.category in TUYA_HA_MAP.keys():
+        if device.category in TUYA_SUPPORT_TYPE:
             device_ids.append(device_id)
     await async_discover_device(device_ids)
 

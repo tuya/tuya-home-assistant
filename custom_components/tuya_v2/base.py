@@ -46,9 +46,9 @@ class TuyaHaDevice:
     def device_info(self):
         """Return a device description for device registry."""
         _device_info = {
-            "identifiers": {(DOMAIN, f"{self.unique_id}")},
+            "identifiers": {(DOMAIN, f"{self.tuyaDevice.uuid}")},
             "manufacturer": "tuya",
-            "name": self.name,
+            "name": self.tuyaDevice.name,
             "model": self.tuyaDevice.product_name,
         }
         return _device_info

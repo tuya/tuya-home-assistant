@@ -58,18 +58,21 @@ HSV_HA_SATURATION_MAX = 100
 WORK_MODE_WHITE = 'white'
 WORK_MODE_COLOUR = 'colour'
 
-TUYA_HA_MAP = {
-    "dj": DEVICE_DOMAIN,  # light
-    "dd": DEVICE_DOMAIN,  # Light strip
-    "fwl":DEVICE_DOMAIN,   # Ambient light
-    "dc":DEVICE_DOMAIN
+TUYA_SUPPORT_TYPE = {
+    "dj",  # light
+    "dd",  # Light strip
+    "fwl",   # Ambient light
+    "dc",
+    "jsq",   # Humidifier's light
 }
+
+DEFAULT_HSV = {"h":{"min":1,"scale":0,"unit":"","max":360,"step":1},"s":{"min":1,"scale":0,"unit":"","max":255,"step":1},"v":{"min":1,"scale":0,"unit":"","max":255,"step":1}}
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
     """Set up tuya light dynamically through tuya discovery."""
     print("light init")
 
-    hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update(TUYA_HA_MAP)
+    hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update({DEVICE_DOMAIN: TUYA_SUPPORT_TYPE})
 
     async def async_discover_device(dev_ids):
         """Discover and add a discovered tuya sensor."""
@@ -91,7 +94,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
     device_ids = []
     for (device_id, device) in device_manager.deviceMap.items():
-        if device.category in TUYA_HA_MAP.keys():
+        if device.category in TUYA_SUPPORT_TYPE:
             device_ids.append(device_id)
     await async_discover_device(device_ids)
 
@@ -146,7 +149,7 @@ class TuyaHaLight(TuyaHaDevice, LightEntity):
             commands += [{'code': DPCODE_SWITCH, 'value': True}]
 
         if ATTR_BRIGHTNESS in kwargs:
-            if WORK_MODE_COLOUR == self._work_mode():
+            if self._work_mode().startswith(WORK_MODE_COLOUR):
                 colour_data = self._get_hsv()
                 v_range = self._tuya_hsv_v_range()
                 # hsv_v = colour_data.get('v', 0)
@@ -214,7 +217,9 @@ class TuyaHaLight(TuyaHaDevice, LightEntity):
         old_range = self._tuya_brightness_range()
         brightness = self.tuyaDevice.status.get(self.dp_code_bright, 0)
 
-        if WORK_MODE_COLOUR == self._work_mode():
+        print('brightness id->', self.tuyaDevice.id, 'work_mode->', self._work_mode(), '; check true->' , self._work_mode().startswith(WORK_MODE_COLOUR))
+
+        if self._work_mode().startswith(WORK_MODE_COLOUR):
             colour_data = json.loads(
                 self.tuyaDevice.status.get(self.dp_code_colour, 0))
             v_range = self._tuya_hsv_v_range()
@@ -224,6 +229,9 @@ class TuyaHaLight(TuyaHaDevice, LightEntity):
             return int(self.remap(brightness, old_range[0], old_range[1], 0, 255))
 
     def _tuya_brightness_range(self) -> Tuple[int, int]:
+        if not self.dp_code_bright in self.tuyaDevice.status:
+            return 0, 255
+        
         bright_value = json.loads(
             self.tuyaDevice.function.get(self.dp_code_bright, {}).values)
         return bright_value.get('min', 0), bright_value.get('max', 255)
@@ -262,18 +270,26 @@ class TuyaHaLight(TuyaHaDevice, LightEntity):
         return temp_value.get('min', 0), temp_value.get('max', 255)
 
     def _tuya_hsv_s_range(self) -> Tuple[int, int]:
-        colour_data = json.loads(
-            self.tuyaDevice.function.get(self.dp_code_colour, {}).values)
+        colour_data = self._tuya_hsv_function()
         s = colour_data.get('s')
         return s.get('min', 0), s.get('max', 255)
 
     def _tuya_hsv_v_range(self) -> Tuple[int, int]:
-        colour_data = json.loads(
-            self.tuyaDevice.function.get(self.dp_code_colour, {}).values)
+        colour_data = self._tuya_hsv_function()
         v = colour_data.get('v')
         return v.get('min', 0), v.get('max', 255)
+    
+    def _tuya_hsv_function(self):
+        hsv_data = json.loads(
+            self.tuyaDevice.function.get(self.dp_code_colour, {}).values)
+        if hsv_data == {}:
+            return DEFAULT_HSV
+        else:
+            return hsv_data
 
     def _work_mode(self) -> str:
+        
+
         return self.tuyaDevice.status.get(DPCODE_WORK_MODE, "")
 
     def _get_hsv(self) -> Dict[str, int]:

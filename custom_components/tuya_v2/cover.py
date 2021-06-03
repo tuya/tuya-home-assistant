@@ -32,9 +32,9 @@ from .base import TuyaHaDevice
 
 _LOGGER = logging.getLogger(__name__)
 
-TUYA_HA_MAP = {
-    "cl": "cover", # Curtain
-    "clkg": "cover", # Curtain Switch
+TUYA_SUPPORT_TYPE = {
+    "cl",  # Curtain
+    "clkg" # Curtain Switch
 }
 
 # Curtain
@@ -49,7 +49,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     """Set up tuya cover dynamically through tuya discovery."""
     print("cover init")
 
-    hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update(TUYA_HA_MAP)
+    hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update({DEVICE_DOMAIN: TUYA_SUPPORT_TYPE})
 
     async def async_discover_device(dev_ids):
         """Discover and add a discovered tuya cover."""
@@ -70,7 +70,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
     device_ids = []
     for (device_id, device) in device_manager.deviceMap.items():
-        if device.category in TUYA_HA_MAP.keys():
+        if device.category in TUYA_SUPPORT_TYPE:
             device_ids.append(device_id)
     await async_discover_device(device_ids)
 

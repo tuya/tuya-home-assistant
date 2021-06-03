@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 """Constants for the Tuya integration."""
 
-DOMAIN = "tuya"
+DOMAIN = "tuya_v2"
 
 CONF_PROJECT_TYPE = "tuya_project_type"
 CONF_ENDPOINT = "endpoint"
@@ -42,5 +42,9 @@ TUYA_SUPPORT_HA_TYPE = [
     'fan',
     'cover',
     'climate',
-    'light'
+    'light',
+    'sensor',
+    'binary_sensor',
+    'humidifier'
+    # 'alarm_control_panel'
 ]
