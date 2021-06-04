@@ -44,6 +44,7 @@ TUYA_SUPPORT_TYPE = [
     "pir",    # PIR Detector
     "sj",     # Water Detector
     "sos",    # Emergency Button 
+    "hps",    # Human Presence Sensor
 ]
 
 # Door Window Sensor
@@ -56,6 +57,7 @@ DPCODE_GAS_SENSOR_STATE = 'gas_sensor_state'
 DPCODE_PIR = 'pir'
 DPCODE_WATER_SENSOR_STATE = 'watersensor_state'
 DPCODE_SOS_STATE = 'sos_state'
+DPCODE_PRESENCE_STATE = 'presence_state'
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
@@ -112,6 +114,8 @@ def _setup_entities(hass, device_ids: List):
             entities.append(TuyaHaBSensor(device, device_manager, DEVICE_CLASS_MOISTURE, (lambda d: '1' == d.status.get(DPCODE_WATER_SENSOR_STATE, 'none'))))
         if DPCODE_SOS_STATE in device.status:
             entities.append(TuyaHaBSensor(device, device_manager, DEVICE_CLASS_PROBLEM, (lambda d: d.status.get(DPCODE_SOS_STATE, False))))
+        if DPCODE_PRESENCE_STATE in device.status:
+            entities.append(TuyaHaBSensor(device, device_manager, DEVICE_CLASS_MOTION, (lambda d: 'presence' == d.status.get(DPCODE_PRESENCE_STATE, 'none'))))
         
     return entities
 

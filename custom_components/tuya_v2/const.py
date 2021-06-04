@@ -45,6 +45,7 @@ TUYA_SUPPORT_HA_TYPE = [
     'light',
     'sensor',
     'binary_sensor',
-    'humidifier'
+    'humidifier',
+    'number'
     # 'alarm_control_panel'
 ]
