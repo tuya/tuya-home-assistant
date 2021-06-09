@@ -1,7 +1,6 @@
 {
   "domain": "tuya_v2",
   "name": "Tuya v2",
-  "version": "1.2",
   "documentation": "https://github.com/tuya/tuya-home-assistant",
   "requirements": [
     "tuya-iot-py-sdk==0.2.1"
