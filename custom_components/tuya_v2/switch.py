@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Support for Tuya switches."""
 from __future__ import annotations
+
 import logging
 from typing import Any
-
 
 from tuya_iot import TuyaDevice, TuyaDeviceManager
 

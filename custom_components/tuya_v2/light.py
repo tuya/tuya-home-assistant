@@ -76,7 +76,7 @@ async def async_setup_entry(
     hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update({DEVICE_DOMAIN: TUYA_SUPPORT_TYPE})
 
     async def async_discover_device(dev_ids):
-        """Discover and add a discovered tuya sensor."""
+        """Discover and add a discovered tuya light."""
         print("light add->", dev_ids)
         if not dev_ids:
             return
@@ -237,7 +237,9 @@ class TuyaHaLight(TuyaHaDevice, LightEntity):
         )
 
         if self._work_mode().startswith(WORK_MODE_COLOUR):
-            colour_data = json.loads(self.tuya_device.status.get(self.dp_code_colour, 0))
+            colour_data = json.loads(
+                self.tuya_device.status.get(self.dp_code_colour, 0)
+            )
             v_range = self._tuya_hsv_v_range()
             hsv_v = colour_data.get("v", 0)
             return int(self.remap(hsv_v, v_range[0], v_range[1], 0, 255))

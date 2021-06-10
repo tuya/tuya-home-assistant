@@ -198,7 +198,7 @@ def remove_device(hass: HomeAssistant, device_id: str):
     device_registry = hass.helpers.device_registry.async_get(hass)
     entity_registry = hass.helpers.entity_registry.async_get(hass)
     for entity in list(entity_registry.entities.values()):
-        if entity.unique_id.startswith(f"tuya_{device_id}"):
+        if entity.unique_id.startswith(f"ty{device_id}"):
             entity_registry.async_remove(entity.entity_id)
             if device_registry.async_get(entity.device_id):
                 device_registry.async_remove_device(entity.device_id)

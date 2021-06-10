@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Support for Tuya Fan."""
 from __future__ import annotations
+
 import json
 import logging
 from typing import Any
