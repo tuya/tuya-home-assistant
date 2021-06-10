@@ -187,10 +187,11 @@ async def cleanup_device_registry(hass: HomeAssistant):
 
     device_registry = hass.helpers.device_registry.async_get(hass)
 
-    orphan = set(device_registry.devices)
-
-    for dev_id in orphan:
-        device_registry.async_remove_device(dev_id)
+    for dev_id, device_entity in list(device_registry.devices.items()):
+        for item in device_entity.identifiers:
+            if DOMAIN == item[0]:
+                device_registry.async_remove_device(dev_id)
+                break
 
 
 def remove_device(hass: HomeAssistant, device_id: str):

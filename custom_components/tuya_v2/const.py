@@ -12,7 +12,7 @@ CONF_PASSWORD = "password"
 CONF_COUNTRY_CODE = "country_code"
 CONF_APP_TYPE = "tuya_app_type"
 
-TUYA_DISCOVERY_NEW = "tuya_discovery_new_{}"
+TUYA_DISCOVERY_NEW = "tuya_v2_discovery_new_{}"
 TUYA_DEVICE_MANAGER = "tuya_device_manager"
 TUYA_MQTT_LISTENER = "tuya_mqtt_listener"
 TUYA_HA_TUYA_MAP = "tuya_ha_tuya_map"
