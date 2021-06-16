@@ -36,10 +36,10 @@ class TuyaHaDevice:
         """Return a unique ID."""
         return f"ty{self.tuya_device.id}"
 
-    # @property
-    # def name(self) -> str | None:
-    #     """Return Tuya device name."""
-    #     return self.tuya_device.name
+    @property
+    def name(self) -> str | None:
+        """Return Tuya device name."""
+        return self.tuya_device.name
 
     @property
     def device_info(self):
