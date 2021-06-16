@@ -10,11 +10,11 @@ Tuya Home Assistant integration is developed for controlling **Powered by Tuya (
 
 The following Tuya Device types are currently supported by this integration:
 
-- [Light](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya/light.py): Supports Tuya Wi-Fi light devices.
-- [Switch](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya/switch.py): Supports Tuya Wi-Fi switch devices, like switch, socket and power strip
-- [Cover](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya/cover.py): Supports Tuya cover devices like smart curtain motor.
-- [Climate](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya/climate.py): Supports Tuya climate devices like air conditioner and heater.
-- [Fan](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya/fan.py): Support Tuya fan devices.
+- [Light](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya_v2/light.py): Supports Tuya Wi-Fi light devices.
+- [Switch](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya_v2/switch.py): Supports Tuya Wi-Fi switch devices, like switch, socket and power strip
+- [Cover](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya_v2/cover.py): Supports Tuya cover devices like smart curtain motor.
+- [Climate](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya_v2/climate.py): Supports Tuya climate devices like air conditioner and heater.
+- [Fan](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya_v2/fan.py): Support Tuya fan devices.
 
 Please check the [Develop Tuya-Compatible Home Assistant Drivers](https://developer.tuya.com/en/demo/devhomeassistantplugin/?_source=github) and [Home Assistant Entity](https://developers.home-assistant.io/docs/core/entity) tutorials to develop more drivers for the Tuya Home Assistant Integration and support more Tuya devices.
 
@@ -28,7 +28,7 @@ Please check the [Develop Tuya-Compatible Home Assistant Drivers](https://develo
 
 ## Tuya Home Assistant Integration User Guide
 
-For more information, please check [How to Use Tuya Home Assistant Integration](https://developer.tuya.com/en/docs/iot/Home_Assistant_Integration?id=Kamcjcbvk2mu8). 
+For more information, please check [How to Use Tuya Home Assistant Integration](https://developer.tuya.com/en/docs/iot/Home_Assistant_Integration?id=Kamcjcbvk2mu8).
 
 ## Installation
 
@@ -57,11 +57,11 @@ Download this tuya-home-assistant repo, unzip it, and copy the **custom_componen
 
 **2.** [HACS Initial Configuration](https://hacs.xyz/docs/configuration/basic)
 
-**3.** HACS -> Integrations -> ... -> Custom repositories 
+**3.** HACS -> Integrations -> ... -> Custom repositories
 
 <img src="https://images.tuyacn.com/app/hass/hacs_install_custom.png" width="90%" />
 
-**4.** Input the tuya-home-assistant GitHub URL: **https://github.com/tuya/tuya-home-assistant** and select **Integration** as the Category type,  then click **ADD**.
+**4.** Input the tuya-home-assistant GitHub URL: **https://github.com/tuya/tuya-home-assistant** and select **Integration** as the Category type, then click **ADD**.
 
 <img src="https://images.tuyacn.com/app/hass/custom_repos.png" width="70%" />
 
@@ -85,7 +85,7 @@ Configuration -> Integrations -> ADD INTEGRATION -> Tuya Integration
 
 In the Tuya Integration window, select **Smart Home PaaS**.
 
-Get the Tuya credential info by following the  [Tuya IoT Platform Configuration Guide Using Smart Home PaaS](https://developer.tuya.com/en/docs/iot/Platform_Configuration_smarthome?id=Kamcgamwoevrx) and fill in the following window.
+Get the Tuya credential info by following the [Tuya IoT Platform Configuration Guide Using Smart Home PaaS](https://developer.tuya.com/en/docs/iot/Platform_Configuration_smarthome?id=Kamcgamwoevrx) and fill in the following window.
 
 <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16221259465700799e80d.png" height="300"/>
 
@@ -93,7 +93,7 @@ Get the Tuya credential info by following the  [Tuya IoT Platform Configuration 
 
 In the Tuya Integration window, select **Custom Development**.
 
-Please get the Tuya credential info by following the  [Tuya IoT Platform Configuration Guide Using Custom Development Method](https://developer.tuya.com/en/docs/iot/Configuration_Guide_custom?id=Kamcfx6g5uyot) and fill in the following window.
+Please get the Tuya credential info by following the [Tuya IoT Platform Configuration Guide Using Custom Development Method](https://developer.tuya.com/en/docs/iot/Configuration_Guide_custom?id=Kamcfx6g5uyot) and fill in the following window.
 
 <img src="https://images.tuyacn.com/app/hass/hacs_tuya_credential.png" height="300"/>
 
@@ -101,10 +101,10 @@ Please get the Tuya credential info by following the  [Tuya IoT Platform Configu
 
 Go to the home assistant installation folder `~/hass` and use the following command to activate it and run the hass service:
 
-~~~
+```
 ➜  hass source bin/activate
 (hass) ➜  hass hass
-~~~
+```
 
 <img src="https://images.tuyacn.com/app/hass/command_line.png" width="80%"/>
 
@@ -124,7 +124,9 @@ For more information, please check [How to Use Tuya Home Assistant Integration](
 Please refer to the [Contributing.md](./contributing.md) for contributing guide.
 
 ## Issue feedback
+
 You can give feedback on issues you encounter via **GitHub Issue**.
 
 ## LICENSE
+
 For more information, please refer to the [LICENSE](LICENSE) file
