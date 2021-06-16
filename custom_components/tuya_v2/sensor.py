@@ -2,6 +2,7 @@
 """Support for Tuya switches."""
 
 import logging
+import json
 from typing import List, Optional
 
 from tuya_iot import TuyaDevice, TuyaDeviceManager
@@ -219,7 +220,16 @@ class TuyaHaSensor(TuyaHaDevice, SensorEntity):
     @property
     def state(self):
         """Return the state of the sensor."""
-        return str(self.tuya_device.status.get(self._code))
+        __value = self.tuya_device.status.get(self._code)
+        print(self.tuya_device.status_range.get(self._code).values)
+        if self.tuya_device.status_range.get(self._code).type == 'Integer':
+            __value_range = json.loads(self.tuya_device.status_range.get(self._code).values)
+            __state = (__value) * 1.0 / (10 ** __value_range.get('scale'))
+            if __value_range.get('scale') == 0:
+                return int(__state)
+            else:
+                return f"%.{__value_range.get('scale')}f" % __state
+        return ''
 
     @property
     def unit_of_measurement(self):

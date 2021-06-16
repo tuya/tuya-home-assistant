@@ -17,6 +17,7 @@ TUYA_DEVICE_MANAGER = "tuya_device_manager"
 TUYA_MQTT_LISTENER = "tuya_mqtt_listener"
 TUYA_HA_TUYA_MAP = "tuya_ha_tuya_map"
 TUYA_HA_DEVICES = "tuya_ha_devices"
+TUYA_SETUP_PLATFORM = "setup_platform"
 
 TUYA_ENDPOINT = {
     "https://openapi.tuyaus.com": "America",

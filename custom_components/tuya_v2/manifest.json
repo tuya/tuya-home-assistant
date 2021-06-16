@@ -4,7 +4,7 @@
   "version": "1.2",
   "documentation": "https://github.com/tuya/tuya-home-assistant",
   "requirements": [
-    "tuya-iot-py-sdk==0.2.1"
+    "tuya-iot-py-sdk==0.2.2"
   ],
   "codeowners": [
     "@Tuya"
