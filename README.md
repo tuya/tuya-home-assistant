@@ -11,10 +11,10 @@ Tuya Home Assistant integration is developed for controlling **Powered by Tuya (
 The following Tuya Device types are currently supported by this integration:
 
 - [Light](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya_v2/light.py): Supports Tuya Wi-Fi light devices.
-- [Switch](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya_v2/switch.py): Supports Tuya Wi-Fi switch devices, like switch, socket and power strip
+- [Switch](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya_v2/switch.py): Supports Tuya Wi-Fi switch devices, like switch, socket and power strip.
 - [Cover](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya_v2/cover.py): Supports Tuya cover devices like smart curtain motor.
 - [Climate](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya_v2/climate.py): Supports Tuya climate devices like air conditioner and heater.
-- [Fan](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya_v2/fan.py): Support Tuya fan devices.
+- [Fan](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya_v2/fan.py): Supports Tuya fan devices.
 
 Please check the [Develop Tuya-Compatible Home Assistant Drivers](https://developer.tuya.com/en/demo/devhomeassistantplugin/?_source=github) and [Home Assistant Entity](https://developers.home-assistant.io/docs/core/entity) tutorials to develop more drivers for the Tuya Home Assistant Integration and support more Tuya devices.
 
@@ -40,62 +40,75 @@ You can also get help from [Set up Home Assistant Development Environment on Ras
 
 ### 2. Tuya Home Assistant Integration Installation
 
+>**Note**：The new version of Tuya Home Assistant integration (Tuya v2) can be compatible with the old version. Both versions can be installed at the same time. You don’t need to uninstall the old version before installing the new version.
+
 There are two methods to install the integration:
 
-1. Home Assistant Custom Components Installation
-2. Install by [HACS](https://hacs.xyz/)
+* Home Assistant Custom Components Installation
+* Install by [HACS](https://hacs.xyz/)
 
 #### 2.1 Home Assistant Custom Components Installation
 
-Download this tuya-home-assistant repo, unzip it, and copy the **custom_components/tuya/** folder to the HomeAssistant configuration directory, e.g. ~/.homeassistant
+1. Download the [tuya-home-assistant repo](https://github.com/tuya/tuya-home-assistant).
+2. Unzip it and copy the `custom_components/tuya/` folder to the Home Assistant configuration directory, for example, `~/.homeassistant`.
 
-<img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/1619406706bb7cb5eb66b.png" height="300" />
+    <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16238163372b1ef921aab.png" width="40%" alt="Installation">
 
 #### 2.2 Install by HACS
 
-**1.** [HACS Install](https://hacs.xyz/docs/installation/installation/)
+1. See [HACS Official Installation Guide](https://hacs.xyz/docs/installation/installation/) and install HACS.
 
-**2.** [HACS Initial Configuration](https://hacs.xyz/docs/configuration/basic)
+2. See [Initial Configuration Guide](https://hacs.xyz/docs/configuration/basic) and complete initial configuration.
 
-**3.** HACS -> Integrations -> ... -> Custom repositories
+3. Open Home Assistant. Click **HACS** > **Integrations** > **⋮** > **Custom repositories**.
+    <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16221073906e836eba5eb.png" width="90%" />
 
-<img src="https://images.tuyacn.com/app/hass/hacs_install_custom.png" width="90%" />
+4. Enter `https://github.com/tuya/tuya-home-assistant` in the address bar at the bottom left of the window. Select **Integration** from the **Category** list and click **ADD**.
 
-**4.** Input the tuya-home-assistant GitHub URL: **https://github.com/tuya/tuya-home-assistant** and select **Integration** as the Category type, then click **ADD**.
+    <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/162384530830e42682b3c.png" width="70%" />
 
-<img src="https://images.tuyacn.com/app/hass/custom_repos.png" width="70%" />
+5. In the dialog box that appears, click **INSTALL**.
 
-**5.** Click **INSTALL**
-
-<img src="https://images.tuyacn.com/app/hass/hacs_tuya_install.png" width="90%" />
+    <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16238453803774d728b74.png" width="70%" />
 
 #### 2.3 Restart Home Assistant
 
-Configuration -> Server Controls -> RESTART
+You can restart the Home Assistant server in **Configuration** > **Server Controls** > **RESTART**.
+    <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16242415480daab38307a.png" width="70%" />
 
-#### 2.4 Activate Tuya Integration
 
-Configuration -> Integrations -> ADD INTEGRATION -> Tuya Integration
+#### 2.4 Set up the Tuya Integration
 
-<img src="https://images.tuyacn.com/app/hass/hacs_tuya_setup.png" width="90%" />
+In **Configuration** > **Integrations** > **ADD INTEGRATION** > **Tuya Integration**, search for the keyword **tuya** and select **Tuya v2**.
+
+<img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/162320853943fdfc9239d.png" width="70%" />
 
 ### 3. Enter your Tuya credential
 
 ##### 3.1 Smart Home PaaS Development Type
 
-In the Tuya Integration window, select **Smart Home PaaS**.
+In the Tuya Integration window, select **Smart Home PaaS** and click **SUBMIT**.
+<img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16242422923267ec834da.png" width="40%"/>
 
-Get the Tuya credential info by following the [Tuya IoT Platform Configuration Guide Using Smart Home PaaS](https://developer.tuya.com/en/docs/iot/Platform_Configuration_smarthome?id=Kamcgamwoevrx) and fill in the following window.
+See the following table and enter your Tuya credential. 
 
-<img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16221259465700799e80d.png" height="300"/>
+| Field | Description |
+| ------- | -------- |
+| Region | Open Tuya Smart or Smart Life app. Tap **Me** > **Settings** > **Account and Security** and find **Region**. Select the region accordingly. |
+| Access ID and Access Secret| Go to your cloud project on [Tuya IoT Platform](https://iot.tuya.com/cloud/). Find the **Access ID** and **Access Secret** on the **Project Overview** tab.|
+| Mobile App | Must select the one you used to link devices on the Tuya IoT Platform. |
+| Country Code | The country you select on logging in to Tuya Smart or Smart Life app.  |
+| Account | Tuya Smart or Smart Life app account. |
+| Password | The password of your app account. |
 
+> **Note**: The app mentioned in the table must be the one you used to link devices on the Tuya IoT Platform.
 ##### 3.2 Custom Development Type
 
-In the Tuya Integration window, select **Custom Development**.
+From the Tuya Integration window, select **Custom Development** and click **SUBMIT**.
 
-Please get the Tuya credential info by following the [Tuya IoT Platform Configuration Guide Using Custom Development Method](https://developer.tuya.com/en/docs/iot/Configuration_Guide_custom?id=Kamcfx6g5uyot) and fill in the following window.
+See the table in 3.1 and enter your Tuya credential. 
 
-<img src="https://images.tuyacn.com/app/hass/hacs_tuya_credential.png" height="300"/>
+<img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16242426585f50a85bef9.png"  width="40%"/>
 
 ## Start Home Assistant
 
@@ -129,4 +142,4 @@ You can give feedback on issues you encounter via **GitHub Issue**.
 
 ## LICENSE
 
-For more information, please refer to the [LICENSE](LICENSE) file
+For more information, please refer to the [LICENSE](LICENSE) file.
