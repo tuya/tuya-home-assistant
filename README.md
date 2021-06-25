@@ -30,6 +30,10 @@ Please check the [Develop Tuya-Compatible Home Assistant Drivers](https://develo
 
 For more information, please check [How to Use Tuya Home Assistant Integration](https://developer.tuya.com/en/docs/iot/Home_Assistant_Integration?id=Kamcjcbvk2mu8).
 
+Youtube tutorial:
+
+[![Youtube](https://img.youtube.com/vi/Amc_fmYMQEo/0.jpg)](https://www.youtube.com/watch?v=Amc_fmYMQEo)
+
 ## Installation
 
 ### 1. Home Assistant Installation
