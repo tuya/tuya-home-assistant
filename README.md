@@ -4,7 +4,10 @@
     <img src="https://images.tuyacn.com/app/hass/ha_tuya.png" width="70%">
 </p>
 
-Tuya Home Assistant integration is developed for controlling **Powered by Tuya (PBT)** devices using [Tuya Open API](https://developer.tuya.com/en/docs/cloud/?_source=github), officially maintained by the Tuya Developer Team.
+Tuya Home Assistant integration is developed for controlling **Powered by Tuya (PBT)** devices using [Tuya Open API](https://developer.tuya.com/en/docs/cloud/?_source=6c7c0e6d9fc9ac8296e1a48954e1d0e4), officially maintained by the Tuya Developer Team.
+
+## [Tuya Beta Test Program](https://pages.tuya.com/develop/HomeAssistantBetaTest_V2?_source=df3c37ad796d2388fc5527a8029c7889)
+Welcome to join the [Tuya Beta Test Program](https://pages.tuya.com/develop/HomeAssistantBetaTest_V2?_source=df3c37ad796d2388fc5527a8029c7889) to get your development gifts and make the contribution to the plugin.Your feedback is valuable to the whole community.
 
 ## Supported Tuya Device Types
 
@@ -16,7 +19,7 @@ The following Tuya Device types are currently supported by this integration:
 - [Climate](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya_v2/climate.py): Supports Tuya climate devices like air conditioner and heater.
 - [Fan](https://github.com/tuya/tuya-home-assistant/blob/master/custom_components/tuya_v2/fan.py): Supports Tuya fan devices.
 
-Please check the [Develop Tuya-Compatible Home Assistant Drivers](https://developer.tuya.com/en/demo/devhomeassistantplugin/?_source=github) and [Home Assistant Entity](https://developers.home-assistant.io/docs/core/entity) tutorials to develop more drivers for the Tuya Home Assistant Integration and support more Tuya devices.
+Please check the [Develop Tuya-Compatible Home Assistant Drivers](https://developer.tuya.com/en/demo/devhomeassistantplugin/?_source=edb3f773114ae82d9b55a9602a9b8e64) and [Home Assistant Entity](https://developers.home-assistant.io/docs/core/entity) tutorials to develop more drivers for the Tuya Home Assistant Integration and support more Tuya devices.
 
 ## Workflow
 
@@ -28,7 +31,7 @@ Please check the [Develop Tuya-Compatible Home Assistant Drivers](https://develo
 
 ## Tuya Home Assistant Integration User Guide
 
-For more information, please check [How to Use Tuya Home Assistant Integration](https://developer.tuya.com/en/docs/iot/Home_Assistant_Integration?id=Kamcjcbvk2mu8).
+For more information, please check [How to Use Tuya Home Assistant Integration](https://developer.tuya.com/en/docs/iot/Home_Assistant_Integration?id=Kamcjcbvk2mu8&_source=1f6c7c604f6cc5057a3befbe1092b263).
 
 Youtube tutorial:
 
@@ -40,7 +43,7 @@ Youtube tutorial:
 
 Please refer to the [Home Assistant Official Installation](https://www.home-assistant.io/installation/) documentation to install **Home Assistant Core**.
 
-You can also get help from [Set up Home Assistant Development Environment on Raspberry Pi](https://developer.tuya.com/en/demo/setuphomeassistantdevenv/?_source=github) in Tuya Developer Demo Center.
+You can also get help from [Set up Home Assistant Development Environment on Raspberry Pi](https://developer.tuya.com/en/demo/setuphomeassistantdevenv/?_source=b1441bb02314be3e594a0448891aac58) in Tuya Developer Demo Center.
 
 ### 2. Tuya Home Assistant Integration Installation
 
@@ -53,7 +56,7 @@ There are two methods to install the integration:
 
 #### 2.1 Home Assistant Custom Components Installation
 
-1. Download the [tuya-home-assistant repo](https://github.com/tuya/tuya-home-assistant).
+1. Download the [tuya-home-assistant repo](https://github.com/tuya/tuya-home-assistant?_source=a8502ebc9cd2966eaef661d1945d4284).
 2. Unzip it and copy the `custom_components/tuya/` folder to the Home Assistant configuration directory, for example, `~/.homeassistant`.
 
     <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16238163372b1ef921aab.png" width="40%" alt="Installation">
@@ -99,7 +102,7 @@ See the following table and enter your Tuya credential.
 | Field | Description |
 | ------- | -------- |
 | Region | Open Tuya Smart or Smart Life app. Tap **Me** > **Settings** > **Account and Security** and find **Region**. Select the region accordingly. |
-| Access ID and Access Secret| Go to your cloud project on [Tuya IoT Platform](https://iot.tuya.com/cloud/). Find the **Access ID** and **Access Secret** on the **Project Overview** tab.|
+| Access ID and Access Secret| Go to your cloud project on [Tuya IoT Platform](https://iot.tuya.com/cloud/?_source=3a6f90da0e85f686f89c4f85c883e8f0). Find the **Access ID** and **Access Secret** on the **Project Overview** tab.|
 | Mobile App | Must select the one you used to link devices on the Tuya IoT Platform. |
 | Country Code | The country you select on logging in to Tuya Smart or Smart Life app.  |
 | Account | Tuya Smart or Smart Life app account. |
@@ -134,7 +137,7 @@ Please download and use the Tuya Smart or Tuya Smart Life apps to pair Tuya devi
 - Tuya Smart App: [iOS App](https://apps.apple.com/us/app/tuyasmart/id1034649547) | [Android App](https://play.google.com/store/apps/details?id=com.tuya.smart&hl=en_US&gl=US)
 - Tuya Smart Life App: [iOS App](https://apps.apple.com/us/app/smart-life-smart-living/id1115101477) | [Android App](https://play.google.com/store/apps/details?id=com.tuya.smartlife&hl=en_US&gl=US)
 
-For more information, please check [How to Use Tuya Home Assistant Integration](https://developer.tuya.com/en/docs/iot/Home_Assistant_Integration?id=Kamcjcbvk2mu8).
+For more information, please check [How to Use Tuya Home Assistant Integration](https://developer.tuya.com/en/docs/iot/Home_Assistant_Integration?id=Kamcjcbvk2mu8&_source=1f6c7c604f6cc5057a3befbe1092b263).
 
 ## Contributing
 
