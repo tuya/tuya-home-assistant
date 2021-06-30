@@ -36,16 +36,16 @@ DPCODE_SWITCH = "switch"
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities
+    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities
 ):
     """Set up tuya sensors dynamically through tuya discovery."""
-    print("humidifier init")
+    _LOGGER("humidifier init")
 
     hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update({DEVICE_DOMAIN: TUYA_SUPPORT_TYPE})
 
     async def async_discover_device(dev_ids):
         """Discover and add a discovered tuya sensor."""
-        print("humidifier add->", dev_ids)
+        _LOGGER(f"humidifier add-> {dev_ids}")
         if not dev_ids:
             return
         entities = await hass.async_add_executor_job(_setup_entities, hass, dev_ids)
@@ -58,7 +58,7 @@ async def async_setup_entry(
 
     device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
     device_ids = []
-    for (device_id, device) in device_manager.deviceMap.items():
+    for (device_id, device) in device_manager.device_map.items():
         if device.category in TUYA_SUPPORT_TYPE:
             device_ids.append(device_id)
     await async_discover_device(device_ids)
@@ -69,7 +69,7 @@ def _setup_entities(hass, device_ids: List):
     device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
     entities = []
     for device_id in device_ids:
-        device = device_manager.deviceMap[device_id]
+        device = device_manager.device_map[device_id]
         if device is None:
             continue
 
@@ -108,18 +108,12 @@ class TuyaHaHumidifier(TuyaHaDevice, HumidifierEntity):
 
     def set_mode(self, mode):
         """Set new target preset mode."""
-        self.tuya_device_manager.sendCommands(
-            self.tuya_device.id, [{"code": DPCODE_MODE, "value": mode}]
-        )
+        self._send_command([{"code": DPCODE_MODE, "value": mode}])
 
     def turn_on(self, **kwargs):
         """Turn the device on."""
-        self.tuya_device_manager.sendCommands(
-            self.tuya_device.id, [{"code": DPCODE_SWITCH, "value": True}]
-        )
+        self._send_command([{"code": DPCODE_SWITCH, "value": True}])
 
     def turn_off(self, **kwargs):
         """Turn the device off."""
-        self.tuya_device_manager.sendCommands(
-            self.tuya_device.id, [{"code": DPCODE_SWITCH, "value": False}]
-        )
+        self._send_command([{"code": DPCODE_SWITCH, "value": False}])

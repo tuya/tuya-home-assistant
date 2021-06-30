@@ -55,16 +55,16 @@ DPCODE_PRESENCE_STATE = "presence_state"
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities
+    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities
 ):
     """Set up tuya binary sensors dynamically through tuya discovery."""
-    print("binary sensor init")
+    _LOGGER.info("binary sensor init")
 
     hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update({DEVICE_DOMAIN: TUYA_SUPPORT_TYPE})
 
     async def async_discover_device(dev_ids):
         """Discover and add a discovered tuya sensor."""
-        print("binary sensor add->", dev_ids)
+        _LOGGER.info(f"binary sensor add->{dev_ids}")
         if not dev_ids:
             return
         entities = await hass.async_add_executor_job(_setup_entities, hass, dev_ids)
@@ -77,7 +77,7 @@ async def async_setup_entry(
 
     device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
     device_ids = []
-    for (device_id, device) in device_manager.deviceMap.items():
+    for (device_id, device) in device_manager.device_map.items():
         if device.category in TUYA_SUPPORT_TYPE:
             device_ids.append(device_id)
     await async_discover_device(device_ids)
@@ -88,7 +88,7 @@ def _setup_entities(hass, device_ids: List):
     device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
     entities = []
     for device_id in device_ids:
-        device = device_manager.deviceMap[device_id]
+        device = device_manager.device_map[device_id]
         if device is None:
             continue
 
@@ -107,7 +107,7 @@ def _setup_entities(hass, device_ids: List):
                     device,
                     device_manager,
                     DEVICE_CLASS_SMOKE,
-                    (lambda d: "1" == d.status.get(DPCODE_SMOKE_SENSOR_STATE, 1)),
+                    (lambda d: d.status.get(DPCODE_SMOKE_SENSOR_STATE, 1) == "1"),
                 )
             )
         if DPCODE_GAS_SENSOR_STATE in device.status:
@@ -116,7 +116,7 @@ def _setup_entities(hass, device_ids: List):
                     device,
                     device_manager,
                     DEVICE_CLASS_GAS,
-                    (lambda d: "1" == d.status.get(DPCODE_GAS_SENSOR_STATE, 1)),
+                    (lambda d: d.status.get(DPCODE_GAS_SENSOR_STATE, 1) == "1"),
                 )
             )
         if DPCODE_PIR in device.status:
@@ -125,7 +125,7 @@ def _setup_entities(hass, device_ids: List):
                     device,
                     device_manager,
                     DEVICE_CLASS_MOTION,
-                    (lambda d: "pir" == d.status.get(DPCODE_PIR, "none")),
+                    (lambda d: d.status.get(DPCODE_PIR, "none") == "1"),
                 )
             )
         if DPCODE_WATER_SENSOR_STATE in device.status:
@@ -134,7 +134,7 @@ def _setup_entities(hass, device_ids: List):
                     device,
                     device_manager,
                     DEVICE_CLASS_MOISTURE,
-                    (lambda d: "1" == d.status.get(DPCODE_WATER_SENSOR_STATE, "none")),
+                    (lambda d: d.status.get(DPCODE_WATER_SENSOR_STATE, "none") == "1"),
                 )
             )
         if DPCODE_SOS_STATE in device.status:
@@ -153,8 +153,8 @@ def _setup_entities(hass, device_ids: List):
                     device_manager,
                     DEVICE_CLASS_MOTION,
                     (
-                        lambda d: "presence"
-                        == d.status.get(DPCODE_PRESENCE_STATE, "none")
+                        lambda d: d.status.get(DPCODE_PRESENCE_STATE, "none")
+                        == "presence"
                     ),
                 )
             )
@@ -168,14 +168,14 @@ class TuyaHaBSensor(TuyaHaDevice, BinarySensorEntity):
     def __init__(
         self,
         device: TuyaDevice,
-        deviceManager: TuyaDeviceManager,
+        device_manager: TuyaDeviceManager,
         sensor_type: str,
         sensor_is_on: Callable[..., bool],
     ):
         """Init TuyaHaBSensor."""
         self._type = sensor_type
         self._is_on = sensor_is_on
-        super().__init__(device, deviceManager)
+        super().__init__(device, device_manager)
 
     @property
     def unique_id(self) -> Optional[str]:

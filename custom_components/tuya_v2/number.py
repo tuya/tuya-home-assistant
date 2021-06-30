@@ -33,16 +33,16 @@ DPCODE_SENSITIVITY = "sensitivity"
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities
+    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities
 ):
     """Set up tuya number dynamically through tuya discovery."""
-    print("switch init")
+    _LOGGER.info("number init")
 
     hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update({DEVICE_DOMAIN: TUYA_SUPPORT_TYPE})
 
     async def async_discover_device(dev_ids):
         """Discover and add a discovered tuya number."""
-        print("switch add->", dev_ids)
+        _LOGGER.info(f"number add-> {dev_ids}")
         if not dev_ids:
             return
         entities = await hass.async_add_executor_job(_setup_entities, hass, dev_ids)
@@ -55,7 +55,7 @@ async def async_setup_entry(
 
     device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
     device_ids = []
-    for (device_id, device) in device_manager.deviceMap.items():
+    for (device_id, device) in device_manager.device_map.items():
         if device.category in TUYA_SUPPORT_TYPE:
             device_ids.append(device_id)
     await async_discover_device(device_ids)
@@ -66,7 +66,7 @@ def _setup_entities(hass, device_ids: List):
     device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
     entities = []
     for device_id in device_ids:
-        device = device_manager.deviceMap[device_id]
+        device = device_manager.device_map[device_id]
         if device is None:
             continue
 
@@ -80,19 +80,17 @@ class TuyaHaNumber(TuyaHaDevice, NumberEntity):
     """Tuya Device Number."""
 
     def __init__(
-        self, device: TuyaDevice, deviceManager: TuyaDeviceManager, code: str = ""
+        self, device: TuyaDevice, device_manager: TuyaDeviceManager, code: str = ""
     ):
         """Init tuya number device."""
         self._code = code
-        super().__init__(device, deviceManager)
+        super().__init__(device, device_manager)
 
     # ToggleEntity
 
     def set_value(self, value: float) -> None:
         """Update the current value."""
-        self.tuya_device_manager.sendCommands(
-            self.tuya_device.id, [{"code": self._code, "value": int(value)}]
-        )
+        self._send_command([{"code": self._code, "value": int(value)}])
 
     @property
     def unique_id(self) -> Optional[str]:
@@ -120,5 +118,5 @@ class TuyaHaNumber(TuyaHaDevice, NumberEntity):
         return self._get_code_range()[2]
 
     def _get_code_range(self) -> Tuple[int, int, int]:
-        range = json.loads(self.tuya_device.function.get(self._code).values)
-        return range.get("min", 0), range.get("max", 0), range.get("step", 0)
+        dp_range = json.loads(self.tuya_device.function.get(self._code).values)
+        return dp_range.get("min", 0), dp_range.get("max", 0), dp_range.get("step", 0)

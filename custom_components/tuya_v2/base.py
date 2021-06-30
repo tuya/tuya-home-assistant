@@ -2,6 +2,8 @@
 """Tuya Home Assistant Base Device Model."""
 from __future__ import annotations
 
+import asyncio
+
 from tuya_iot import TuyaDevice, TuyaDeviceManager
 
 from .const import DOMAIN
@@ -17,6 +19,9 @@ class TuyaHaDevice:
         self.tuya_device = device
         self.tuya_device_manager = device_manager
         self.entity_id = f"tuya_v2.ty{self.tuya_device.id}"
+
+        self.loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(self.loop)
 
     @staticmethod
     def remap(old_value, old_min, old_max, new_min, new_max):
@@ -56,10 +61,15 @@ class TuyaHaDevice:
     # def icon(self) -> Optional[str]:
     #     """Return Tuya device icon."""
     #     cdn_url = 'https://images.tuyacn.com/'
-    #     # TODO customize cdn url
+    #     # customize cdn url
     #     return cdn_url + self.tuyaDevice.icon
 
     @property
     def available(self) -> bool:
         """Return if the device is available."""
         return self.tuya_device.online
+
+    def _send_command(self, commands) -> None:
+        self.loop.run_in_executor(
+            None, self.tuya_device_manager.send_commands, self.tuya_device.id, commands
+        )

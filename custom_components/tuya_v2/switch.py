@@ -27,24 +27,26 @@ TUYA_SUPPORT_TYPE = {
     "kg",  # Switch
     "cz",  # Socket
     "pc",  # Power Strip
+    "cwysj",  # Pet Water Feeder
 }
 
 # Switch(kg), Socket(cz), Power Strip(pc)
 # https://developer.tuya.com/docs/iot/open-api/standard-function/electrician-category/categorykgczpc?categoryId=486118
 DPCODE_SWITCH = "switch"
+DPCODE_UV = "uv"
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities
+    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities
 ):
     """Set up tuya sensors dynamically through tuya discovery."""
-    print("switch init")
+    _LOGGER.info("switch init")
 
     hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update({DEVICE_DOMAIN: TUYA_SUPPORT_TYPE})
 
     async def async_discover_device(dev_ids):
         """Discover and add a discovered tuya sensor."""
-        print("switch add->", dev_ids)
+        _LOGGER.info(f"switch add-> {dev_ids}")
         if not dev_ids:
             return
         entities = await hass.async_add_executor_job(_setup_entities, hass, dev_ids)
@@ -57,7 +59,7 @@ async def async_setup_entry(
 
     device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
     device_ids = []
-    for (device_id, device) in device_manager.deviceMap.items():
+    for (device_id, device) in device_manager.device_map.items():
         if device.category in TUYA_SUPPORT_TYPE:
             device_ids.append(device_id)
     await async_discover_device(device_ids)
@@ -68,20 +70,17 @@ def _setup_entities(hass, device_ids: list):
     device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
     entities = []
     for device_id in device_ids:
-        device = device_manager.deviceMap[device_id]
+        device = device_manager.device_map[device_id]
         if device is None:
             continue
 
-        switch_set = []
         for function in device.function:
             if function.startswith(DPCODE_SWITCH):
-                switch_set.append(function.replace(DPCODE_SWITCH, ""))
+                entities.append(TuyaHaSwitch(device, device_manager, function))
+                continue
 
-        if len(switch_set) > 1:
-            for channel in switch_set:
-                entities.append(TuyaHaSwitch(device, device_manager, channel))
-        elif len(switch_set) == 1:
-            entities.append(TuyaHaSwitch(device, device_manager))
+            if function == DPCODE_UV:
+                entities.append(TuyaHaSwitch(device, device_manager, function))
 
     return entities
 
@@ -92,18 +91,17 @@ class TuyaHaSwitch(TuyaHaDevice, SwitchEntity):
     dp_code_switch = DPCODE_SWITCH
 
     def __init__(
-        self, device: TuyaDevice, deviceManager: TuyaDeviceManager, channel: str = ""
+        self, device: TuyaDevice, device_manager: TuyaDeviceManager, dp_code: str = ""
     ) -> None:
         """Init TuyaHaSwitch."""
-        super().__init__(device, deviceManager)
+        super().__init__(device, device_manager)
 
-        self.channel = channel
-        if len(channel) > 0:
-            self.dp_code_switch = DPCODE_SWITCH + self.channel
-        else:
-            for function in device.function:
-                if function.startswith(DPCODE_SWITCH):
-                    self.dp_code_switch = function
+        self.dp_code = dp_code
+        self.channel = (
+            dp_code.replace(DPCODE_SWITCH, "")
+            if dp_code.startswith(DPCODE_SWITCH)
+            else dp_code
+        )
 
     @property
     def unique_id(self) -> str | None:
@@ -118,16 +116,12 @@ class TuyaHaSwitch(TuyaHaDevice, SwitchEntity):
     @property
     def is_on(self) -> bool:
         """Return true if switch is on."""
-        return self.tuya_device.status.get(self.dp_code_switch, False)
+        return self.tuya_device.status.get(self.dp_code, False)
 
     def turn_on(self, **kwargs: Any) -> None:
         """Turn the switch on."""
-        self.tuya_device_manager.sendCommands(
-            self.tuya_device.id, [{"code": self.dp_code_switch, "value": True}]
-        )
+        self._send_command([{"code": self.dp_code, "value": True}])
 
     def turn_off(self, **kwargs: Any) -> None:
         """Turn the device off."""
-        self.tuya_device_manager.sendCommands(
-            self.tuya_device.id, [{"code": self.dp_code_switch, "value": False}]
-        )
+        self._send_command([{"code": self.dp_code, "value": False}])

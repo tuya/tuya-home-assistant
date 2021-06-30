@@ -26,7 +26,6 @@ from .const import (
 RESULT_SINGLE_INSTANCE = "single_instance_allowed"
 
 _LOGGER = logging.getLogger(__name__)
-RESULT_AUTH_FAILED = "invalid_auth"
 
 # Project Type
 DATA_SCHEMA_PROJECT_TYPE = vol.Schema(
@@ -61,10 +60,16 @@ DATA_SCHEMA_SMART_HOME = vol.Schema(
 class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Tuya Config Flow."""
 
-    conf_project_type = None
+    def __init__(self) -> None:
+        """Init tuya config flow."""
+        super().__init__()
+        self.conf_project_type = None
+        self.project_type = ProjectType.SMART_HOME
+        self.is_import = False
 
-    def _try_login(self, user_input):
-        print("TuyaConfigFlow._try_login start, user_input:", user_input)
+    @classmethod
+    def _try_login(cls, user_input):
+        _LOGGER.info(f"TuyaConfigFlow._try_login start, user_input: {user_input}")
         project_type = ProjectType(user_input[CONF_PROJECT_TYPE])
         api = TuyaOpenAPI(
             user_input[CONF_ENDPOINT],
@@ -85,12 +90,13 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             )
         )
 
-        print("TuyaConfigFlow._try_login finish, response:", response)
+        _LOGGER.info(f"TuyaConfigFlow._try_login finish, response:, {response}")
         return response
 
     async def async_step_import(self, user_input=None):
         """Step import."""
-        return await self.async_step_user(user_input, is_import=True)
+        self.is_import = True
+        return await self.async_step_user(user_input)
 
     async def async_step_project_type(self, user_input=None):
         """Step project type."""
@@ -104,9 +110,9 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             )
         )
 
-    async def async_step_user(self, user_input=None, is_import=False):
+    async def async_step_user(self, user_input=None):
         """Step user."""
-        print("TuyaConfigFlow.async_step_user start, is_import=", user_input)
+        _LOGGER.info(f"TuyaConfigFlow.async_step_user start, is_import= {user_input}")
 
         if self._async_current_entries():
             return self.async_abort(reason=RESULT_SINGLE_INSTANCE)
@@ -121,29 +127,29 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             )
 
             if response.get("success", False):
-                print("TuyaConfigFlow.async_step_user login success")
+                _LOGGER.info("TuyaConfigFlow.async_step_user login success")
                 return self.async_create_entry(
                     title=user_input[CONF_USERNAME],
                     data=user_input,
                 )
-            else:
-                errors["base"] = RESULT_AUTH_FAILED
-                if is_import:
-                    return self.async_abort(reason=errors["base"])
-                else:
-                    return (
-                        self.async_show_form(
-                            step_id="user",
-                            data_schema=DATA_SCHEMA_SMART_HOME,
-                            errors=errors,
-                        )
-                        if self.project_type == ProjectType.SMART_HOME
-                        else self.async_show_form(
-                            step_id="user",
-                            data_schema=DATA_SCHEMA_INDUSTRY_SOLUTIONS,
-                            errors=errors,
-                        )
-                    )
+
+            errors["base"] = "invalid_auth"
+            if self.is_import:
+                return self.async_abort(reason=errors["base"])
+
+            return (
+                self.async_show_form(
+                    step_id="user",
+                    data_schema=DATA_SCHEMA_SMART_HOME,
+                    errors=errors
+                )
+                if self.project_type == ProjectType.SMART_HOME
+                else self.async_show_form(
+                    step_id="user",
+                    data_schema=DATA_SCHEMA_INDUSTRY_SOLUTIONS,
+                    errors=errors
+                )
+            )
 
         return self.async_show_form(
             step_id="project_type", data_schema=DATA_SCHEMA_PROJECT_TYPE, errors=errors

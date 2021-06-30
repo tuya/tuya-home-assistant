@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Support for Tuya switches."""
 
-import logging
 import json
+import logging
 from typing import List, Optional
 
 from tuya_iot import TuyaDevice, TuyaDeviceManager
@@ -12,6 +12,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     DEVICE_CLASS_BATTERY,
     DEVICE_CLASS_HUMIDITY,
+    DEVICE_CLASS_POWER,
     DEVICE_CLASS_TEMPERATURE,
     PERCENTAGE,
     TEMP_CELSIUS,
@@ -38,6 +39,10 @@ TUYA_SUPPORT_TYPE = [
     "pir",  # PIR Detector
     "sj",  # Water Detector
     "pm2.5",  # PM2.5 Sensor
+    "kg",  # Switch
+    "cz",  # Socket
+    "pc",  # Power Strip
+    "wk",  # Thermostat
 ]
 
 # Smoke Detector
@@ -56,18 +61,22 @@ DPCODE_PM10_VALUE = "pm10_value"
 DPCODE_TEMP_CURRENT = "temp_current"
 DPCODE_HUMIDITY_VALUE = "humidity_value"
 
+DPCODE_CURRENT = "cur_current"
+DPCODE_POWER = "cur_power"
+DPCODE_VOLTAGE = "cur_voltage"
+
 
 async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities
+    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities
 ):
     """Set up tuya sensors dynamically through tuya discovery."""
-    print("sensor init")
+    _LOGGER.info("sensor init")
 
     hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update({DEVICE_DOMAIN: TUYA_SUPPORT_TYPE})
 
     async def async_discover_device(dev_ids):
         """Discover and add a discovered tuya sensor."""
-        print("sensor add->", dev_ids)
+        _LOGGER.info(f"sensor add-> {dev_ids}")
         if not dev_ids:
             return
         entities = await hass.async_add_executor_job(_setup_entities, hass, dev_ids)
@@ -80,7 +89,7 @@ async def async_setup_entry(
 
     device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
     device_ids = []
-    for (device_id, device) in device_manager.deviceMap.items():
+    for (device_id, device) in device_manager.device_map.items():
         if device.category in TUYA_SUPPORT_TYPE:
             device_ids.append(device_id)
     await async_discover_device(device_ids)
@@ -91,7 +100,7 @@ def _setup_entities(hass, device_ids: List):
     device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
     entities = []
     for device_id in device_ids:
-        device = device_manager.deviceMap[device_id]
+        device = device_manager.device_map[device_id]
         if device is None:
             continue
 
@@ -187,6 +196,43 @@ def _setup_entities(hass, device_ids: List):
                 )
             )
 
+        if DPCODE_CURRENT in device.status:
+            entities.append(
+                TuyaHaSensor(
+                    device,
+                    device_manager,
+                    "Current",
+                    DPCODE_CURRENT,
+                    json.loads(device.status_range.get(DPCODE_CURRENT).values).get(
+                        "unit", 0
+                    ),
+                )
+            )
+        if DPCODE_POWER in device.status:
+            entities.append(
+                TuyaHaSensor(
+                    device,
+                    device_manager,
+                    DEVICE_CLASS_POWER,
+                    DPCODE_POWER,
+                    json.loads(device.status_range.get(DPCODE_POWER).values).get(
+                        "unit", 0
+                    ),
+                )
+            )
+        if DPCODE_VOLTAGE in device.status:
+            entities.append(
+                TuyaHaSensor(
+                    device,
+                    device_manager,
+                    "Voltage",
+                    DPCODE_VOLTAGE,
+                    json.loads(device.status_range.get(DPCODE_VOLTAGE).values).get(
+                        "unit", 0
+                    ),
+                )
+            )
+
     return entities
 
 
@@ -196,7 +242,7 @@ class TuyaHaSensor(TuyaHaDevice, SensorEntity):
     def __init__(
         self,
         device: TuyaDevice,
-        deviceManager: TuyaDeviceManager,
+        device_manager: TuyaDeviceManager,
         sensor_type: str,
         sensor_code: str,
         sensor_unit: str,
@@ -205,7 +251,7 @@ class TuyaHaSensor(TuyaHaDevice, SensorEntity):
         self._type = sensor_type
         self._code = sensor_code
         self._unit = sensor_unit
-        super().__init__(device, deviceManager)
+        super().__init__(device, device_manager)
 
     @property
     def unique_id(self) -> Optional[str]:
@@ -221,15 +267,15 @@ class TuyaHaSensor(TuyaHaDevice, SensorEntity):
     def state(self):
         """Return the state of the sensor."""
         __value = self.tuya_device.status.get(self._code)
-        print(self.tuya_device.status_range.get(self._code).values)
-        if self.tuya_device.status_range.get(self._code).type == 'Integer':
-            __value_range = json.loads(self.tuya_device.status_range.get(self._code).values)
-            __state = (__value) * 1.0 / (10 ** __value_range.get('scale'))
-            if __value_range.get('scale') == 0:
+        if self.tuya_device.status_range.get(self._code).type == "Integer":
+            __value_range = json.loads(
+                self.tuya_device.status_range.get(self._code).values
+            )
+            __state = (__value) * 1.0 / (10 ** __value_range.get("scale"))
+            if __value_range.get("scale") == 0:
                 return int(__state)
-            else:
-                return f"%.{__value_range.get('scale')}f" % __state
-        return ''
+            return f"%.{__value_range.get('scale')}f" % __state
+        return ""
 
     @property
     def unit_of_measurement(self):

@@ -42,16 +42,16 @@ DPCODE_PIR = "pir"
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities
+    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities
 ):
     """Set up tuya alarm dynamically through tuya discovery."""
-    print("alarm init")
+    _LOGGER.info("alarm init")
 
     hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update({DEVICE_DOMAIN: TUYA_SUPPORT_TYPE})
 
     async def async_discover_device(dev_ids):
         """Discover and add a discovered tuya sensor."""
-        print("alarm add->", dev_ids)
+        _LOGGER.info("alarm add->", dev_ids)
         if not dev_ids:
             return
         entities = await hass.async_add_executor_job(_setup_entities, hass, dev_ids)
@@ -64,7 +64,7 @@ async def async_setup_entry(
 
     device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
     device_ids = []
-    for (device_id, device) in device_manager.deviceMap.items():
+    for (device_id, device) in device_manager.device_map.items():
         if device.category in TUYA_SUPPORT_TYPE:
             device_ids.append(device_id)
     await async_discover_device(device_ids)
@@ -75,7 +75,7 @@ def _setup_entities(hass, device_ids: List):
     device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
     entities = []
     for device_id in device_ids:
-        device = device_manager.deviceMap[device_id]
+        device = device_manager.device_map[device_id]
         if device is None:
             continue
 
@@ -86,7 +86,7 @@ def _setup_entities(hass, device_ids: List):
                     device_manager,
                     (
                         lambda d: STATE_ALARM_TRIGGERED
-                        if "1" == d.status.get(DPCODE_SMOKE_SENSOR_STATE, 1)
+                        if d.status.get(DPCODE_SMOKE_SENSOR_STATE, 1) == "1"
                         else STATE_ALARM_ARMING
                     ),
                 )
@@ -98,7 +98,7 @@ def _setup_entities(hass, device_ids: List):
                     device_manager,
                     (
                         lambda d: STATE_ALARM_TRIGGERED
-                        if "1" == d.status.get(DPCODE_GAS_SENSOR_STATE, 1)
+                        if d.status.get(DPCODE_GAS_SENSOR_STATE, 1) == "1"
                         else STATE_ALARM_ARMING
                     ),
                 )
@@ -110,7 +110,7 @@ def _setup_entities(hass, device_ids: List):
                     device_manager,
                     (
                         lambda d: STATE_ALARM_TRIGGERED
-                        if "pir" == d.status.get(DPCODE_GAS_SENSOR_STATE, "none")
+                        if d.status.get(DPCODE_GAS_SENSOR_STATE, "none") == "pir"
                         else STATE_ALARM_ARMING
                     ),
                 )
@@ -125,11 +125,11 @@ class TuyaHaAlarm(TuyaHaDevice, AlarmControlPanelEntity):
     def __init__(
         self,
         device: TuyaDevice,
-        deviceManager: TuyaDeviceManager,
+        device_manager: TuyaDeviceManager,
         sensor_is_on: Callable[..., str],
     ):
         """Init TuyaHaAlarm."""
-        super().__init__(device, deviceManager)
+        super().__init__(device, device_manager)
         self._is_on = sensor_is_on
 
     @property
