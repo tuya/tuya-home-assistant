@@ -40,6 +40,7 @@ DPCODE_WORK_MODE = "work_mode"
 DPCODE_BRIGHT_VALUE = "bright_value"
 DPCODE_TEMP_VALUE = "temp_value"
 DPCODE_COLOUR_DATA = "colour_data"
+DPCODE_COLOUR_DATA_V2 = "colour_data_v2"
 
 MIREDS_MAX = 500
 MIREDS_MIN = 153
@@ -64,6 +65,12 @@ DEFAULT_HSV = {
     "h": {"min": 1, "scale": 0, "unit": "", "max": 360, "step": 1},
     "s": {"min": 1, "scale": 0, "unit": "", "max": 255, "step": 1},
     "v": {"min": 1, "scale": 0, "unit": "", "max": 255, "step": 1},
+}
+
+DEFAULT_HSV_V2 = {
+    "h": {"min": 1, "scale": 0, "unit": "", "max": 360, "step": 1},
+    "s": {"min": 1, "scale": 0, "unit": "", "max": 1000, "step": 1},
+    "v": {"min": 1, "scale": 0, "unit": "", "max": 1000, "step": 1},
 }
 
 
@@ -111,13 +118,11 @@ def _setup_entities(hass, device_ids: List):
 class TuyaHaLight(TuyaHaDevice, LightEntity):
     """Tuya light device."""
 
-    dp_code_bright = DPCODE_BRIGHT_VALUE
-    dp_code_temp = DPCODE_TEMP_VALUE
-    dp_code_colour = DPCODE_COLOUR_DATA
-
     def __init__(self, device: TuyaDevice, device_manager: TuyaDeviceManager):
         """Init TuyaHaLight."""
-        super().__init__(device, device_manager)
+        self.dp_code_bright = DPCODE_BRIGHT_VALUE
+        self.dp_code_temp = DPCODE_TEMP_VALUE
+        self.dp_code_colour = DPCODE_COLOUR_DATA
 
         for key in device.function:
             if key.startswith(DPCODE_BRIGHT_VALUE):
@@ -126,6 +131,8 @@ class TuyaHaLight(TuyaHaDevice, LightEntity):
                 self.dp_code_temp = key
             elif key.startswith(DPCODE_COLOUR_DATA):
                 self.dp_code_colour = key
+
+        super().__init__(device, device_manager)
 
     @property
     def is_on(self) -> bool:
@@ -136,21 +143,21 @@ class TuyaHaLight(TuyaHaDevice, LightEntity):
         """Turn on or control the light."""
         commands = []
         _LOGGER.debug(f"light kwargs-> {kwargs}")
-        if (
-            ATTR_BRIGHTNESS not in kwargs
-            and ATTR_HS_COLOR not in kwargs
-            and ATTR_COLOR_TEMP not in kwargs
-        ):
-            commands += [{"code": DPCODE_SWITCH, "value": True}]
+        # if (
+        #     ATTR_BRIGHTNESS not in kwargs
+        #     and ATTR_HS_COLOR not in kwargs
+        #     and ATTR_COLOR_TEMP not in kwargs
+        # ):
+        commands += [{"code": DPCODE_SWITCH, "value": True}]
 
         if ATTR_BRIGHTNESS in kwargs:
             if self._work_mode().startswith(WORK_MODE_COLOUR):
                 colour_data = self._get_hsv()
                 v_range = self._tuya_hsv_v_range()
                 # hsv_v = colour_data.get('v', 0)
-                colour_data["v"] = self.remap(
+                colour_data["v"] = int(self.remap(
                     kwargs[ATTR_BRIGHTNESS], 0, 255, v_range[0], v_range[1]
-                )
+                ))
                 commands += [
                     {"code": self.dp_code_colour, "value": json.dumps(colour_data)}
                 ]
@@ -167,21 +174,21 @@ class TuyaHaLight(TuyaHaDevice, LightEntity):
         if ATTR_HS_COLOR in kwargs:
             colour_data = self._get_hsv()
             # hsv h
-            colour_data["h"] = kwargs[ATTR_HS_COLOR][0]
+            colour_data["h"] = int(kwargs[ATTR_HS_COLOR][0])
             # hsv s
             ha_s = kwargs[ATTR_HS_COLOR][1]
             s_range = self._tuya_hsv_s_range()
-            colour_data["s"] = self.remap(
+            colour_data["s"] = int(self.remap(
                 ha_s,
                 HSV_HA_SATURATION_MIN,
                 HSV_HA_SATURATION_MAX,
                 s_range[0],
                 s_range[1],
-            )
+            ))
             # hsv v
             ha_v = self.brightness
             v_range = self._tuya_hsv_v_range()
-            colour_data["v"] = self.remap(ha_v, 0, 255, v_range[0], v_range[1])
+            colour_data["v"] = int(self.remap(ha_v, 0, 255, v_range[0], v_range[1]))
 
             commands += [
                 {"code": self.dp_code_colour, "value": json.dumps(colour_data)}
@@ -317,7 +324,7 @@ class TuyaHaLight(TuyaHaDevice, LightEntity):
             self.tuya_device.function.get(self.dp_code_colour, {}).values
         )
         if hsv_data == {}:
-            return DEFAULT_HSV
+            return DEFAULT_HSV_V2 if self.dp_code_colour == DPCODE_COLOUR_DATA_V2 else DEFAULT_HSV
 
         return hsv_data
 
@@ -334,6 +341,7 @@ class TuyaHaLight(TuyaHaDevice, LightEntity):
         supports = 0
         if self.dp_code_bright in self.tuya_device.status:
             supports = supports | SUPPORT_BRIGHTNESS
+
         if (
             self.dp_code_colour in self.tuya_device.status
             and len(self.tuya_device.status[self.dp_code_colour]) > 0

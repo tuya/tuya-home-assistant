@@ -145,7 +145,7 @@ async def _init_tuya_sdk(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 tuya_mq.start()
 
                 device_manager.mq = tuya_mq
-                tuya_mq.add_message_listener(device_manager._onMessage)
+                tuya_mq.add_message_listener(device_manager._on_message)
 
         def remove_device(self, id: str):
             _LOGGER.info(f"tuya remove device:{id}")

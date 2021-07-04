@@ -28,6 +28,7 @@ TUYA_SUPPORT_TYPE = {
     "cz",  # Socket
     "pc",  # Power Strip
     "cwysj",  # Pet Water Feeder
+    "dlq",  # Breaker
 }
 
 # Switch(kg), Socket(cz), Power Strip(pc)

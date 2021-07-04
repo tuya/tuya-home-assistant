@@ -46,7 +46,6 @@ DATA_SCHEMA_INDUSTRY_SOLUTIONS = vol.Schema(
 # SMART_HOME Schema
 DATA_SCHEMA_SMART_HOME = vol.Schema(
     {
-        vol.Required(CONF_ENDPOINT): vol.In(TUYA_ENDPOINT),
         vol.Required(CONF_ACCESS_ID): str,
         vol.Required(CONF_ACCESS_SECRET): str,
         vol.Required(CONF_APP_TYPE): vol.In(TUYA_APP_TYPE),
@@ -72,23 +71,25 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         _LOGGER.info(f"TuyaConfigFlow._try_login start, user_input: {user_input}")
         project_type = ProjectType(user_input[CONF_PROJECT_TYPE])
         api = TuyaOpenAPI(
-            user_input[CONF_ENDPOINT],
+            user_input[CONF_ENDPOINT] if project_type == ProjectType.INDUSTY_SOLUTIONS else "",
             user_input[CONF_ACCESS_ID],
             user_input[CONF_ACCESS_SECRET],
             project_type,
         )
         api.set_dev_channel("hass")
 
-        response = (
-            api.login(user_input[CONF_USERNAME], user_input[CONF_PASSWORD])
-            if project_type == ProjectType.INDUSTY_SOLUTIONS
-            else api.login(
-                user_input[CONF_USERNAME],
-                user_input[CONF_PASSWORD],
-                user_input[CONF_COUNTRY_CODE],
-                user_input[CONF_APP_TYPE],
-            )
-        )
+        if project_type == ProjectType.INDUSTY_SOLUTIONS:
+            response = api.login(user_input[CONF_USERNAME], user_input[CONF_PASSWORD])
+        else:
+            for endpoint in TUYA_ENDPOINT.keys():
+                api.endpoint = endpoint
+                response = api.login(user_input[CONF_USERNAME],
+                                     user_input[CONF_PASSWORD],
+                                     user_input[CONF_COUNTRY_CODE],
+                                     user_input[CONF_APP_TYPE])
+                if response.get("success", False):
+                    user_input[CONF_ENDPOINT] = endpoint
+                    break
 
         _LOGGER.info(f"TuyaConfigFlow._try_login finish, response:, {response}")
         return response
