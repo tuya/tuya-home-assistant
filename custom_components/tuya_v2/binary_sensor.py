@@ -32,6 +32,7 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 TUYA_SUPPORT_TYPE = [
+    "mc",  # Door Window Sensor
     "mcs",  # Door Window Sensor
     "ywbj",  # Smoke Detector
     "rqbj",  # Gas Detector
