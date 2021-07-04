@@ -28,12 +28,14 @@ TUYA_SUPPORT_TYPE = {
     "cz",  # Socket
     "pc",  # Power Strip
     "cwysj",  # Pet Water Feeder
+    "bh", #Smart Kettle
 }
 
 # Switch(kg), Socket(cz), Power Strip(pc)
 # https://developer.tuya.com/docs/iot/open-api/standard-function/electrician-category/categorykgczpc?categoryId=486118
 DPCODE_SWITCH = "switch"
 DPCODE_UV = "uv"
+DPCODE_START = "start"
 
 
 async def async_setup_entry(
@@ -75,10 +77,12 @@ def _setup_entities(hass, device_ids: list):
             continue
 
         for function in device.function:
+            if function.startswith(DPCODE_START):
+                entities.append(TuyaHaSwitch(device, device_manager, function))
+                continue
             if function.startswith(DPCODE_SWITCH):
                 entities.append(TuyaHaSwitch(device, device_manager, function))
                 continue
-
             if function == DPCODE_UV:
                 entities.append(TuyaHaSwitch(device, device_manager, function))
 
@@ -89,6 +93,8 @@ class TuyaHaSwitch(TuyaHaDevice, SwitchEntity):
     """Tuya Switch Device."""
 
     dp_code_switch = DPCODE_SWITCH
+    dp_code_start = DPCODE_START
+
 
     def __init__(
         self, device: TuyaDevice, device_manager: TuyaDeviceManager, dp_code: str = ""
@@ -102,6 +108,12 @@ class TuyaHaSwitch(TuyaHaDevice, SwitchEntity):
             if dp_code.startswith(DPCODE_SWITCH)
             else dp_code
         )
+        self.channel = (
+            dp_code.replace(DPCODE_START, "")
+            if dp_code.startswith(DPCODE_START)
+            else dp_code
+        )
+      
 
     @property
     def unique_id(self) -> str | None:
