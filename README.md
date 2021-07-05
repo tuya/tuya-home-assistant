@@ -10,7 +10,7 @@ Tuya Home Assistant integration is developed for controlling **Powered by Tuya (
 Welcome to join the [Tuya Beta Test Program](https://pages.tuya.com/develop/HomeAssistantBetaTest_V2?_source=df3c37ad796d2388fc5527a8029c7889) to get your development gifts and make the contribution to the integration. Your feedback is valuable to the whole community.
 
 ## Supported Tuya Device Types
-Five first class category, 26 second category are supported now!
+Five primary categories, 26 secondary categories are supported now!
 [Supported Device Category](https://github.com/tuya/tuya-home-assistant/wiki/Supported-Device-Category)
 
 Please check the [Develop Tuya-Compatible Home Assistant Drivers](https://developer.tuya.com/en/demo/devhomeassistantplugin/?_source=edb3f773114ae82d9b55a9602a9b8e64) and [Home Assistant Entity](https://developers.home-assistant.io/docs/core/entity) tutorials to develop more drivers for the Tuya Home Assistant Integration and support more Tuya devices.
