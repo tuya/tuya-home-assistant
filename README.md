@@ -15,6 +15,15 @@ Five first class category, 26 second category are supported now!
 
 Please check the [Develop Tuya-Compatible Home Assistant Drivers](https://developer.tuya.com/en/demo/devhomeassistantplugin/?_source=edb3f773114ae82d9b55a9602a9b8e64) and [Home Assistant Entity](https://developers.home-assistant.io/docs/core/entity) tutorials to develop more drivers for the Tuya Home Assistant Integration and support more Tuya devices.
 
+## Follow us
+- <img src="https://img.icons8.com/color/48/000000/twitter--v1.png"/>  [Twitter](https://twitter.com/developwithtuya)
+- <img src="https://img.icons8.com/material-two-tone/48/000000/youtube.png"/>  [YouTube](https://www.youtube.com/channel/UC25KgSG1nXMZmR8ehs3tleA)
+- <img src="https://img.icons8.com/fluent/48/000000/facebook-new.png"/>  [Facebook](https://www.facebook.com/Develop-With-Tuya-104216298552203)
+- <img src="https://images.tuyacn.com/smart/hass/hass_readme_brand_bilibili.png"/>  [Bilibili](https://space.bilibili.com/1394005610?from=search&seid=1788260158867313813)
+- <img src="https://img.icons8.com/fluent/48/000000/linkedin.png"/>  [Linkedin](https://www.linkedin.com/company/develop-with-tuya)
+
+Follow us to get more information and leading technology on the Internet of Things, as well as updates and activities on [Tuya IoT Developer Platform](https://developer.tuya.com/)
+
 ## Workflow
 
 <img src="https://images.tuyacn.com/app/hass/hass_diagram1.png" width="60%"/> <img src="https://images.tuyacn.com/app/hass/workflow.png" width="35%" />
