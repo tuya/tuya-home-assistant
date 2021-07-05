@@ -133,6 +133,16 @@ Please download and use the Tuya Smart or Tuya Smart Life apps to pair Tuya devi
 
 For more information, please check [How to Use Tuya Home Assistant Integration](https://developer.tuya.com/en/docs/iot/Home_Assistant_Integration?id=Kamcjcbvk2mu8&_source=1f6c7c604f6cc5057a3befbe1092b263).
 
+## Troubleshooting
+
+Add the following to your configuration.yaml to get more detail in the log file.
+```
+logger:
+  default: warning
+  logs:
+    custom_components.tuya_v2: debug
+```
+
 ## Contributing
 
 Please refer to the [Contributing.md](./contributing.md) for contributing guide.
