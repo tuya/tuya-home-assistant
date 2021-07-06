@@ -13,6 +13,10 @@ Welcome to join the [Tuya Beta Test Program](https://pages.tuya.com/develop/Home
 Five primary categories, 26 secondary categories are supported now!
 [Supported Device Category](https://github.com/tuya/tuya-home-assistant/wiki/Supported-Device-Category)
 
+
+ :tada: :tada: :tada: [Vote for Tuya v2 Integration New Device Driver Support!](https://github.com/tuya/tuya-home-assistant/discussions/86) :tada::tada::tada:
+
+
 Please check the [Develop Tuya-Compatible Home Assistant Drivers](https://developer.tuya.com/en/demo/devhomeassistantplugin/?_source=edb3f773114ae82d9b55a9602a9b8e64) and [Home Assistant Entity](https://developers.home-assistant.io/docs/core/entity) tutorials to develop more drivers for the Tuya Home Assistant Integration and support more Tuya devices.
 
 ## Follow us
