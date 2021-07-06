@@ -7,7 +7,7 @@
 Tuya Home Assistant integration is developed for controlling **Powered by Tuya (PBT)** devices using [Tuya Open API](https://developer.tuya.com/en/docs/cloud/?_source=6c7c0e6d9fc9ac8296e1a48954e1d0e4), officially maintained by the Tuya Developer Team.
 
 ## [Tuya Beta Test Program](https://pages.tuya.com/develop/HomeAssistantBetaTest_V2?_source=df3c37ad796d2388fc5527a8029c7889)
-Welcome to join the [Tuya Beta Test Program](https://pages.tuya.com/develop/HomeAssistantBetaTest_V2?_source=df3c37ad796d2388fc5527a8029c7889) to get your development gifts and make the contribution to the integration. Your feedback is valuable to the whole community.
+Welcome to join the [Tuya Beta Test Program](https://pages.tuya.com/develop/HomeAssistantBetaTest_V2?_source=df3c37ad796d2388fc5527a8029c7889) to get your development gifts and make a contribution to the integration. Your feedback is valuable to the whole community.
 
 ## Supported Tuya Device Types
 Five primary categories, 26 secondary categories are supported now!
@@ -26,7 +26,7 @@ Please check the [Develop Tuya-Compatible Home Assistant Drivers](https://develo
 - <img src="https://images.tuyacn.com/smart/hass/hass_readme_brand_bilibili.png"/>  [Bilibili](https://space.bilibili.com/1394005610?from=search&seid=1788260158867313813)
 - <img src="https://img.icons8.com/fluent/48/000000/linkedin.png"/>  [Linkedin](https://www.linkedin.com/company/develop-with-tuya)
 
-Follow us to get more information and leading technology on the Internet of Things, as well as updates and activities on [Tuya IoT Developer Platform](https://developer.tuya.com/)
+Follow us to get more information and leading technology on the Internet of Things, as well as updates and activities on the [Tuya IoT Developer Platform](https://developer.tuya.com/)
 
 ## Workflow
 
@@ -108,7 +108,6 @@ See the following table and enter your Tuya credential.
 
 | Field | Description |
 | ------- | -------- |
-| Region | Open Tuya Smart or Smart Life app. Tap **Me** > **Settings** > **Account and Security** and find **Region**. Select the region accordingly. |
 | Access ID and Access Secret| Go to your cloud project on [Tuya IoT Platform](https://iot.tuya.com/cloud/?_source=3a6f90da0e85f686f89c4f85c883e8f0). Find the **Access ID** and **Access Secret** on the **Project Overview** tab.|
 | Mobile App | Must select the one you used to link devices on the Tuya IoT Platform. |
 | Country Code | The country you select on logging in to Tuya Smart or Smart Life app.  |
