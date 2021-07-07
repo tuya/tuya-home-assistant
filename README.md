@@ -33,6 +33,7 @@ Five primary categories, 26 secondary categories are supported now!
 - <img src="https://img.icons8.com/fluent/48/000000/facebook-new.png"/>  [Facebook](https://www.facebook.com/Develop-With-Tuya-104216298552203)
 - <img src="https://images.tuyacn.com/smart/hass/hass_readme_brand_bilibili.png"/>  [Bilibili](https://space.bilibili.com/1394005610?from=search&seid=1788260158867313813)
 - <img src="https://img.icons8.com/fluent/48/000000/linkedin.png"/>  [Linkedin](https://www.linkedin.com/company/develop-with-tuya)
+- <img src="https://img.icons8.com/color/48/000000/discord-logo.png"/>  [Discord](https://discord.gg/E2Xs97N9RK)
 
 Follow us to get more information and leading technology on the Internet of Things, as well as updates and activities on the [Tuya IoT Developer Platform](https://developer.tuya.com/)
 
