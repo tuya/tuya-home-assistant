@@ -85,3 +85,4 @@ class TuyaHaSelect(TuyaHaDevice, SelectEntity):
     def options(self) -> List:
         dp_range = json.loads(self.tuya_device.function.get(self._code).values)
         return dp_range.get("range",[])
+    
