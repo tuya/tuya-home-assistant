@@ -28,6 +28,7 @@ from homeassistant.const import TEMP_CELSIUS, TEMP_FAHRENHEIT
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.util.temperature import convert as convert_temperature
+from tuya_iot import TuyaDevice, TuyaDeviceManager
 
 from .base import TuyaHaDevice
 from .const import (
@@ -48,8 +49,11 @@ DPCODE_TEMP_SET = "temp_set"
 DPCODE_TEMP_SET_F = "temp_set_f"
 DPCODE_MODE = "mode"
 DPCODE_HUMIDITY_SET = "humidity_set"
-DPCODE_TEMP_UNIT_CONVERT = "temp_unit_convert"
 DPCODE_FAN_SPEED_ENUM = "fan_speed_enum"
+
+# Temerature unit
+DPCODE_TEMP_UNIT_CONVERT = "temp_unit_convert"
+DPCODE_C_F = "c_f"
 
 # swing flap switch
 DPCODE_SWITCH_HORIZONTAL = "switch_horizontal"
@@ -131,6 +135,13 @@ def _setup_entities(hass, device_ids: List):
 
 class TuyaHaClimate(TuyaHaDevice, ClimateEntity):
     """Tuya Switch Device."""
+    def __init__(self, device: TuyaDevice, device_manager: TuyaDeviceManager):
+        """Init Tuya Ha Climate"""
+        super().__init__(device, device_manager)
+        if DPCODE_C_F in self.tuya_device.status:
+            self.dp_temp_unit = DPCODE_C_F
+        else:
+            self.dp_temp_unit = DPCODE_TEMP_UNIT_CONVERT
 
     def get_temp_set_scale(self) -> int:
         __dp_temp_set = DPCODE_TEMP_SET if self.__is_celsius() else DPCODE_TEMP_SET_F
@@ -204,8 +215,8 @@ class TuyaHaClimate(TuyaHaDevice, ClimateEntity):
 
     def __is_celsius(self) -> bool:
         return (
-            DPCODE_TEMP_UNIT_CONVERT in self.tuya_device.status
-            and self.tuya_device.status.get(DPCODE_TEMP_UNIT_CONVERT) == "c"
+            self.dp_temp_unit in self.tuya_device.status
+            and self.tuya_device.status.get(self.dp_temp_unit).lower() == "c"
             or DPCODE_TEMP_CURRENT in self.tuya_device.status
         )
 
@@ -219,7 +230,9 @@ class TuyaHaClimate(TuyaHaDevice, ClimateEntity):
     @property
     def current_temperature(self) -> float:
         """Return the current temperature."""
-        # return 0
+        if DPCODE_TEMP_CURRENT not in self.tuya_device.status and DPCODE_TEMP_CURRENT_F not in self.tuya_device.status:
+            return None
+
         if self.__is_celsius():
             return self.tuya_device.status.get(DPCODE_TEMP_CURRENT, 0) * 1.0 / (10 ** self.get_temp_current_scale())
         return self.tuya_device.status.get(DPCODE_TEMP_CURRENT_F, 0) * 1.0 / (10 ** self.get_temp_current_scale())

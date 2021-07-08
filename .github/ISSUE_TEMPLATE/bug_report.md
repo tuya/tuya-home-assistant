@@ -16,6 +16,9 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
+**Home Assistant Version**
+- e.g. 2021.5.1
+
 **Device info (please complete the following information, which can be found in [log](https://github.com/tuya/tuya-home-assistant/wiki/How-to-get-the-log)):**
 like this:
 {

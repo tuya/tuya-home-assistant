@@ -29,6 +29,7 @@ TUYA_SUPPORT_TYPE = {
     "pc",  # Power Strip
     "cwysj",  # Pet Water Feeder
     "bh", #Smart Kettle
+    "dlq",  # Breaker
 }
 
 # Switch(kg), Socket(cz), Power Strip(pc)
@@ -108,12 +109,6 @@ class TuyaHaSwitch(TuyaHaDevice, SwitchEntity):
             if dp_code.startswith(DPCODE_SWITCH)
             else dp_code
         )
-        self.channel = (
-            dp_code.replace(DPCODE_START, "")
-            if dp_code.startswith(DPCODE_START)
-            else dp_code
-        )
-      
 
     @property
     def unique_id(self) -> str | None:

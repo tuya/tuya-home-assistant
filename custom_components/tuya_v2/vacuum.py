@@ -9,8 +9,6 @@ from tuya_iot import TuyaDevice, TuyaDeviceManager
 
 from homeassistant.components.vacuum import (
     DOMAIN as DEVICE_DOMAIN,
-    SUPPORT_TURN_ON,
-    SUPPORT_TURN_OFF,
     SUPPORT_STATE,
     SUPPORT_STATUS,
     SUPPORT_BATTERY,
@@ -23,7 +21,6 @@ from homeassistant.components.vacuum import (
     STATE_PAUSED,
     STATE_IDLE,
     STATE_RETURNING,
-    STATE_ERROR,
     StateVacuumEntity,
 )
 from homeassistant.config_entries import ConfigEntry

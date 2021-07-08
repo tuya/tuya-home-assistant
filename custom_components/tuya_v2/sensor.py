@@ -14,6 +14,7 @@ from homeassistant.const import (
     DEVICE_CLASS_HUMIDITY,
     DEVICE_CLASS_POWER,
     DEVICE_CLASS_TEMPERATURE,
+    DEVICE_CLASS_ILLUMINANCE,
     PERCENTAGE,
     TEMP_CELSIUS,
 )
@@ -43,6 +44,8 @@ TUYA_SUPPORT_TYPE = [
     "cz",  # Socket
     "pc",  # Power Strip
     "wk",  # Thermostat
+    "dlq",  # Breaker
+    "ldcg",  # Luminance Sensor
 ]
 
 # Smoke Detector
@@ -50,6 +53,7 @@ TUYA_SUPPORT_TYPE = [
 DPCODE_BATTERY = "va_battery"
 DPCODE_BATTERY_PERCENTAGE = "battery_percentage"
 DPCODE_BATTERY_CODE = "battery"
+DPCODE_BATTERY_STATE = "battery_state"
 
 DPCODE_TEMPERATURE = "va_temperature"
 DPCODE_HUMIDITY = "va_humidity"
@@ -64,6 +68,9 @@ DPCODE_HUMIDITY_VALUE = "humidity_value"
 DPCODE_CURRENT = "cur_current"
 DPCODE_POWER = "cur_power"
 DPCODE_VOLTAGE = "cur_voltage"
+DPCODE_TOTAL_FORWARD_ENERGY = "total_forward_energy"
+
+DPCODE_BRIGHT_VALUE = "bright_value"
 
 
 async def async_setup_entry(
@@ -132,6 +139,16 @@ def _setup_entities(hass, device_ids: List):
                     DEVICE_CLASS_BATTERY,
                     DPCODE_BATTERY_CODE,
                     PERCENTAGE,
+                )
+            )
+        if DPCODE_BATTERY_STATE in device.status:
+            entities.append(
+                TuyaHaSensor(
+                    device,
+                    device_manager,
+                    DEVICE_CLASS_BATTERY,
+                    DPCODE_BATTERY_STATE,
+                    "",
                 )
             )
 
@@ -220,6 +237,18 @@ def _setup_entities(hass, device_ids: List):
                     ),
                 )
             )
+        if DPCODE_TOTAL_FORWARD_ENERGY in device.status:
+            entities.append(
+                TuyaHaSensor(
+                    device,
+                    device_manager,
+                    DEVICE_CLASS_POWER,
+                    DPCODE_TOTAL_FORWARD_ENERGY,
+                    json.loads(device.status_range.get(DPCODE_TOTAL_FORWARD_ENERGY).values).get(
+                        "unit", 0
+                    ),
+                )
+            )
         if DPCODE_VOLTAGE in device.status:
             entities.append(
                 TuyaHaSensor(
@@ -228,6 +257,18 @@ def _setup_entities(hass, device_ids: List):
                     "Voltage",
                     DPCODE_VOLTAGE,
                     json.loads(device.status_range.get(DPCODE_VOLTAGE).values).get(
+                        "unit", 0
+                    ),
+                )
+            )
+        if DPCODE_BRIGHT_VALUE in device.status:
+            entities.append(
+                TuyaHaSensor(
+                    device,
+                    device_manager,
+                    DEVICE_CLASS_ILLUMINANCE,
+                    DPCODE_BRIGHT_VALUE,
+                    json.loads(device.status_range.get(DPCODE_BRIGHT_VALUE).values).get(
                         "unit", 0
                     ),
                 )

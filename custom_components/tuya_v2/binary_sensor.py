@@ -46,12 +46,14 @@ TUYA_SUPPORT_TYPE = [
 
 DPCODE_SWITCH = "switch"
 
+DPCODE_DOORCONTACT_STATE = "doorcontact_state"
 DPCODE_SMOKE_SENSOR_STATE = "smoke_sensor_state"
 DPCODE_GAS_SENSOR_STATE = "gas_sensor_state"
 DPCODE_PIR = "pir"
 DPCODE_WATER_SENSOR_STATE = "watersensor_state"
 DPCODE_SOS_STATE = "sos_state"
 DPCODE_PRESENCE_STATE = "presence_state"
+
 
 
 async def async_setup_entry(
@@ -92,6 +94,15 @@ def _setup_entities(hass, device_ids: List):
         if device is None:
             continue
 
+        if DPCODE_DOORCONTACT_STATE in device.status:
+            entities.append(
+                TuyaHaBSensor(
+                    device,
+                    device_manager,
+                    DEVICE_CLASS_DOOR,
+                    (lambda d: d.status.get(DPCODE_DOORCONTACT_STATE, False)),
+                )
+            )
         if DPCODE_SWITCH in device.status:
             entities.append(
                 TuyaHaBSensor(

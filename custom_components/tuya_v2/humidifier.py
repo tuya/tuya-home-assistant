@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Support for Tuya Humidifiers."""
+from __future__ import annotations
 
 import json
 import logging
@@ -13,6 +14,7 @@ from homeassistant.components.humidifier import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from tuya_iot import TuyaDevice, TuyaDeviceManager
 
 from .base import TuyaHaDevice
 from .const import (
@@ -33,6 +35,8 @@ TUYA_SUPPORT_TYPE = {
 # https://developers.home-assistant.io/docs/core/entity/humidifier
 DPCODE_MODE = "mode"
 DPCODE_SWITCH = "switch"
+DPCODE_SWITCH_SPRAY = "switch_spray"
+DPCODE_HUMIDITY_SET = "humidity_set"
 
 
 async def async_setup_entry(
@@ -80,11 +84,17 @@ def _setup_entities(hass, device_ids: List):
 
 class TuyaHaHumidifier(TuyaHaDevice, HumidifierEntity):
     """Tuya Switch Device."""
+    def __init__(self, device: TuyaDevice, device_manager: TuyaDeviceManager):
+        super().__init__(device, device_manager)
+        if DPCODE_SWITCH not in self.tuya_device.status and DPCODE_SWITCH_SPRAY in self.tuya_device.status:
+            self.dp_switch = DPCODE_SWITCH_SPRAY
+        else:
+            self.dp_switch = DPCODE_SWITCH
 
     @property
     def is_on(self):
         """Return the device is on or off."""
-        return self.tuya_device.status.get(DPCODE_SWITCH, False)
+        return self.tuya_device.status.get(self.dp_switch, False)
 
     @property
     def mode(self):
@@ -97,6 +107,14 @@ class TuyaHaHumidifier(TuyaHaDevice, HumidifierEntity):
         return json.loads(self.tuya_device.function.get(DPCODE_MODE, {}).values).get(
             "range"
         )
+    
+    @property
+    def target_humidity(self) -> int | None:
+        """Return the humidity we try to reach."""
+        if DPCODE_HUMIDITY_SET not in self.tuya_device.status:
+            return None
+        
+        return self.tuya_device.status.get(DPCODE_HUMIDITY_SET, 0)
 
     @property
     def supported_features(self):
@@ -112,8 +130,12 @@ class TuyaHaHumidifier(TuyaHaDevice, HumidifierEntity):
 
     def turn_on(self, **kwargs):
         """Turn the device on."""
-        self._send_command([{"code": DPCODE_SWITCH, "value": True}])
+        self._send_command([{"code": self.dp_switch, "value": True}])
 
     def turn_off(self, **kwargs):
         """Turn the device off."""
-        self._send_command([{"code": DPCODE_SWITCH, "value": False}])
+        self._send_command([{"code": self.dp_switch, "value": False}])
+    
+    def set_humidity(self, humidity):
+        """Set new target humidity."""
+        self._send_command([{"code": DPCODE_HUMIDITY_SET, "value": humidity}])
