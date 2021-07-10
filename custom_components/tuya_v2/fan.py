@@ -240,8 +240,6 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
             supports = supports | SUPPORT_OSCILLATE
         if DPCODE_FAN_DIRECTION in self.tuya_device.status:
             supports = supports | SUPPORT_DIRECTION
-        if DPCODE_FAN_SPEED in self.tuya_device.status:
-            supports = supports | SUPPORT_SET_SPEED
            
         # Air Purifier specific
         if DPCODE_AP_FAN_SPEED in self.tuya_device.status or DPCODE_AP_FAN_SPEED_ENUM in self.tuya_device.status:
