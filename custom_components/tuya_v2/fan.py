@@ -187,10 +187,14 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
     @property
     def preset_modes(self) -> list:
         """Return the list of available preset_modes."""
-        data = json.loads(self.tuya_device.function.get(DPCODE_MODE, {}).values).get(
-            "range"
-        )
-        return data
+        try:
+            data = json.loads(self.tuya_device.function.get(DPCODE_MODE, {}).values).get(
+                "range"
+            )
+            return data
+        except:
+            _LOGGER.warn("Cannot parse the preset modes")
+        return []
 
     @property
     def preset_mode(self) -> str:
