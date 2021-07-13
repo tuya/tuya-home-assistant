@@ -46,6 +46,7 @@ TUYA_SUPPORT_TYPE = [
     "wk",  # Thermostat
     "dlq",  # Breaker
     "ldcg",  # Luminance Sensor
+    "ms",  # Residential Lock
 ]
 
 # Smoke Detector
@@ -71,7 +72,9 @@ DPCODE_VOLTAGE = "cur_voltage"
 DPCODE_TOTAL_FORWARD_ENERGY = "total_forward_energy"
 
 DPCODE_BRIGHT_VALUE = "bright_value"
-
+# Residential Lock
+# https://developer.tuya.com/en/docs/iot/f?id=K9i5ql58frxa2
+DPCODE_BATTERY_ZIGBEELOCK = "residual_electricity"
 
 async def async_setup_entry(
     hass: HomeAssistant, _entry: ConfigEntry, async_add_entities
@@ -111,6 +114,16 @@ def _setup_entities(hass, device_ids: List):
         if device is None:
             continue
 
+        if DPCODE_BATTERY_ZIGBEELOCK in device.status:
+            entities.append(
+                TuyaHaSensor(
+                    device,
+                    device_manager,
+                    DEVICE_CLASS_BATTERY,
+                    DPCODE_BATTERY_ZIGBEELOCK,
+                    PERCENTAGE,
+                )
+            )
         if DPCODE_BATTERY in device.status:
             entities.append(
                 TuyaHaSensor(
