@@ -13,6 +13,7 @@ from homeassistant.components.binary_sensor import (
     DEVICE_CLASS_MOTION,
     DEVICE_CLASS_PROBLEM,
     DEVICE_CLASS_SMOKE,
+    DEVICE_CLASS_LOCK,
     DOMAIN as DEVICE_DOMAIN,
     BinarySensorEntity,
 )
@@ -39,6 +40,7 @@ TUYA_SUPPORT_TYPE = [
     "sj",  # Water Detector
     "sos",  # Emergency Button
     "hps",  # Human Presence Sensor
+    "ms", # Residential Lock
 ]
 
 # Door Window Sensor
@@ -54,6 +56,7 @@ DPCODE_WATER_SENSOR_STATE = "watersensor_state"
 DPCODE_SOS_STATE = "sos_state"
 DPCODE_PRESENCE_STATE = "presence_state"
 
+DPCODE_DOORLOCK_STATE = "closed_opened"
 
 
 async def async_setup_entry(
@@ -94,6 +97,15 @@ def _setup_entities(hass, device_ids: List):
         if device is None:
             continue
 
+        if DPCODE_DOORLOCK_STATE in device.status:
+            entities.append(
+                TuyaHaBSensor(
+                    device,
+                    device_manager,
+                    DEVICE_CLASS_DOOR,
+                    (lambda d: d.status.get(DPCODE_DOORLOCK_STATE, "none") != "closed"),
+                )
+            )
         if DPCODE_DOORCONTACT_STATE in device.status:
             entities.append(
                 TuyaHaBSensor(

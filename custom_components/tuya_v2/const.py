@@ -42,7 +42,8 @@ TUYA_SUPPORT_HA_TYPE = [
     "binary_sensor",
     "humidifier",
     "number",
-    "vacuum"
+    "vacuum",
+    "select"
     # 'alarm_control_panel'
 ]
 
