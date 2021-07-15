@@ -7,7 +7,13 @@ import logging
 from typing import Any
 from math import ceil
 
-from homeassistant.util.percentage import int_states_in_range, ranged_value_to_percentage, percentage_to_ranged_value
+from homeassistant.util.percentage import (
+    int_states_in_range,
+    ranged_value_to_percentage,
+    percentage_to_ranged_value,
+    ordered_list_item_to_percentage,
+    percentage_to_ordered_list_item,
+)
 
 from homeassistant.components.fan import (
     DIRECTION_FORWARD,
@@ -39,11 +45,13 @@ _LOGGER = logging.getLogger(__name__)
 
 # Fan
 # https://developer.tuya.com/en/docs/iot/f?id=K9gf45vs7vkge
-DPCODE_SWITCH = "switch"
-DPCODE_FAN_SPEED = "fan_speed_percent"
-DPCODE_MODE = "mode"
+DPCODE_SWITCH            = "switch"
+DPCODE_FAN_SPEED         = "fan_speed"
+DPCODE_FAN_SPEED_PERCENT = "fan_speed_percent"
+
+DPCODE_MODE              = "mode"
 DPCODE_SWITCH_HORIZONTAL = "switch_horizontal"
-DPCODE_FAN_DIRECTION = "fan_direction"
+DPCODE_FAN_DIRECTION     = "fan_direction"
 
 # Air Purifier
 # https://developer.tuya.com/en/docs/iot/s?id=K9gf48r41mn81
@@ -103,6 +111,14 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
         """Init Tuya Fan Device."""
         super().__init__(device, device_manager)
         
+        # Ranged fan speed is deprecated in Home Assistant, but existing Tuya devices can still use it.
+        # There exists a conversion mapping to the new API which takes the Fan speed as a percentage.
+        # Therefore, if percentage is reported by the Tuya API, it will be used instead of ranged fan speed.
+        self.fan_speed_list           = []
+        self.fan_speed_list_len       = 0
+
+
+
         # Air purifier fan can be controlled either via the ranged values or via the enum.
         # We will always prefer the enumeration if available
         #   Enum is used for e.g. MEES SmartHIMOX-H06
@@ -125,6 +141,27 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
                         self.air_purifier_speed_range_len = len(data)
             except:
                 _LOGGER.warn("Cannot parse the air-purifier speed range")
+        else:
+            try:
+                if DPCODE_FAN_SPEED_PERCENT in self.tuya_device.status:
+                    data = json.loads(self.tuya_device.function.get(DPCODE_FAN_SPEED_PERCENT, {}).values)
+                    if data:
+                        # It's pretty interesting that even though the percentage is used, max could be lower than 100%
+                        # Those most likely are not percents but plain speed levels.
+                        # Anyway, we will cope with that and map such values properly to the HA Fan device.
+                        # For example - see the issue #20.
+                        fan_speed_percent_max   = int(data.get("max"))
+                        fan_speed_percent_min   = int(data.get("min"))
+                        fan_speed_percent_step  = int(data.get("step"))
+                        self.fan_speed_list     = list(range(fan_speed_percentage_min, fan_speed_percentage_max, fan_speed_percentage_step))
+                        self.fan_speed_list_len = len(self.fan_speed_list)
+                elif DPCODE_FAN_SPEED in self.tuya_device.status:
+                    data = json.loads(self.tuya_device.function.get(DPCODE_FAN_SPEED, {}).values).get("range")
+                    if data:
+                        self.fan_speed_list = list(map(int, data))
+                        self.fan_speed_list_len = len(self.fan_speed_list)
+            except:
+                _LOGGER.warn("Cannot parse the fan speed range")
 
     def set_preset_mode(self, preset_mode: str) -> None:
         """Set the preset mode of the fan."""
@@ -143,8 +180,18 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
                 self._send_command([{"code": DPCODE_AP_FAN_SPEED_ENUM, "value": str(self.air_purifier_speed_range_enum[value_in_range - 1])}])
             else:
                 self._send_command([{"code": DPCODE_AP_FAN_SPEED, "value": str(value_in_range)}])
+            return
         else:
-            super().set_percentage(percentage)
+            if self.fan_speed_list_len > 1:
+                if DPCODE_FAN_SPEED_PERCENT in self.tuya_device.status:
+                    # if fan speed percentage is supported we will prefer it.
+                    value_in_list = ordered_list_item_to_percentage(self.fan_speed_list, percentage)
+                    self._send_command([{"code": DPCODE_FAN_SPEED_PERCENT, "value": value_in_list}])
+                else:
+                    value_in_list = ordered_list_item_to_percentage(self.fan_speed_list, percentage)
+                    self._send_command([{"code": DPCODE_FAN_SPEED, "value": str(value_in_list)}])
+                return
+        super().set_percentage(percentage)
 
     def turn_off(self, **kwargs: Any) -> None:
         """Turn the fan off."""
@@ -223,13 +270,26 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
                     )
             )
         else:
-            return self.tuya_device.status.get(DPCODE_FAN_SPEED, 0)
+            if self.fan_speed_list_len > 1:
+                if DPCODE_FAN_SPEED_PERCENT in self.tuya_device.status:
+                    # if fan speed percentage is supported we will prefer it.
+                    return ordered_list_item_to_percentage(self.fan_speed_list,
+                        int(self.tuya_device.status.get(DPCODE_FAN_SPEED_PERCENT, 0))
+                    )
+                elif DPCODE_FAN_SPEED in self.tuya_device.status:
+                    return ranged_value_to_percentage(self.fan_speed_list,
+                        int(self.tuya_device.status.get(DPCODE_FAN_SPEED, 0))
+                    )
+        # No speed control -> report full speed [100 %]
+        return 100
 
     @property
     def speed_count(self) -> int:
         """Return the number of speeds the fan supports."""
         if self.tuya_device.category == TUYA_AIR_PURIFIER_TYPE:
             return self.air_purifier_speed_range_len
+        if self.fan_speed_list_len > 0:
+            return self.fan_speed_list_len
         return super().speed_count()
 
     @property
@@ -238,7 +298,7 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
         supports = 0
         if DPCODE_MODE in self.tuya_device.status:
             supports = supports | SUPPORT_PRESET_MODE
-        if DPCODE_FAN_SPEED in self.tuya_device.status:
+        if DPCODE_FAN_SPEED in self.tuya_device.status or DPCODE_FAN_SPEED_PERCENT in self.tuya_device.status:
             supports = supports | SUPPORT_SET_SPEED
         if DPCODE_SWITCH_HORIZONTAL in self.tuya_device.status:
             supports = supports | SUPPORT_OSCILLATE
