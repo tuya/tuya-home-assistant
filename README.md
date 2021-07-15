@@ -50,7 +50,7 @@ Youtube tutorial:
 - :sun_with_face: [Installation](https://github.com/tuya/tuya-home-assistant/wiki/Installation)
 - :computer: [How to Get the Log](https://github.com/tuya/tuya-home-assistant/wiki/How-to-Get-the-Log)
 - **🎨** [How to Develop a New Driver](https://github.com/tuya/tuya-home-assistant/wiki/How-to-Develop-a-New-Driver)
-- :grey_question:  [Why my device not updating automatically?](https://github.com/tuya/tuya-home-assistant/discussions/113)
+- :grey_question:  [Why does my device not update automatically?](https://github.com/tuya/tuya-home-assistant/discussions/113)
 
 ## Link Tuya Devices to Home Assistant
 
