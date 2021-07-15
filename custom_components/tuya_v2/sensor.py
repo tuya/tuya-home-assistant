@@ -15,8 +15,13 @@ from homeassistant.const import (
     DEVICE_CLASS_POWER,
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_ILLUMINANCE,
+    DEVICE_CLASS_CO2,
     PERCENTAGE,
     TEMP_CELSIUS,
+    CONCENTRATION_PARTS_PER_MILLION,
+    TIME_DAYS,
+    TIME_MINUTES,
+    MASS_MILLIGRAMS,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
@@ -28,6 +33,7 @@ from .const import (
     TUYA_DISCOVERY_NEW,
     TUYA_HA_DEVICES,
     TUYA_HA_TUYA_MAP,
+    TUYA_AIR_PURIFIER_TYPE,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -47,6 +53,7 @@ TUYA_SUPPORT_TYPE = [
     "dlq",  # Breaker
     "ldcg",  # Luminance Sensor
     "ms",  # Residential Lock
+    TUYA_AIR_PURIFIER_TYPE, # Air Purifier
 ]
 
 # Smoke Detector
@@ -72,9 +79,24 @@ DPCODE_VOLTAGE = "cur_voltage"
 DPCODE_TOTAL_FORWARD_ENERGY = "total_forward_energy"
 
 DPCODE_BRIGHT_VALUE = "bright_value"
+
 # Residential Lock
 # https://developer.tuya.com/en/docs/iot/f?id=K9i5ql58frxa2
 DPCODE_BATTERY_ZIGBEELOCK = "residual_electricity"
+
+# Air Purifier
+# https://developer.tuya.com/en/docs/iot/s?id=K9gf48r41mn81
+DPCODE_AP_PM25 = "pm25"                 # PM25 - no units
+DPCODE_AP_FILTER = "filter"             # Filter cartridge utilization [%]
+DPCODE_AP_TEMP = "temp"                 # Temperature [℃]
+DPCODE_AP_HUMIDITY = "humidity"         # Humidity [%]
+DPCODE_AP_TVOC = "tvoc"                 # Total Volatile Organic Compounds [ppm]
+DPCODE_AP_ECO2 = "eco2"                 # Carbon dioxide concentration [ppm]
+DPCODE_AP_FDAYS = "filter_days"         # Remaining days of the filter cartridge [day]
+DPCODE_AP_TTIME = "total_time"          # Total operating time [minute]
+DPCODE_AP_TPM = "total_pm"              # Total absorption of particles [mg]
+DPCODE_AP_COUNTDOWN = "countdown_left"  # Remaining time of countdown [minute]
+
 
 async def async_setup_entry(
     hass: HomeAssistant, _entry: ConfigEntry, async_add_entities
@@ -113,179 +135,281 @@ def _setup_entities(hass, device_ids: List):
         device = device_manager.device_map[device_id]
         if device is None:
             continue
+            
+        if device.category == TUYA_AIR_PURIFIER_TYPE:
+            if DPCODE_AP_PM25 in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        "PM25",
+                        DPCODE_AP_PM25,
+                        ""
+                    )
+                )
+            elif DPCODE_AP_FILTER in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        "Filter",
+                        DPCODE_AP_FILTER,
+                        PERCENTAGE
+                    )
+                )
+            elif DPCODE_AP_TEMP in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DEVICE_CLASS_TEMPERATURE,
+                        DPCODE_AP_TEMP,
+                        TEMP_CELSIUS,
+                    )
+                )
+            elif DPCODE_AP_HUMIDITY in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DEVICE_CLASS_HUMIDITY,
+                        DPCODE_AP_HUMIDITY,
+                        PERCENTAGE,
+                    )
+                )
+            elif DPCODE_AP_TVOC in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        "TVOC",
+                        DPCODE_AP_TVOC,
+                        CONCENTRATION_PARTS_PER_MILLION
+                    )
+                )
+            elif DPCODE_AP_ECO2 in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DEVICE_CLASS_CO2,
+                        DPCODE_AP_ECO2,
+                        CONCENTRATION_PARTS_PER_MILLION
+                    )
+                )
+            elif DPCODE_AP_FDAYS in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        "FilterDays",
+                        DPCODE_AP_FDAYS,
+                        TIME_DAYS
+                    )
+                )
+            elif DPCODE_AP_TTIME in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        "TotalTime",
+                        DPCODE_AP_TTIME,
+                        TIME_MINUTES
+                    )
+                )
+            elif DPCODE_AP_TPM in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        "TotalPM",
+                        DPCODE_AP_TPM,
+                        MASS_MILLIGRAMS
+                    )
+                )
+            elif DPCODE_AP_COUNTDOWN in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        "Countdown",
+                        DPCODE_AP_COUNTDOWN,
+                        TIME_MINUTES
+                    )
+                )
+        else:
+            if DPCODE_BATTERY_ZIGBEELOCK in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DEVICE_CLASS_BATTERY,
+                        DPCODE_BATTERY_ZIGBEELOCK,
+                        PERCENTAGE,
+                    )
+                )
+            if DPCODE_BATTERY in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DEVICE_CLASS_BATTERY,
+                        DPCODE_BATTERY,
+                        PERCENTAGE,
+                    )
+                )
+            if DPCODE_BATTERY_PERCENTAGE in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DEVICE_CLASS_BATTERY,
+                        DPCODE_BATTERY_PERCENTAGE,
+                        PERCENTAGE,
+                    )
+                )
+            if DPCODE_BATTERY_CODE in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DEVICE_CLASS_BATTERY,
+                        DPCODE_BATTERY_CODE,
+                        PERCENTAGE,
+                    )
+                )
+            if DPCODE_BATTERY_STATE in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DEVICE_CLASS_BATTERY,
+                        DPCODE_BATTERY_STATE,
+                        "",
+                    )
+                )
 
-        if DPCODE_BATTERY_ZIGBEELOCK in device.status:
-            entities.append(
-                TuyaHaSensor(
-                    device,
-                    device_manager,
-                    DEVICE_CLASS_BATTERY,
-                    DPCODE_BATTERY_ZIGBEELOCK,
-                    PERCENTAGE,
+            if DPCODE_TEMPERATURE in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DEVICE_CLASS_TEMPERATURE,
+                        DPCODE_TEMPERATURE,
+                        TEMP_CELSIUS,
+                    )
                 )
-            )
-        if DPCODE_BATTERY in device.status:
-            entities.append(
-                TuyaHaSensor(
-                    device,
-                    device_manager,
-                    DEVICE_CLASS_BATTERY,
-                    DPCODE_BATTERY,
-                    PERCENTAGE,
+            if DPCODE_TEMP_CURRENT in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DEVICE_CLASS_TEMPERATURE,
+                        DPCODE_TEMP_CURRENT,
+                        TEMP_CELSIUS,
+                    )
                 )
-            )
-        if DPCODE_BATTERY_PERCENTAGE in device.status:
-            entities.append(
-                TuyaHaSensor(
-                    device,
-                    device_manager,
-                    DEVICE_CLASS_BATTERY,
-                    DPCODE_BATTERY_PERCENTAGE,
-                    PERCENTAGE,
-                )
-            )
-        if DPCODE_BATTERY_CODE in device.status:
-            entities.append(
-                TuyaHaSensor(
-                    device,
-                    device_manager,
-                    DEVICE_CLASS_BATTERY,
-                    DPCODE_BATTERY_CODE,
-                    PERCENTAGE,
-                )
-            )
-        if DPCODE_BATTERY_STATE in device.status:
-            entities.append(
-                TuyaHaSensor(
-                    device,
-                    device_manager,
-                    DEVICE_CLASS_BATTERY,
-                    DPCODE_BATTERY_STATE,
-                    "",
-                )
-            )
 
-        if DPCODE_TEMPERATURE in device.status:
-            entities.append(
-                TuyaHaSensor(
-                    device,
-                    device_manager,
-                    DEVICE_CLASS_TEMPERATURE,
-                    DPCODE_TEMPERATURE,
-                    TEMP_CELSIUS,
+            if DPCODE_HUMIDITY in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DEVICE_CLASS_HUMIDITY,
+                        DPCODE_HUMIDITY,
+                        PERCENTAGE,
+                    )
                 )
-            )
-        if DPCODE_TEMP_CURRENT in device.status:
-            entities.append(
-                TuyaHaSensor(
-                    device,
-                    device_manager,
-                    DEVICE_CLASS_TEMPERATURE,
-                    DPCODE_TEMP_CURRENT,
-                    TEMP_CELSIUS,
+            if DPCODE_HUMIDITY_VALUE in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DEVICE_CLASS_HUMIDITY,
+                        DPCODE_HUMIDITY_VALUE,
+                        PERCENTAGE,
+                    )
                 )
-            )
 
-        if DPCODE_HUMIDITY in device.status:
-            entities.append(
-                TuyaHaSensor(
-                    device,
-                    device_manager,
-                    DEVICE_CLASS_HUMIDITY,
-                    DPCODE_HUMIDITY,
-                    PERCENTAGE,
+            if DPCODE_PM100_VALUE in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device, device_manager, "PM10", DPCODE_PM100_VALUE, "ug/m³"
+                    )
                 )
-            )
-        if DPCODE_HUMIDITY_VALUE in device.status:
-            entities.append(
-                TuyaHaSensor(
-                    device,
-                    device_manager,
-                    DEVICE_CLASS_HUMIDITY,
-                    DPCODE_HUMIDITY_VALUE,
-                    PERCENTAGE,
+            if DPCODE_PM25_VALUE in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device, device_manager, "PM2.5", DPCODE_PM25_VALUE, "ug/m³"
+                    )
                 )
-            )
+            if DPCODE_PM10_VALUE in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device, device_manager, "PM1.0", DPCODE_PM10_VALUE, "ug/m³"
+                    )
+                )
 
-        if DPCODE_PM100_VALUE in device.status:
-            entities.append(
-                TuyaHaSensor(
-                    device, device_manager, "PM10", DPCODE_PM100_VALUE, "ug/m³"
+            if DPCODE_CURRENT in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        "Current",
+                        DPCODE_CURRENT,
+                        json.loads(device.status_range.get(DPCODE_CURRENT).values).get(
+                            "unit", 0
+                        ),
+                    )
                 )
-            )
-        if DPCODE_PM25_VALUE in device.status:
-            entities.append(
-                TuyaHaSensor(
-                    device, device_manager, "PM2.5", DPCODE_PM25_VALUE, "ug/m³"
+            if DPCODE_POWER in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DEVICE_CLASS_POWER,
+                        DPCODE_POWER,
+                        json.loads(device.status_range.get(DPCODE_POWER).values).get(
+                            "unit", 0
+                        ),
+                    )
                 )
-            )
-        if DPCODE_PM10_VALUE in device.status:
-            entities.append(
-                TuyaHaSensor(
-                    device, device_manager, "PM1.0", DPCODE_PM10_VALUE, "ug/m³"
+            if DPCODE_TOTAL_FORWARD_ENERGY in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DEVICE_CLASS_POWER,
+                        DPCODE_TOTAL_FORWARD_ENERGY,
+                        json.loads(device.status_range.get(DPCODE_TOTAL_FORWARD_ENERGY).values).get(
+                            "unit", 0
+                        ),
+                    )
                 )
-            )
-
-        if DPCODE_CURRENT in device.status:
-            entities.append(
-                TuyaHaSensor(
-                    device,
-                    device_manager,
-                    "Current",
-                    DPCODE_CURRENT,
-                    json.loads(device.status_range.get(DPCODE_CURRENT).values).get(
-                        "unit", 0
-                    ),
+            if DPCODE_VOLTAGE in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        "Voltage",
+                        DPCODE_VOLTAGE,
+                        json.loads(device.status_range.get(DPCODE_VOLTAGE).values).get(
+                            "unit", 0
+                        ),
+                    )
                 )
-            )
-        if DPCODE_POWER in device.status:
-            entities.append(
-                TuyaHaSensor(
-                    device,
-                    device_manager,
-                    DEVICE_CLASS_POWER,
-                    DPCODE_POWER,
-                    json.loads(device.status_range.get(DPCODE_POWER).values).get(
-                        "unit", 0
-                    ),
+            if DPCODE_BRIGHT_VALUE in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DEVICE_CLASS_ILLUMINANCE,
+                        DPCODE_BRIGHT_VALUE,
+                        json.loads(device.status_range.get(DPCODE_BRIGHT_VALUE).values).get(
+                            "unit", 0
+                        ),
+                    )
                 )
-            )
-        if DPCODE_TOTAL_FORWARD_ENERGY in device.status:
-            entities.append(
-                TuyaHaSensor(
-                    device,
-                    device_manager,
-                    DEVICE_CLASS_POWER,
-                    DPCODE_TOTAL_FORWARD_ENERGY,
-                    json.loads(device.status_range.get(DPCODE_TOTAL_FORWARD_ENERGY).values).get(
-                        "unit", 0
-                    ),
-                )
-            )
-        if DPCODE_VOLTAGE in device.status:
-            entities.append(
-                TuyaHaSensor(
-                    device,
-                    device_manager,
-                    "Voltage",
-                    DPCODE_VOLTAGE,
-                    json.loads(device.status_range.get(DPCODE_VOLTAGE).values).get(
-                        "unit", 0
-                    ),
-                )
-            )
-        if DPCODE_BRIGHT_VALUE in device.status:
-            entities.append(
-                TuyaHaSensor(
-                    device,
-                    device_manager,
-                    DEVICE_CLASS_ILLUMINANCE,
-                    DPCODE_BRIGHT_VALUE,
-                    json.loads(device.status_range.get(DPCODE_BRIGHT_VALUE).values).get(
-                        "unit", 0
-                    ),
-                )
-            )
 
     return entities
 

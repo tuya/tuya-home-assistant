@@ -46,3 +46,7 @@ TUYA_SUPPORT_HA_TYPE = [
     "select"
     # 'alarm_control_panel'
 ]
+
+TUYA_AIR_PURIFIER_TYPE = "kj"
+TUYA_FAN_TYPE = "fs"
+TUYA_PET_WATER_FEEDER_TYPE = "cwysj"
