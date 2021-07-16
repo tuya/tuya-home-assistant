@@ -14,6 +14,7 @@ from homeassistant.components.binary_sensor import (
     DEVICE_CLASS_PROBLEM,
     DEVICE_CLASS_SMOKE,
     DEVICE_CLASS_LOCK,
+    DEVICE_CLASS_BATTERY,
     DOMAIN as DEVICE_DOMAIN,
     BinarySensorEntity,
 )
@@ -48,14 +49,18 @@ TUYA_SUPPORT_TYPE = [
 
 DPCODE_SWITCH = "switch"
 
+
+DPCODE_BATTERY_STATE = "battery_state"
+
 DPCODE_DOORCONTACT_STATE = "doorcontact_state"
 DPCODE_SMOKE_SENSOR_STATE = "smoke_sensor_state"
+DPCODE_SMOKE_SENSOR_STATUS = "smoke_sensor_status"
 DPCODE_GAS_SENSOR_STATE = "gas_sensor_state"
 DPCODE_PIR = "pir"
 DPCODE_WATER_SENSOR_STATE = "watersensor_state"
 DPCODE_SOS_STATE = "sos_state"
 DPCODE_PRESENCE_STATE = "presence_state"
-
+DPCODE_TEMPER_ALRAM = "temper_alarm"
 DPCODE_DOORLOCK_STATE = "closed_opened"
 
 
@@ -133,6 +138,33 @@ def _setup_entities(hass, device_ids: List):
                     (lambda d: d.status.get(DPCODE_SMOKE_SENSOR_STATE, 1) == "1"),
                 )
             )
+        if DPCODE_SMOKE_SENSOR_STATUS in device.status:
+            entities.append(
+                TuyaHaBSensor(
+                    device,
+                    device_manager,
+                    DEVICE_CLASS_SMOKE,
+                    (lambda d: d.status.get(DPCODE_SMOKE_SENSOR_STATUS, 'normal') == "alarm"),
+                )
+            )
+        if DPCODE_BATTERY_STATE in device.status:
+            entities.append(
+                TuyaHaBSensor(
+                    device,
+                    device_manager,
+                    DEVICE_CLASS_BATTERY,
+                    (lambda d: d.status.get(DPCODE_BATTERY_STATE, 'normal') == "low"),
+                )
+            )
+        if DPCODE_TEMPER_ALRAM in device.status:
+            entities.append(
+                TuyaHaBSensor(
+                    device,
+                    device_manager,
+                    DEVICE_CLASS_MOTION,
+                    (lambda d: d.status.get(DPCODE_TEMPER_ALRAM, False)),
+                )
+            )
         if DPCODE_GAS_SENSOR_STATE in device.status:
             entities.append(
                 TuyaHaBSensor(
@@ -148,7 +180,7 @@ def _setup_entities(hass, device_ids: List):
                     device,
                     device_manager,
                     DEVICE_CLASS_MOTION,
-                    (lambda d: d.status.get(DPCODE_PIR, "none") == "1"),
+                    (lambda d: d.status.get(DPCODE_PIR, "none") == "pir"),
                 )
             )
         if DPCODE_WATER_SENSOR_STATE in device.status:
@@ -157,7 +189,7 @@ def _setup_entities(hass, device_ids: List):
                     device,
                     device_manager,
                     DEVICE_CLASS_MOISTURE,
-                    (lambda d: d.status.get(DPCODE_WATER_SENSOR_STATE, "none") == "1"),
+                    (lambda d: d.status.get(DPCODE_WATER_SENSOR_STATE, "normal") == "alarm"),
                 )
             )
         if DPCODE_SOS_STATE in device.status:

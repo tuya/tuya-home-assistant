@@ -135,7 +135,7 @@ class TuyaHaHumidifier(TuyaHaDevice, HumidifierEntity):
     def turn_off(self, **kwargs):
         """Turn the device off."""
         self._send_command([{"code": self.dp_switch, "value": False}])
-    
+
     def set_humidity(self, humidity):
         """Set new target humidity."""
         self._send_command([{"code": DPCODE_HUMIDITY_SET, "value": humidity}])

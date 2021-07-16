@@ -36,6 +36,7 @@ from .const import (
     TUYA_DISCOVERY_NEW,
     TUYA_HA_DEVICES,
     TUYA_HA_TUYA_MAP,
+    TUYA_HOME_MANAGER,
     TUYA_MQTT_LISTENER,
     TUYA_SETUP_PLATFORM,
     TUYA_SUPPORT_HA_TYPE,
@@ -104,6 +105,7 @@ async def _init_tuya_sdk(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # Get device list
     home_manager = TuyaHomeManager(api, tuya_mq, device_manager)
     await hass.async_add_executor_job(home_manager.update_device_cache)
+    hass.data[DOMAIN][TUYA_HOME_MANAGER] = home_manager
 
     class DeviceListener(TuyaDeviceListener):
         """Device Update Listener."""

@@ -33,7 +33,6 @@ from .const import (
     TUYA_DISCOVERY_NEW,
     TUYA_HA_DEVICES,
     TUYA_HA_TUYA_MAP,
-    TUYA_AIR_PURIFIER_TYPE,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -53,7 +52,8 @@ TUYA_SUPPORT_TYPE = [
     "dlq",  # Breaker
     "ldcg",  # Luminance Sensor
     "ms",  # Residential Lock
-    TUYA_AIR_PURIFIER_TYPE, # Air Purifier
+    "dj",  # Smart RGB Plug
+    "kj",  # Air Purifier
 ]
 
 # Smoke Detector
@@ -61,7 +61,7 @@ TUYA_SUPPORT_TYPE = [
 DPCODE_BATTERY = "va_battery"
 DPCODE_BATTERY_PERCENTAGE = "battery_percentage"
 DPCODE_BATTERY_CODE = "battery"
-DPCODE_BATTERY_STATE = "battery_state"
+
 
 DPCODE_TEMPERATURE = "va_temperature"
 DPCODE_HUMIDITY = "va_humidity"
@@ -136,7 +136,7 @@ def _setup_entities(hass, device_ids: List):
         if device is None:
             continue
             
-        if device.category == TUYA_AIR_PURIFIER_TYPE:
+        if device.category == "kj":
             if DPCODE_AP_PM25 in device.status:
                 entities.append(
                     TuyaHaSensor(
@@ -276,16 +276,6 @@ def _setup_entities(hass, device_ids: List):
                         DEVICE_CLASS_BATTERY,
                         DPCODE_BATTERY_CODE,
                         PERCENTAGE,
-                    )
-                )
-            if DPCODE_BATTERY_STATE in device.status:
-                entities.append(
-                    TuyaHaSensor(
-                        device,
-                        device_manager,
-                        DEVICE_CLASS_BATTERY,
-                        DPCODE_BATTERY_STATE,
-                        "",
                     )
                 )
 
