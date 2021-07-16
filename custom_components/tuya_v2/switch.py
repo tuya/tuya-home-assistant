@@ -31,7 +31,7 @@ TUYA_SUPPORT_TYPE = {
     "dlq",    # Breaker
     "cwysj",  # Pet Water Feeder
     "kj",     # Air Purifier
-    "kqzg"    # Air Fryer
+    "kqzg"    # Air Frier
 }
 
 # Switch(kg), Socket(cz), Power Strip(pc)
@@ -42,19 +42,22 @@ DPCODE_SWITCH = "switch"
 # https://developer.tuya.com/en/docs/iot/categorykj?id=Kaiuz1atqo5l7
 # Pet Water Feeder
 # https://developer.tuya.com/en/docs/iot/f?id=K9gf46aewxem5
-DPCODE_ANION = "anion"        # Air Purifier - Ionizer unit
+DPCODE_ANION = "anion"         # Air Purifier - Ionizer unit
 # Air Purifier - Filter cartridge resetting; Pet Water Feeder - Filter cartridge resetting
 DPCODE_FRESET = "filter_reset"
-DPCODE_LIGHT = "light"        # Air Purifier - Light
-DPCODE_LOCK = "lock"         # Air Purifier - Child lock
+DPCODE_LIGHT = "light"         # Air Purifier - Light
+DPCODE_LOCK = "lock"           # Air Purifier - Child lock
 # Air Purifier - UV sterilization; Pet Water Feeder - UV sterilization
 DPCODE_UV = "uv"
-DPCODE_WET = "wet"          # Air Purifier - Humidification unit
+DPCODE_WET = "wet"             # Air Purifier - Humidification unit
 DPCODE_PRESET = "pump_reset"   # Pet Water Feeder - Water pump resetting
 DPCODE_WRESET = "water_reset"  # Pet Water Feeder - Resetting of water usage days
 
 
 DPCODE_START = "start"
+# Air Fryer
+# https://developer.tuya.com/en/docs/iot/f?id=Kakdaoinr5xlu
+DPCODE_AIRFRYER_PREHEAT = "preheat"
 
 
 async def async_setup_entry(
@@ -121,6 +124,10 @@ def _setup_entities(hass, device_ids: list):
                     entities.append(TuyaHaSwitch(
                         device, device_manager, function))
                     continue
+                if function.startswith(DPCODE_AIRFRYER_PREHEAT):
+                    entities.append(TuyaHaSwitch(
+                        device, device_manager, function))
+                    continue
     return entities
 
 
@@ -129,6 +136,7 @@ class TuyaHaSwitch(TuyaHaDevice, SwitchEntity):
 
     dp_code_switch = DPCODE_SWITCH
     dp_code_start = DPCODE_START
+    dp_code_preheat = DPCODE_AIRFRYER_PREHEAT
 
     def __init__(
         self, device: TuyaDevice, device_manager: TuyaDeviceManager, dp_code: str = ""
