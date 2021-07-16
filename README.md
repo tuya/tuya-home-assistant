@@ -15,6 +15,14 @@
 
 The Tuya Home Assistant integration (Tuya v2) is developed for controlling **Powered by Tuya (PBT)** devices using the [tuya-iot-python-sdk](https://github.com/tuya/tuya-iot-python-sdk) (a python version of [Tuya Open API](https://developer.tuya.com/en/docs/cloud/?_source=6c7c0e6d9fc9ac8296e1a48954e1d0e4)), and officially maintained by the Tuya Developer Team.
 
+## Installation
+The [Tuya Home Assistant integration Wiki](https://github.com/tuya/tuya-home-assistant/wiki) contains step-by-step instruction on how to install Tuya Home Assistant Integration.
+
+- [Tuya-IoT-Platform-Configuration](https://github.com/tuya/tuya-home-assistant/wiki/Tuya-IoT-Platform-Configuration-Guide-Using-Smart-Home-PaaS)
+- [Install-Tuya-v2](https://github.com/tuya/tuya-home-assistant/wiki/Install-Tuya-v2)
+
+[![Youtube](https://img.youtube.com/vi/Amc_fmYMQEo/0.jpg)](https://www.youtube.com/watch?v=Amc_fmYMQEo)
+
 ## [Tuya Beta Test Program](https://pages.tuya.com/develop/HomeAssistantBetaTest_V2?_source=df3c37ad796d2388fc5527a8029c7889)
 Welcome to join the [Tuya Beta Test Program](https://pages.tuya.com/develop/HomeAssistantBetaTest_V2?_source=df3c37ad796d2388fc5527a8029c7889) to get your development gifts and make a contribution to the integration. Your feedback is valuable to the whole community.
 
@@ -37,17 +45,8 @@ Five primary categories, 26 secondary categories are supported now!
 
 Follow us to get more information and leading technology on the Internet of Things, as well as updates and activities on the [Tuya IoT Developer Platform](https://developer.tuya.com/)
 
-## Tuya Home Assistant Integration User Guide
-
-For more information, please check [How to Use Tuya Home Assistant Integration](https://developer.tuya.com/en/docs/iot/Home_Assistant_Integration?id=Kamcjcbvk2mu8&_source=1f6c7c604f6cc5057a3befbe1092b263).
-
-Youtube tutorial:
-
-[![Youtube](https://img.youtube.com/vi/Amc_fmYMQEo/0.jpg)](https://www.youtube.com/watch?v=Amc_fmYMQEo)
-
 ## Documentation
 
-- :sun_with_face: [Installation](https://github.com/tuya/tuya-home-assistant/wiki/Installation)
 - :computer: [How to Get the Log](https://github.com/tuya/tuya-home-assistant/wiki/How-to-Get-the-Log)
 - **🎨** [How to Develop a New Driver](https://github.com/tuya/tuya-home-assistant/wiki/How-to-Develop-a-New-Driver)
 - :grey_question:  [Why does my device not update automatically?](https://github.com/tuya/tuya-home-assistant/discussions/113)
