@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Support for Tuya Cover."""
+from __future__ import annotations
 
 import logging
 from typing import Any, List
@@ -18,7 +19,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
 from .base import TuyaHaDevice
-from .const import DOMAIN, TUYA_DEVICE_MANAGER, TUYA_DISCOVERY_NEW, TUYA_HA_TUYA_MAP
+from .const import DOMAIN, TUYA_DEVICE_MANAGER, TUYA_DISCOVERY_NEW, TUYA_HA_TUYA_MAP, TUYA_HA_DEVICES
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -28,6 +29,7 @@ TUYA_SUPPORT_TYPE = {"cl", "clkg"}  # Curtain  # Curtain Switch
 # https://developer.tuya.com/en/docs/iot/f?id=K9gf46o5mtfyc
 DPCODE_CONTROL = "control"
 DPCODE_PERCENT_CONTROL = "percent_control"
+DPCODE_PERCENT_STATE = "percent_state"
 
 ATTR_POSITION = "position"
 
@@ -46,6 +48,7 @@ async def async_setup_entry(
         if not dev_ids:
             return
         entities = await hass.async_add_executor_job(_setup_entities, hass, dev_ids)
+        hass.data[DOMAIN][TUYA_HA_DEVICES].extend(entities)
         async_add_entities(entities)
 
     async_dispatcher_connect(
@@ -82,9 +85,14 @@ class TuyaHaCover(TuyaHaDevice, CoverEntity):
         return DEVICE_CLASS_CURTAIN
 
     @property
+    def is_closed(self) -> bool | None:
+        return False
+
+    @property
     def current_cover_position(self) -> int:
         """Return cover current position."""
-        return self.tuya_device.status.get(DPCODE_PERCENT_CONTROL, 0)
+        position = self.tuya_device.status.get(DPCODE_PERCENT_STATE, 0)
+        return 100 - position
 
     def open_cover(self, **kwargs: Any) -> None:
         """Open the cover."""

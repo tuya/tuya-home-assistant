@@ -81,15 +81,14 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if project_type == ProjectType.INDUSTY_SOLUTIONS:
             response = api.login(user_input[CONF_USERNAME], user_input[CONF_PASSWORD])
         else:
-            for endpoint in TUYA_ENDPOINT.keys():
-                api.endpoint = endpoint
-                response = api.login(user_input[CONF_USERNAME],
-                                     user_input[CONF_PASSWORD],
-                                     user_input[CONF_COUNTRY_CODE],
-                                     user_input[CONF_APP_TYPE])
-                if response.get("success", False):
-                    user_input[CONF_ENDPOINT] = endpoint
-                    break
+            api.endpoint = "https://openapi.tuyacn.com"
+            response = api.login(user_input[CONF_USERNAME],
+                                 user_input[CONF_PASSWORD],
+                                 user_input[CONF_COUNTRY_CODE],
+                                 user_input[CONF_APP_TYPE])
+            if response.get("success", False):
+                api.endpoint = api.token_info.platform_url
+                user_input[CONF_ENDPOINT] = api.token_info.platform_url
 
         _LOGGER.info(f"TuyaConfigFlow._try_login finish, response:, {response}")
         return response

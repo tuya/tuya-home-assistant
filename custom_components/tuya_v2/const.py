@@ -14,6 +14,7 @@ CONF_APP_TYPE = "tuya_app_type"
 
 TUYA_DISCOVERY_NEW = "tuya_v2_discovery_new_{}"
 TUYA_DEVICE_MANAGER = "tuya_device_manager"
+TUYA_HOME_MANAGER = "tuya_home_manager"
 TUYA_MQTT_LISTENER = "tuya_mqtt_listener"
 TUYA_HA_TUYA_MAP = "tuya_ha_tuya_map"
 TUYA_HA_DEVICES = "tuya_ha_devices"
@@ -43,10 +44,7 @@ TUYA_SUPPORT_HA_TYPE = [
     "humidifier",
     "number",
     "vacuum",
-    "select"
+    "select",
+    # "remote"
     # 'alarm_control_panel'
 ]
-
-TUYA_AIR_PURIFIER_TYPE = "kj"
-TUYA_FAN_TYPE = "fs"
-TUYA_PET_WATER_FEEDER_TYPE = "cwysj"

@@ -18,14 +18,10 @@ from .const import (
     TUYA_DEVICE_MANAGER,
     TUYA_DISCOVERY_NEW,
     TUYA_HA_DEVICES,
-    TUYA_HA_TUYA_MAP,
-    TUYA_AIR_PURIFIER_TYPE,
-    TUYA_PET_WATER_FEEDER_TYPE,
+    TUYA_HA_TUYA_MAP
 )
 
 _LOGGER = logging.getLogger(__name__)
-
-AIR_PURIFIER_TYPE = "kj"
 
 TUYA_SUPPORT_TYPE = {
     "kg",     # Switch
@@ -33,8 +29,8 @@ TUYA_SUPPORT_TYPE = {
     "pc",     # Power Strip
     "bh",     # Smart Kettle
     "dlq",    # Breaker
-    TUYA_PET_WATER_FEEDER_TYPE,  # Pet Water Feeder
-    TUYA_AIR_PURIFIER_TYPE       # Air Purifier
+    "cwysj",  # Pet Water Feeder
+    "kj"      # Air Purifier
 }
 
 # Switch(kg), Socket(cz), Power Strip(pc)
@@ -45,17 +41,20 @@ DPCODE_SWITCH = "switch"
 # https://developer.tuya.com/en/docs/iot/categorykj?id=Kaiuz1atqo5l7
 # Pet Water Feeder
 # https://developer.tuya.com/en/docs/iot/f?id=K9gf46aewxem5
-DPCODE_ANION  = "anion"        # Air Purifier - Ionizer unit
-DPCODE_FRESET = "filter_reset" # Air Purifier - Filter cartridge resetting; Pet Water Feeder - Filter cartridge resetting
-DPCODE_LIGHT  = "light"        # Air Purifier - Light
-DPCODE_LOCK   = "lock"         # Air Purifier - Child lock
-DPCODE_UV     = "uv"           # Air Purifier - UV sterilization; Pet Water Feeder - UV sterilization
-DPCODE_WET    = "wet"          # Air Purifier - Humidification unit
+DPCODE_ANION = "anion"        # Air Purifier - Ionizer unit
+# Air Purifier - Filter cartridge resetting; Pet Water Feeder - Filter cartridge resetting
+DPCODE_FRESET = "filter_reset"
+DPCODE_LIGHT = "light"        # Air Purifier - Light
+DPCODE_LOCK = "lock"         # Air Purifier - Child lock
+# Air Purifier - UV sterilization; Pet Water Feeder - UV sterilization
+DPCODE_UV = "uv"
+DPCODE_WET = "wet"          # Air Purifier - Humidification unit
 DPCODE_PRESET = "pump_reset"   # Pet Water Feeder - Water pump resetting
 DPCODE_WRESET = "water_reset"  # Pet Water Feeder - Resetting of water usage days
 
 
 DPCODE_START = "start"
+
 
 async def async_setup_entry(
     hass: HomeAssistant, _entry: ConfigEntry, async_add_entities
@@ -63,7 +62,8 @@ async def async_setup_entry(
     """Set up tuya sensors dynamically through tuya discovery."""
     _LOGGER.info("switch init")
 
-    hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update({DEVICE_DOMAIN: TUYA_SUPPORT_TYPE})
+    hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update(
+        {DEVICE_DOMAIN: TUYA_SUPPORT_TYPE})
 
     async def async_discover_device(dev_ids):
         """Discover and add a discovered tuya sensor."""
@@ -96,24 +96,29 @@ def _setup_entities(hass, device_ids: list):
             continue
 
         for function in device.function:
-            if device.category == TUYA_AIR_PURIFIER_TYPE:
+            if device.category == "kj":
                 if function in [DPCODE_ANION, DPCODE_FRESET, DPCODE_LIGHT, DPCODE_LOCK, DPCODE_UV, DPCODE_WET]:
-                    entities.append(TuyaHaSwitch(device, device_manager, function))
+                    entities.append(TuyaHaSwitch(
+                        device, device_manager, function))
                     # Main device switch is handled by the Fan object
-            elif device.category == TUYA_PET_WATER_FEEDER_TYPE:
+            elif device.category == "cwysj":
                 if function in [DPCODE_FRESET, DPCODE_UV, DPCODE_PRESET, DPCODE_WRESET]:
-                    entities.append(TuyaHaSwitch(device, device_manager, function))
-                    
+                    entities.append(TuyaHaSwitch(
+                        device, device_manager, function))
+
                 if function.startswith(DPCODE_SWITCH):
                     # Main device switch
-                    entities.append(TuyaHaSwitch(device, device_manager, function))
+                    entities.append(TuyaHaSwitch(
+                        device, device_manager, function))
                     continue
             else:
                 if function.startswith(DPCODE_START):
-                   entities.append(TuyaHaSwitch(device, device_manager, function))
-                   continue
+                    entities.append(TuyaHaSwitch(
+                        device, device_manager, function))
+                    continue
                 if function.startswith(DPCODE_SWITCH):
-                    entities.append(TuyaHaSwitch(device, device_manager, function))
+                    entities.append(TuyaHaSwitch(
+                        device, device_manager, function))
                     continue
     return entities
 
@@ -123,7 +128,6 @@ class TuyaHaSwitch(TuyaHaDevice, SwitchEntity):
 
     dp_code_switch = DPCODE_SWITCH
     dp_code_start = DPCODE_START
-
 
     def __init__(
         self, device: TuyaDevice, device_manager: TuyaDeviceManager, dp_code: str = ""
