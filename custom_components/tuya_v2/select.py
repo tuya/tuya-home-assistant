@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
-"""Support for Tuya Mode Sensor."""
+"""Support for Tuya switches."""
 
 import json
 import logging
-from typing import List
+from typing import List, Optional, Tuple
 
 from tuya_iot import TuyaDevice, TuyaDeviceManager
 
+from homeassistant.components.number import DOMAIN as DEVICE_DOMAIN, NumberEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.components.select import DOMAIN as DEVICE_DOMAIN, SelectEntity
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
 from .base import TuyaHaDevice
-
 from .const import (
     DOMAIN,
     TUYA_DEVICE_MANAGER,
@@ -25,18 +24,32 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 TUYA_SUPPORT_TYPE = {
-    "xxj"
+    "hps",  # Human Presence Sensor
+    "kqzg", # Air Fryer
 }
 
-DPCODE_MODE = "mode"
+# Switch(kg), Socket(cz), Power Strip(pc)
+# https://developer.tuya.com/docs/iot/open-api/standard-function/electrician-category/categorykgczpc?categoryId=486118
+DPCODE_SENSITIVITY = "sensitivity"
 
-async def async_setup_entry(hass: HomeAssistant, _entry: ConfigEntry, async_add_entities):
-    _LOGGER.info("select init")
+# Air Fryer (kqzg)
+# https://developer.tuya.com/en/docs/iot/f?id=Kakdaoinr5xlu
+DPCODE_AIRFRYER_COOK_TEMP = "cook_temperature"
+DPCODE_AIRFRYER_APPOINTMENT_TIME = "appointment_time"
+DPCODE_AIRFRYER_COOK_TIME = "cook_time"
+
+
+async def async_setup_entry(
+    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities
+):
+    """Set up tuya number dynamically through tuya discovery."""
+    _LOGGER.info("number init")
 
     hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update({DEVICE_DOMAIN: TUYA_SUPPORT_TYPE})
 
     async def async_discover_device(dev_ids):
-        _LOGGER.info(f"select add-> {dev_ids}")
+        """Discover and add a discovered tuya number."""
+        _LOGGER.info(f"number add-> {dev_ids}")
         if not dev_ids:
             return
         entities = await hass.async_add_executor_job(_setup_entities, hass, dev_ids)
@@ -56,6 +69,7 @@ async def async_setup_entry(hass: HomeAssistant, _entry: ConfigEntry, async_add_
 
 
 def _setup_entities(hass, device_ids: List):
+    """Set up Tuya Switch device."""
     device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
     entities = []
     for device_id in device_ids:
@@ -63,26 +77,62 @@ def _setup_entities(hass, device_ids: List):
         if device is None:
             continue
 
-        if DPCODE_MODE in device.status:
-            entities.append(TuyaHaSelect(device, device_manager, DPCODE_MODE))
+        if DPCODE_SENSITIVITY in device.status:
+            entities.append(TuyaHaNumber(device, device_manager, DPCODE_SENSITIVITY))
+
+        if DPCODE_AIRFRYER_COOK_TEMP in device.status:
+            entities.append(TuyaHaNumber(device, device_manager, DPCODE_AIRFRYER_COOK_TEMP))
+
+        if DPCODE_AIRFRYER_APPOINTMENT_TIME in device.status:
+            entities.append(TuyaHaNumber(device, device_manager, DPCODE_AIRFRYER_APPOINTMENT_TIME))
+
+        if DPCODE_AIRFRYER_COOK_TIME in device.status:
+            entities.append(TuyaHaNumber(device, device_manager, DPCODE_AIRFRYER_COOK_TIME))
 
     return entities
 
-class TuyaHaSelect(TuyaHaDevice, SelectEntity):
-    def __init__(self, device: TuyaDevice, device_manager: TuyaDeviceManager, code: str = ""):
+
+class TuyaHaNumber(TuyaHaDevice, NumberEntity):
+    """Tuya Device Number."""
+
+    def __init__(
+        self, device: TuyaDevice, device_manager: TuyaDeviceManager, code: str = ""
+    ):
+        """Init tuya number device."""
         self._code = code
-        self._attr_current_option = None
         super().__init__(device, device_manager)
 
-    @property
-    def current_option(self) -> str:
-        return self.tuya_device.status.get(self._code, None)
+    # ToggleEntity
 
-    def select_option(self, option: str) -> None:
-        self._send_command([{"code": self._code, "value": option}])        
+    def set_value(self, value: float) -> None:
+        """Update the current value."""
+        self._send_command([{"code": self._code, "value": int(value)}])
 
     @property
-    def options(self) -> List:
+    def unique_id(self) -> Optional[str]:
+        """Return a unique ID."""
+        return f"{super().unique_id}{self._code}"
+
+    @property
+    def value(self) -> float:
+        """Return current value."""
+        return self.tuya_device.status.get(self._code, 0)
+
+    @property
+    def min_value(self) -> float:
+        """Return min value."""
+        return self._get_code_range()[0]
+
+    @property
+    def max_value(self) -> float:
+        """Return max value."""
+        return self._get_code_range()[1]
+
+    @property
+    def step(self) -> float:
+        """Return step."""
+        return self._get_code_range()[2]
+
+    def _get_code_range(self) -> Tuple[int, int, int]:
         dp_range = json.loads(self.tuya_device.function.get(self._code).values)
-        return dp_range.get("range",[])
-    
+        return dp_range.get("min", 0), dp_range.get("max", 0), dp_range.get("step", 0)

@@ -58,6 +58,7 @@ DPCODE_START = "start"
 # Air Fryer
 # https://developer.tuya.com/en/docs/iot/f?id=Kakdaoinr5xlu
 DPCODE_AIRFRYER_PREHEAT = "preheat"
+DPCODE_AIRFRYER_SPIN = "spin_switch"
 
 
 async def async_setup_entry(
@@ -128,6 +129,10 @@ def _setup_entities(hass, device_ids: list):
                     entities.append(TuyaHaSwitch(
                         device, device_manager, function))
                     continue
+                if function.startswith(DPCODE_AIRFRYER_SPIN):
+                    entities.append(TuyaHaSwitch(
+                        device, device_manager, function))
+                    continue
     return entities
 
 
@@ -137,6 +142,7 @@ class TuyaHaSwitch(TuyaHaDevice, SwitchEntity):
     dp_code_switch = DPCODE_SWITCH
     dp_code_start = DPCODE_START
     dp_code_preheat = DPCODE_AIRFRYER_PREHEAT
+    dp_code_spin = DPCODE_AIRFRYER_SPIN
 
     def __init__(
         self, device: TuyaDevice, device_manager: TuyaDeviceManager, dp_code: str = ""

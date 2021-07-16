@@ -25,11 +25,18 @@ _LOGGER = logging.getLogger(__name__)
 
 TUYA_SUPPORT_TYPE = {
     "hps",  # Human Presence Sensor
+    "kqzg", # Air Fryer
 }
 
 # Switch(kg), Socket(cz), Power Strip(pc)
 # https://developer.tuya.com/docs/iot/open-api/standard-function/electrician-category/categorykgczpc?categoryId=486118
 DPCODE_SENSITIVITY = "sensitivity"
+
+# Air Fryer (kqzg)
+# https://developer.tuya.com/en/docs/iot/f?id=Kakdaoinr5xlu
+DPCODE_AIRFRYER_COOK_TEMP = "cook_temperature"
+DPCODE_AIRFRYER_APPOINTMENT_TIME = "appointment_time"
+DPCODE_AIRFRYER_COOK_TIME = "cook_time"
 
 
 async def async_setup_entry(
@@ -72,6 +79,15 @@ def _setup_entities(hass, device_ids: List):
 
         if DPCODE_SENSITIVITY in device.status:
             entities.append(TuyaHaNumber(device, device_manager, DPCODE_SENSITIVITY))
+
+        if DPCODE_AIRFRYER_COOK_TEMP in device.status:
+            entities.append(TuyaHaNumber(device, device_manager, DPCODE_AIRFRYER_COOK_TEMP))
+
+        if DPCODE_AIRFRYER_APPOINTMENT_TIME in device.status:
+            entities.append(TuyaHaNumber(device, device_manager, DPCODE_AIRFRYER_APPOINTMENT_TIME))
+
+        if DPCODE_AIRFRYER_COOK_TIME in device.status:
+            entities.append(TuyaHaNumber(device, device_manager, DPCODE_AIRFRYER_COOK_TIME))
 
     return entities
 
