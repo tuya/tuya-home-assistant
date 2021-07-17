@@ -51,7 +51,7 @@ DPCODE_MODE = "mode"
 DPCODE_HUMIDITY_SET = "humidity_set"
 DPCODE_FAN_SPEED_ENUM = "fan_speed_enum"
 
-# Temerature unit
+# Temperature unit
 DPCODE_TEMP_UNIT_CONVERT = "temp_unit_convert"
 DPCODE_C_F = "c_f"
 

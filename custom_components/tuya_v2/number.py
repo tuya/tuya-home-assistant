@@ -38,7 +38,6 @@ DPCODE_AIRFRYER_COOK_TEMP = "cook_temperature"
 DPCODE_AIRFRYER_APPOINTMENT_TIME = "appointment_time"
 DPCODE_AIRFRYER_COOK_TIME = "cook_time"
 
-
 async def async_setup_entry(
     hass: HomeAssistant, _entry: ConfigEntry, async_add_entities
 ):
@@ -100,6 +99,7 @@ class TuyaHaNumber(TuyaHaDevice, NumberEntity):
     ):
         """Init tuya number device."""
         self._code = code
+
         super().__init__(device, device_manager)
 
     # ToggleEntity
@@ -112,6 +112,11 @@ class TuyaHaNumber(TuyaHaDevice, NumberEntity):
     def unique_id(self) -> Optional[str]:
         """Return a unique ID."""
         return f"{super().unique_id}{self._code}"
+
+    @property
+    def name(self) -> Optional[str]:
+        """Return Tuya device name."""
+        return self.tuya_device.name + self._code
 
     @property
     def value(self) -> float:
