@@ -29,7 +29,7 @@ TUYA_SUPPORT_TYPE = {"cl", "clkg"}  # Curtain  # Curtain Switch
 # https://developer.tuya.com/en/docs/iot/f?id=K9gf46o5mtfyc
 DPCODE_CONTROL = "control"
 DPCODE_PERCENT_CONTROL = "percent_control"
-DPCODE_PERCENT_STATE = "percent_state"
+DPCODE_PERCENT_STATE = "percent_control"
 
 ATTR_POSITION = "position"
 
@@ -92,7 +92,7 @@ class TuyaHaCover(TuyaHaDevice, CoverEntity):
     def current_cover_position(self) -> int:
         """Return cover current position."""
         position = self.tuya_device.status.get(DPCODE_PERCENT_STATE, 0)
-        return 100 - position
+        return position
 
     def open_cover(self, **kwargs: Any) -> None:
         """Open the cover."""
