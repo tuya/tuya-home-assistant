@@ -59,6 +59,7 @@ TUYA_SUPPORT_TYPE = {
     "fwl",  # Ambient light
     "dc",   # Light string
     "jsq",  # Humidifier's light
+    "xxj"  # Diffuser's light 
 }
 
 DEFAULT_HSV = {
