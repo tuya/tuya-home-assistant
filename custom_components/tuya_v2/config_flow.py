@@ -2,7 +2,14 @@
 """Config flow for Tuya."""
 
 import logging
-
+from .aes_cbc import (
+    AES_ACCOUNT_KEY,
+    random_16,
+    cbc_encrypt,
+    xor_encrypt,
+    add_xor_cache,
+    b64_encrypt,
+)
 from tuya_iot import ProjectType, TuyaOpenAPI
 import voluptuous as vol
 
@@ -71,7 +78,9 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         _LOGGER.info(f"TuyaConfigFlow._try_login start, user_input: {user_input}")
         project_type = ProjectType(user_input[CONF_PROJECT_TYPE])
         api = TuyaOpenAPI(
-            user_input[CONF_ENDPOINT] if project_type == ProjectType.INDUSTY_SOLUTIONS else "",
+            user_input[CONF_ENDPOINT]
+            if project_type == ProjectType.INDUSTY_SOLUTIONS
+            else "",
             user_input[CONF_ACCESS_ID],
             user_input[CONF_ACCESS_SECRET],
             project_type,
@@ -82,10 +91,12 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             response = api.login(user_input[CONF_USERNAME], user_input[CONF_PASSWORD])
         else:
             api.endpoint = "https://openapi.tuyacn.com"
-            response = api.login(user_input[CONF_USERNAME],
-                                 user_input[CONF_PASSWORD],
-                                 user_input[CONF_COUNTRY_CODE],
-                                 user_input[CONF_APP_TYPE])
+            response = api.login(
+                user_input[CONF_USERNAME],
+                user_input[CONF_PASSWORD],
+                user_input[CONF_COUNTRY_CODE],
+                user_input[CONF_APP_TYPE],
+            )
             if response.get("success", False):
                 api.endpoint = api.token_info.platform_url
                 user_input[CONF_ENDPOINT] = api.token_info.platform_url
@@ -113,7 +124,6 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_user(self, user_input=None):
         """Step user."""
         _LOGGER.info(f"TuyaConfigFlow.async_step_user start, is_import= {user_input}")
-
         if self._async_current_entries():
             return self.async_abort(reason=RESULT_SINGLE_INSTANCE)
 
@@ -128,9 +138,20 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             if response.get("success", False):
                 _LOGGER.info("TuyaConfigFlow.async_step_user login success")
+                cbc_key = random_16()
+                cbc_iv = random_16()
+                access_id = user_input[CONF_ACCESS_ID]
+                access_id_entry = cbc_encrypt(cbc_key, cbc_iv, access_id)
+                c = cbc_key + cbc_iv
+                c_xor_entry = xor_encrypt(c, access_id_entry)
+                # add c_xor_entry and access_id_entry add to cache
+                add_xor_cache(xor=c_xor_entry, key=access_id_entry)
+                # account info encrypted with AES-CBC
+                user_input_encrpt = cbc_encrypt(cbc_key, cbc_iv, str(user_input))
+                # account info encrypted add to cache
                 return self.async_create_entry(
                     title=user_input[CONF_USERNAME],
-                    data=user_input,
+                    data={b64_encrypt(AES_ACCOUNT_KEY): user_input_encrpt},
                 )
 
             errors["base"] = "invalid_auth"
@@ -139,15 +160,13 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             return (
                 self.async_show_form(
-                    step_id="user",
-                    data_schema=DATA_SCHEMA_SMART_HOME,
-                    errors=errors
+                    step_id="user", data_schema=DATA_SCHEMA_SMART_HOME, errors=errors
                 )
                 if self.project_type == ProjectType.SMART_HOME
                 else self.async_show_form(
                     step_id="user",
                     data_schema=DATA_SCHEMA_INDUSTRY_SOLUTIONS,
-                    errors=errors
+                    errors=errors,
                 )
             )
 
