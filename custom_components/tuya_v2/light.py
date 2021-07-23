@@ -60,6 +60,7 @@ TUYA_SUPPORT_TYPE = {
     "dc",   # Light string
     "jsq",  # Humidifier's light
     "xdd",   # Ceiling Light
+    "xxj"  # Diffuser's light 
 }
 
 DEFAULT_HSV = {
