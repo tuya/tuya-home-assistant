@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Config flow for Tuya."""
 
+import json
 import logging
 from .aes_cbc import (
     AesCBC as Aes,
@@ -147,7 +148,7 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 c = cbc_key + cbc_iv
                 c_xor_entry = aes.xor_encrypt(c, access_id_entry)
                 # account info encrypted with AES-CBC
-                user_input_encrpt = aes.cbc_encrypt(cbc_key, cbc_iv, str(user_input))
+                user_input_encrpt = aes.cbc_encrypt(cbc_key, cbc_iv, json.dumps(user_input))
                 # account info encrypted add to cache
                 return self.async_create_entry(
                     title=user_input[CONF_USERNAME],
