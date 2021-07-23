@@ -8,10 +8,9 @@ import random
 import json
 import os.path
 
-FILE_NAME = "aes_account.json"
-AES_ACCOUNT_KEY = "aes_account_key"
-XOR_KEY = "xor_key"
-KEY_KEY = "key_key"
+AES_ACCOUNT_KEY = "o0o0o0"
+XOR_KEY = "00oo00"
+KEY_KEY = "oo00oo"
 
 
 class AesCBC:
@@ -76,24 +75,6 @@ class AesCBC:
             secret.append(chr(ord(each) ^ ord(key[num])))
             num += 1
         return "".join(secret)
-
-    # add xor to cache
-    def add_xor_cache(self, xor, key):
-        xor_info = {}
-        xor_info[XOR_KEY] = xor
-        xor_info[KEY_KEY] = key
-        with open(FILE_NAME, "w") as file_obj_w:
-            json.dump(xor_info, file_obj_w)
-
-    # whether xor cache exist
-    def exist_xor_cache(self):
-        return os.path.isfile(FILE_NAME)
-
-    # get xor from cache
-    def get_xor_cache(self):
-        with open(FILE_NAME) as file_obj_r:
-            xor_info = json.load(file_obj_r)
-        return xor_info
 
     # json to dict
     def json_to_dict(self, json_str):

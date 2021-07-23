@@ -77,14 +77,13 @@ CONFIG_SCHEMA = vol.Schema(
 def entry_decrypt(hass: HomeAssistant, entry: ConfigEntry, init_entry_data):
     aes = Aes()
     # decrypt the new account info
-    if aes.exist_xor_cache():
+    if init_entry_data[XOR_KEY]:
         _LOGGER.info("tuya.__init__.exist_xor_cache-->True")
-        xor_cache = aes.get_xor_cache()
-        key_iv = aes.xor_decrypt(xor_cache[XOR_KEY], xor_cache[KEY_KEY])
+        key_iv = aes.xor_decrypt(init_entry_data[XOR_KEY], init_entry_data[KEY_KEY])
         cbc_key = key_iv[0:16]
         cbc_iv = key_iv[16:32]
         decrpyt_str = aes.cbc_decrypt(
-            cbc_key, cbc_iv, init_entry_data[aes.b64_encrypt(AES_ACCOUNT_KEY)]
+            cbc_key, cbc_iv, init_entry_data[AES_ACCOUNT_KEY]
         ).replace("'", '"')
         # _LOGGER.info(f"tuya.__init__.exist_xor_cache:::decrpyt_str-->{decrpyt_str}")
         entry_data = aes.json_to_dict(decrpyt_str)
@@ -98,14 +97,16 @@ def entry_decrypt(hass: HomeAssistant, entry: ConfigEntry, init_entry_data):
         access_id_entry = aes.cbc_encrypt(cbc_key, cbc_iv, access_id)
         c = cbc_key + cbc_iv
         c_xor_entry = aes.xor_encrypt(c, access_id_entry)
-        # add c_xor_entry and access_id_entry add to cache
-        aes.add_xor_cache(xor=c_xor_entry, key=access_id_entry)
         # account info encrypted with AES-CBC
-        user_input_encrpt = aes.cbc_encrypt(
-            cbc_key, cbc_iv, str(init_entry_data))
+        user_input_encrpt = aes.cbc_encrypt(cbc_key, cbc_iv, str(init_entry_data))
         # udpate old account info
         hass.config_entries.async_update_entry(
-            entry, data={aes.b64_encrypt(AES_ACCOUNT_KEY): user_input_encrpt}
+            entry,
+            data={
+                AES_ACCOUNT_KEY: user_input_encrpt,
+                XOR_KEY: c_xor_entry,
+                KEY_KEY: access_id_entry,
+            },
         )
     return entry_data
 
@@ -157,8 +158,7 @@ async def _init_tuya_sdk(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         def update_device(self, device: TuyaDevice):
             for ha_device in hass.data[DOMAIN][TUYA_HA_DEVICES]:
                 if ha_device.tuya_device.id == device.id:
-                    _LOGGER.debug(
-                        f"_update-->{self};->>{ha_device.tuya_device.status}")
+                    _LOGGER.debug(f"_update-->{self};->>{ha_device.tuya_device.status}")
                     ha_device.schedule_update_ha_state()
 
         def add_device(self, device: TuyaDevice):
@@ -272,8 +272,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     if unload:
         __device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
         __device_manager.mq.stop()
-        __device_manager.remove_device_listener(
-            hass.data[DOMAIN][TUYA_MQTT_LISTENER])
+        __device_manager.remove_device_listener(hass.data[DOMAIN][TUYA_MQTT_LISTENER])
 
         hass.data.pop(DOMAIN)
 
