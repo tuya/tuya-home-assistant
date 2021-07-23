@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Config flow for Tuya."""
 
+import json
 import logging
 from .aes_cbc import (
     AesCBC as Aes,
@@ -29,6 +30,7 @@ from .const import (
 )
 
 RESULT_SINGLE_INSTANCE = "single_instance_allowed"
+RESULT_AUTH_FAILED = "invalid_auth"
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -121,7 +123,9 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(self, user_input=None):
         """Step user."""
-        _LOGGER.info(f"TuyaConfigFlow.async_step_user start, is_import= {user_input}")
+        _LOGGER.info(f"TuyaConfigFlow.async_step_user start, is_import= {self.is_import}")
+        _LOGGER.info(f"TuyaConfigFlow.async_step_user start, user_input= {user_input}")
+
         if self._async_current_entries():
             return self.async_abort(reason=RESULT_SINGLE_INSTANCE)
 
@@ -144,7 +148,7 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 c = cbc_key + cbc_iv
                 c_xor_entry = aes.xor_encrypt(c, access_id_entry)
                 # account info encrypted with AES-CBC
-                user_input_encrpt = aes.cbc_encrypt(cbc_key, cbc_iv, str(user_input))
+                user_input_encrpt = aes.cbc_encrypt(cbc_key, cbc_iv, json.dumps(user_input))
                 # account info encrypted add to cache
                 return self.async_create_entry(
                     title=user_input[CONF_USERNAME],
@@ -155,7 +159,7 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     },
                 )
 
-            errors["base"] = "invalid_auth"
+            errors["base"] = RESULT_AUTH_FAILED
             if self.is_import:
                 return self.async_abort(reason=errors["base"])
 

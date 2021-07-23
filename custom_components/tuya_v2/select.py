@@ -3,7 +3,7 @@
 
 import json
 import logging
-from typing import List
+from typing import List, Optional
 
 from tuya_iot import TuyaDevice, TuyaDeviceManager
 
@@ -25,10 +25,14 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 TUYA_SUPPORT_TYPE = {
-    "xxj"
+    "xxj" #Diffuser
 }
 
 DPCODE_MODE = "mode"
+DPCODE_COUNTDOWN = "countdown"
+DPCODE_WORK_MODE = "work_mode"
+
+AUTO_GENERATE_DP_LIST = [DPCODE_MODE, DPCODE_COUNTDOWN, DPCODE_WORK_MODE]
 
 async def async_setup_entry(hass: HomeAssistant, _entry: ConfigEntry, async_add_entities):
     _LOGGER.info("select init")
@@ -54,6 +58,13 @@ async def async_setup_entry(hass: HomeAssistant, _entry: ConfigEntry, async_add_
             device_ids.append(device_id)
     await async_discover_device(device_ids)
 
+def get_auto_generate_data_points(status):
+    dps = []
+    for data_point in AUTO_GENERATE_DP_LIST:
+        if data_point in status:
+            dps.append(data_point)
+
+    return dps
 
 def _setup_entities(hass, device_ids: List):
     device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
@@ -63,16 +74,21 @@ def _setup_entities(hass, device_ids: List):
         if device is None:
             continue
 
-        if DPCODE_MODE in device.status:
-            entities.append(TuyaHaSelect(device, device_manager, DPCODE_MODE))
+        for data_point in get_auto_generate_data_points(device.status):
+            entities.append(TuyaHaSelect(device, device_manager, data_point))
 
     return entities
+    
 
 class TuyaHaSelect(TuyaHaDevice, SelectEntity):
     def __init__(self, device: TuyaDevice, device_manager: TuyaDeviceManager, code: str = ""):
         self._code = code
         self._attr_current_option = None
         super().__init__(device, device_manager)
+
+    @property
+    def unique_id(self) -> Optional[str]:
+        return f"{super().unique_id}{self._code}"
 
     @property
     def current_option(self) -> str:

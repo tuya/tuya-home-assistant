@@ -53,7 +53,8 @@ TUYA_SUPPORT_TYPE = [
     "ldcg",  # Luminance Sensor
     "ms",  # Residential Lock
     "dj",  # Smart RGB Plug
-    "kj",  # Air Purifier
+    "kj",  # Air Purifier,
+    "xxj"  # Diffuser
 ]
 
 # Smoke Detector

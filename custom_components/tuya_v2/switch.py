@@ -30,7 +30,8 @@ TUYA_SUPPORT_TYPE = {
     "bh",     # Smart Kettle
     "dlq",    # Breaker
     "cwysj",  # Pet Water Feeder
-    "kj"      # Air Purifier
+    "kj",     # Air Purifier
+    "xxj"     # Diffuser
 }
 
 # Switch(kg), Socket(cz), Power Strip(pc)

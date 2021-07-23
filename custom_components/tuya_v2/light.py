@@ -59,6 +59,8 @@ TUYA_SUPPORT_TYPE = {
     "fwl",  # Ambient light
     "dc",   # Light string
     "jsq",  # Humidifier's light
+    "xdd",   # Ceiling Light
+    "xxj"  # Diffuser's light 
 }
 
 DEFAULT_HSV = {
@@ -235,12 +237,9 @@ class TuyaHaLight(TuyaHaDevice, LightEntity):
         brightness = self.tuya_device.status.get(self.dp_code_bright, 0)
 
         _LOGGER.debug(
-            f"""brightness id-> 
-            {self.tuya_device.id}
-            work_mode->,
-            {self._work_mode()},
-            ; check true->,
-            {self._work_mode().startswith(WORK_MODE_COLOUR)}"""
+            f"""brightness id-> {self.tuya_device.id},
+            work_mode-> {self._work_mode()},
+            check true-> {self._work_mode().startswith(WORK_MODE_COLOUR)}"""
         )
 
         if self._work_mode().startswith(WORK_MODE_COLOUR):

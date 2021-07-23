@@ -2,6 +2,7 @@
 """Support for Tuya Smart devices."""
 
 import itertools
+import json
 import logging
 from .aes_cbc import (
     AesCBC as Aes,
@@ -84,7 +85,7 @@ def entry_decrypt(hass: HomeAssistant, entry: ConfigEntry, init_entry_data):
         cbc_iv = key_iv[16:32]
         decrpyt_str = aes.cbc_decrypt(
             cbc_key, cbc_iv, init_entry_data[AES_ACCOUNT_KEY]
-        ).replace("'", '"')
+        )
         # _LOGGER.info(f"tuya.__init__.exist_xor_cache:::decrpyt_str-->{decrpyt_str}")
         entry_data = aes.json_to_dict(decrpyt_str)
     else:
@@ -98,7 +99,7 @@ def entry_decrypt(hass: HomeAssistant, entry: ConfigEntry, init_entry_data):
         c = cbc_key + cbc_iv
         c_xor_entry = aes.xor_encrypt(c, access_id_entry)
         # account info encrypted with AES-CBC
-        user_input_encrpt = aes.cbc_encrypt(cbc_key, cbc_iv, str(init_entry_data))
+        user_input_encrpt = aes.cbc_encrypt(cbc_key, cbc_iv, json.dumps(init_entry_data))
         # udpate old account info
         hass.config_entries.async_update_entry(
             entry,
@@ -192,9 +193,9 @@ async def _init_tuya_sdk(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 device_manager.mq = tuya_mq
                 tuya_mq.add_message_listener(device_manager._on_message)
 
-        def remove_device(self, id: str):
-            _LOGGER.info(f"tuya remove device:{id}")
-            remove_hass_device(hass, id)
+        def remove_device(self, device_id: str):
+            _LOGGER.info(f"tuya remove device:{device_id}")
+            remove_hass_device(hass, device_id)
 
     __listener = DeviceListener()
     hass.data[DOMAIN][TUYA_MQTT_LISTENER] = __listener

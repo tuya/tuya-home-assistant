@@ -3,7 +3,7 @@
 
 import json
 import logging
-from typing import List, Tuple
+from typing import List
 
 from homeassistant.components.climate import DOMAIN as DEVICE_DOMAIN, ClimateEntity
 from homeassistant.components.climate.const import (
@@ -27,7 +27,6 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import TEMP_CELSIUS, TEMP_FAHRENHEIT
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-from homeassistant.util.temperature import convert as convert_temperature
 from tuya_iot import TuyaDevice, TuyaDeviceManager
 
 from .base import TuyaHaDevice
@@ -135,8 +134,9 @@ def _setup_entities(hass, device_ids: List):
 
 class TuyaHaClimate(TuyaHaDevice, ClimateEntity):
     """Tuya Switch Device."""
+
     def __init__(self, device: TuyaDevice, device_manager: TuyaDeviceManager):
-        """Init Tuya Ha Climate"""
+        """Init Tuya Ha Climate."""
         super().__init__(device, device_manager)
         if DPCODE_C_F in self.tuya_device.status:
             self.dp_temp_unit = DPCODE_C_F
@@ -144,6 +144,7 @@ class TuyaHaClimate(TuyaHaDevice, ClimateEntity):
             self.dp_temp_unit = DPCODE_TEMP_UNIT_CONVERT
 
     def get_temp_set_scale(self) -> int:
+        """Get temperature set scale."""
         __dp_temp_set = DPCODE_TEMP_SET if self.__is_celsius() else DPCODE_TEMP_SET_F
         __temp_set_value_range = json.loads(
             self.tuya_device.status_range.get(__dp_temp_set).values
@@ -151,7 +152,10 @@ class TuyaHaClimate(TuyaHaDevice, ClimateEntity):
         return __temp_set_value_range.get("scale")
 
     def get_temp_current_scale(self) -> int:
-        __dp_temp_current = DPCODE_TEMP_CURRENT if self.__is_celsius() else DPCODE_TEMP_CURRENT_F
+        """Get temperature current scale."""
+        __dp_temp_current = (
+            DPCODE_TEMP_CURRENT if self.__is_celsius() else DPCODE_TEMP_CURRENT_F
+        )
         __temp_current_value_range = json.loads(
             self.tuya_device.status_range.get(__dp_temp_current).values
         )
@@ -211,7 +215,16 @@ class TuyaHaClimate(TuyaHaDevice, ClimateEntity):
         """Set new target temperature."""
         _LOGGER.debug(f"climate temp->{kwargs}")
         code = DPCODE_TEMP_SET if self.__is_celsius() else DPCODE_TEMP_SET_F
-        self._send_command([{"code": code, "value": int(kwargs["temperature"] * (10 ** self.get_temp_set_scale()))}])
+        self._send_command(
+            [
+                {
+                    "code": code,
+                    "value": int(
+                        kwargs["temperature"] * (10 ** self.get_temp_set_scale())
+                    ),
+                }
+            ]
+        )
 
     def __is_celsius(self) -> bool:
         return (
@@ -230,12 +243,23 @@ class TuyaHaClimate(TuyaHaDevice, ClimateEntity):
     @property
     def current_temperature(self) -> float:
         """Return the current temperature."""
-        if DPCODE_TEMP_CURRENT not in self.tuya_device.status and DPCODE_TEMP_CURRENT_F not in self.tuya_device.status:
+        if (
+            DPCODE_TEMP_CURRENT not in self.tuya_device.status
+            and DPCODE_TEMP_CURRENT_F not in self.tuya_device.status
+        ):
             return None
 
         if self.__is_celsius():
-            return self.tuya_device.status.get(DPCODE_TEMP_CURRENT, 0) * 1.0 / (10 ** self.get_temp_current_scale())
-        return self.tuya_device.status.get(DPCODE_TEMP_CURRENT_F, 0) * 1.0 / (10 ** self.get_temp_current_scale())
+            return (
+                self.tuya_device.status.get(DPCODE_TEMP_CURRENT, 0)
+                * 1.0
+                / (10 ** self.get_temp_current_scale())
+            )
+        return (
+            self.tuya_device.status.get(DPCODE_TEMP_CURRENT_F, 0)
+            * 1.0
+            / (10 ** self.get_temp_current_scale())
+        )
 
     @property
     def current_humidity(self) -> int:
@@ -246,7 +270,11 @@ class TuyaHaClimate(TuyaHaDevice, ClimateEntity):
     def target_temperature(self) -> float:
         """Return the temperature currently set to be reached."""
         # return 1
-        return self.tuya_device.status.get(DPCODE_TEMP_SET, 0) * 1.0 / (10 ** self.get_temp_set_scale())
+        return (
+            self.tuya_device.status.get(DPCODE_TEMP_SET, 0)
+            * 1.0
+            / (10 ** self.get_temp_set_scale())
+        )
 
     @property
     def max_temp(self) -> float:
@@ -257,7 +285,6 @@ class TuyaHaClimate(TuyaHaDevice, ClimateEntity):
     def min_temp(self) -> float:
         """Return the minimum temperature."""
         return self.target_temperature_low
-
 
     @property
     def target_temperature_high(self) -> float:
@@ -280,7 +307,9 @@ class TuyaHaClimate(TuyaHaDevice, ClimateEntity):
             temp_value = json.loads(
                 self.tuya_device.function.get(DPCODE_TEMP_SET, {}).values
             )
-            low_value = temp_value.get("min", 0) * 1.0 / (10 ** self.get_temp_set_scale())
+            low_value = (
+                temp_value.get("min", 0) * 1.0 / (10 ** self.get_temp_set_scale())
+            )
             return low_value
 
         temp_value = json.loads(
@@ -292,9 +321,15 @@ class TuyaHaClimate(TuyaHaDevice, ClimateEntity):
     def target_temperature_step(self) -> float:
         """Return target temperature setp."""
         __temp_set_value_range = json.loads(
-            self.tuya_device.status_range.get(DPCODE_TEMP_SET if self.__is_celsius() else DPCODE_TEMP_SET_F).values
+            self.tuya_device.status_range.get(
+                DPCODE_TEMP_SET if self.__is_celsius() else DPCODE_TEMP_SET_F
+            ).values
         )
-        return __temp_set_value_range.get("step", 0) * 1.0 / (10 ** self.get_temp_set_scale())
+        return (
+            __temp_set_value_range.get("step", 0)
+            * 1.0
+            / (10 ** self.get_temp_set_scale())
+        )
 
     @property
     def target_humidity(self) -> int:
