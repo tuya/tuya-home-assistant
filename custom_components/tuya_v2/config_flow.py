@@ -24,6 +24,7 @@ from .const import (
 )
 
 RESULT_SINGLE_INSTANCE = "single_instance_allowed"
+RESULT_AUTH_FAILED = "invalid_auth"
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -112,7 +113,8 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(self, user_input=None):
         """Step user."""
-        _LOGGER.info(f"TuyaConfigFlow.async_step_user start, is_import= {user_input}")
+        _LOGGER.info(f"TuyaConfigFlow.async_step_user start, is_import= {self.is_import}")
+        _LOGGER.info(f"TuyaConfigFlow.async_step_user start, user_input= {user_input}")
 
         if self._async_current_entries():
             return self.async_abort(reason=RESULT_SINGLE_INSTANCE)
@@ -133,7 +135,7 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     data=user_input,
                 )
 
-            errors["base"] = "invalid_auth"
+            errors["base"] = RESULT_AUTH_FAILED
             if self.is_import:
                 return self.async_abort(reason=errors["base"])
 

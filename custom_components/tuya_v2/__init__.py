@@ -149,9 +149,9 @@ async def _init_tuya_sdk(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 device_manager.mq = tuya_mq
                 tuya_mq.add_message_listener(device_manager._on_message)
 
-        def remove_device(self, id: str):
-            _LOGGER.info(f"tuya remove device:{id}")
-            remove_hass_device(hass, id)
+        def remove_device(self, device_id: str):
+            _LOGGER.info(f"tuya remove device:{device_id}")
+            remove_hass_device(hass, device_id)
 
     __listener = DeviceListener()
     hass.data[DOMAIN][TUYA_MQTT_LISTENER] = __listener
