@@ -4,20 +4,10 @@
 import itertools
 import logging
 from .aes_cbc import (
+    AesCBC as Aes,
     XOR_KEY,
     KEY_KEY,
     AES_ACCOUNT_KEY,
-    get_xor_cache,
-    cbc_decrypt,
-    xor_decrypt,
-    json_to_dict,
-    exist_xor_cache,
-    b64_encrypt,
-    random_16,
-    cbc_encrypt,
-    xor_encrypt,
-    add_xor_cache,
-    b64_encrypt,
 )
 from typing import Any
 
@@ -81,39 +71,49 @@ CONFIG_SCHEMA = vol.Schema(
     extra=vol.ALLOW_EXTRA,
 )
 
+# decrypt or encrypt entry info
 
-async def _init_tuya_sdk(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    init_entry_data = entry.data
+
+def entry_decrypt(hass: HomeAssistant, entry: ConfigEntry, init_entry_data):
+    aes = Aes()
     # decrypt the new account info
-    if exist_xor_cache():
+    if aes.exist_xor_cache():
         _LOGGER.info("tuya.__init__.exist_xor_cache-->True")
-        xor_cache = get_xor_cache()
-        key_iv = xor_decrypt(xor_cache[XOR_KEY], xor_cache[KEY_KEY])
+        xor_cache = aes.get_xor_cache()
+        key_iv = aes.xor_decrypt(xor_cache[XOR_KEY], xor_cache[KEY_KEY])
         cbc_key = key_iv[0:16]
         cbc_iv = key_iv[16:32]
-        decrpyt_str = cbc_decrypt(
-            cbc_key, cbc_iv, init_entry_data[b64_encrypt(AES_ACCOUNT_KEY)]
+        decrpyt_str = aes.cbc_decrypt(
+            cbc_key, cbc_iv, init_entry_data[aes.b64_encrypt(AES_ACCOUNT_KEY)]
         ).replace("'", '"')
-        _LOGGER.info(f"tuya.__init__.exist_xor_cache:::decrpyt_str-->{decrpyt_str}")
-        entry_data = json_to_dict(decrpyt_str)
+        # _LOGGER.info(f"tuya.__init__.exist_xor_cache:::decrpyt_str-->{decrpyt_str}")
+        entry_data = aes.json_to_dict(decrpyt_str)
     else:
         # if not exist xor cache, use old account info
         _LOGGER.info("tuya.__init__.exist_xor_cache-->False")
         entry_data = init_entry_data
-        cbc_key = random_16()
-        cbc_iv = random_16()
+        cbc_key = aes.random_16()
+        cbc_iv = aes.random_16()
         access_id = init_entry_data[CONF_ACCESS_ID]
-        access_id_entry = cbc_encrypt(cbc_key, cbc_iv, access_id)
+        access_id_entry = aes.cbc_encrypt(cbc_key, cbc_iv, access_id)
         c = cbc_key + cbc_iv
-        c_xor_entry = xor_encrypt(c, access_id_entry)
+        c_xor_entry = aes.xor_encrypt(c, access_id_entry)
         # add c_xor_entry and access_id_entry add to cache
-        add_xor_cache(xor=c_xor_entry, key=access_id_entry)
+        aes.add_xor_cache(xor=c_xor_entry, key=access_id_entry)
         # account info encrypted with AES-CBC
-        user_input_encrpt = cbc_encrypt(cbc_key, cbc_iv, str(init_entry_data))
+        user_input_encrpt = aes.cbc_encrypt(
+            cbc_key, cbc_iv, str(init_entry_data))
         # udpate old account info
         hass.config_entries.async_update_entry(
-            entry, data={b64_encrypt(AES_ACCOUNT_KEY): user_input_encrpt}
+            entry, data={aes.b64_encrypt(AES_ACCOUNT_KEY): user_input_encrpt}
         )
+    return entry_data
+
+
+async def _init_tuya_sdk(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    init_entry_data = entry.data
+    # decrypt or encrypt entry info
+    entry_data = entry_decrypt(hass, entry, init_entry_data)
     project_type = ProjectType(entry_data[CONF_PROJECT_TYPE])
     api = TuyaOpenAPI(
         entry_data[CONF_ENDPOINT],
@@ -157,7 +157,8 @@ async def _init_tuya_sdk(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         def update_device(self, device: TuyaDevice):
             for ha_device in hass.data[DOMAIN][TUYA_HA_DEVICES]:
                 if ha_device.tuya_device.id == device.id:
-                    _LOGGER.debug(f"_update-->{self};->>{ha_device.tuya_device.status}")
+                    _LOGGER.debug(
+                        f"_update-->{self};->>{ha_device.tuya_device.status}")
                     ha_device.schedule_update_ha_state()
 
         def add_device(self, device: TuyaDevice):
@@ -271,7 +272,8 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     if unload:
         __device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
         __device_manager.mq.stop()
-        __device_manager.remove_device_listener(hass.data[DOMAIN][TUYA_MQTT_LISTENER])
+        __device_manager.remove_device_listener(
+            hass.data[DOMAIN][TUYA_MQTT_LISTENER])
 
         hass.data.pop(DOMAIN)
 

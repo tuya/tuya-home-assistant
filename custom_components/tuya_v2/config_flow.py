@@ -3,12 +3,8 @@
 
 import logging
 from .aes_cbc import (
+    AesCBC as Aes,
     AES_ACCOUNT_KEY,
-    random_16,
-    cbc_encrypt,
-    xor_encrypt,
-    add_xor_cache,
-    b64_encrypt,
 )
 from tuya_iot import ProjectType, TuyaOpenAPI
 import voluptuous as vol
@@ -75,7 +71,8 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     @classmethod
     def _try_login(cls, user_input):
-        _LOGGER.info(f"TuyaConfigFlow._try_login start, user_input: {user_input}")
+        _LOGGER.info(
+            f"TuyaConfigFlow._try_login start, user_input: {user_input}")
         project_type = ProjectType(user_input[CONF_PROJECT_TYPE])
         api = TuyaOpenAPI(
             user_input[CONF_ENDPOINT]
@@ -88,7 +85,8 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         api.set_dev_channel("hass")
 
         if project_type == ProjectType.INDUSTY_SOLUTIONS:
-            response = api.login(user_input[CONF_USERNAME], user_input[CONF_PASSWORD])
+            response = api.login(
+                user_input[CONF_USERNAME], user_input[CONF_PASSWORD])
         else:
             api.endpoint = "https://openapi.tuyacn.com"
             response = api.login(
@@ -101,7 +99,8 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 api.endpoint = api.token_info.platform_url
                 user_input[CONF_ENDPOINT] = api.token_info.platform_url
 
-        _LOGGER.info(f"TuyaConfigFlow._try_login finish, response:, {response}")
+        _LOGGER.info(
+            f"TuyaConfigFlow._try_login finish, response:, {response}")
         return response
 
     async def async_step_import(self, user_input=None):
@@ -114,7 +113,8 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self.conf_project_type = user_input[CONF_PROJECT_TYPE]
         self.project_type = ProjectType(self.conf_project_type)
         return (
-            self.async_show_form(step_id="user", data_schema=DATA_SCHEMA_SMART_HOME)
+            self.async_show_form(
+                step_id="user", data_schema=DATA_SCHEMA_SMART_HOME)
             if self.project_type == ProjectType.SMART_HOME
             else self.async_show_form(
                 step_id="user", data_schema=DATA_SCHEMA_INDUSTRY_SOLUTIONS
@@ -123,7 +123,8 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(self, user_input=None):
         """Step user."""
-        _LOGGER.info(f"TuyaConfigFlow.async_step_user start, is_import= {user_input}")
+        _LOGGER.info(
+            f"TuyaConfigFlow.async_step_user start, is_import= {user_input}")
         if self._async_current_entries():
             return self.async_abort(reason=RESULT_SINGLE_INSTANCE)
 
@@ -137,21 +138,23 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             )
 
             if response.get("success", False):
+                aes = Aes()
                 _LOGGER.info("TuyaConfigFlow.async_step_user login success")
-                cbc_key = random_16()
-                cbc_iv = random_16()
+                cbc_key = aes.random_16()
+                cbc_iv = aes.random_16()
                 access_id = user_input[CONF_ACCESS_ID]
-                access_id_entry = cbc_encrypt(cbc_key, cbc_iv, access_id)
+                access_id_entry = aes.cbc_encrypt(cbc_key, cbc_iv, access_id)
                 c = cbc_key + cbc_iv
-                c_xor_entry = xor_encrypt(c, access_id_entry)
+                c_xor_entry = aes.xor_encrypt(c, access_id_entry)
                 # add c_xor_entry and access_id_entry add to cache
-                add_xor_cache(xor=c_xor_entry, key=access_id_entry)
+                aes.add_xor_cache(xor=c_xor_entry, key=access_id_entry)
                 # account info encrypted with AES-CBC
-                user_input_encrpt = cbc_encrypt(cbc_key, cbc_iv, str(user_input))
+                user_input_encrpt = aes.cbc_encrypt(
+                    cbc_key, cbc_iv, str(user_input))
                 # account info encrypted add to cache
                 return self.async_create_entry(
                     title=user_input[CONF_USERNAME],
-                    data={b64_encrypt(AES_ACCOUNT_KEY): user_input_encrpt},
+                    data={aes.b64_encrypt(AES_ACCOUNT_KEY): user_input_encrpt},
                 )
 
             errors["base"] = "invalid_auth"
