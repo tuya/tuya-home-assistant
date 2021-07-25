@@ -65,7 +65,7 @@ DPCODE_DOORLOCK_STATE = "closed_opened"
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities: AddEntitiesCllback
+    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     """Set up tuya binary sensors dynamically through tuya discovery."""
     _LOGGER.info("binary sensor init")

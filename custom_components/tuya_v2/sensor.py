@@ -101,7 +101,7 @@ DPCODE_AP_COUNTDOWN = "countdown_left"  # Remaining time of countdown [minute]
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities: AddEntitiesCllback
+    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     """Set up tuya sensors dynamically through tuya discovery."""
     _LOGGER.info("sensor init")
