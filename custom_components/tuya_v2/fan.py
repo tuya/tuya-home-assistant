@@ -231,7 +231,7 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
         """Return the number of speeds the fan supports."""
         if self.tuya_device.category == "kj":
             return self.air_purifier_speed_range_len
-        return super().speed_count()
+        return super().speed_count
 
     @property
     def supported_features(self):
