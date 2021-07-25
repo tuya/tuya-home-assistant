@@ -3,7 +3,6 @@
 
 import json
 import logging
-from typing import List, Optional
 
 from homeassistant.components.sensor import DOMAIN as DEVICE_DOMAIN
 from homeassistant.components.sensor import SensorEntity
@@ -24,6 +23,8 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.typing import StateType
 from tuya_iot import TuyaDevice, TuyaDeviceManager
 
 from .base import TuyaHaDevice
@@ -100,8 +101,8 @@ DPCODE_AP_COUNTDOWN = "countdown_left"  # Remaining time of countdown [minute]
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities
-):
+    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities: AddEntitiesCllback
+) -> None:
     """Set up tuya sensors dynamically through tuya discovery."""
     _LOGGER.info("sensor init")
 
@@ -128,7 +129,7 @@ async def async_setup_entry(
     await async_discover_device(device_ids)
 
 
-def _setup_entities(hass, device_ids: List):
+def _setup_entities(hass: HomeAssistant, device_ids: list):
     """Set up Tuya Switch device."""
     device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
     entities = []
@@ -401,7 +402,7 @@ class TuyaHaSensor(TuyaHaDevice, SensorEntity):
         sensor_type: str,
         sensor_code: str,
         sensor_unit: str,
-    ):
+    ) -> None:
         """Init TuyaHaSensor."""
         self._code = sensor_code
         self._attr_device_class = sensor_type
@@ -412,7 +413,7 @@ class TuyaHaSensor(TuyaHaDevice, SensorEntity):
         super().__init__(device, device_manager)
 
     @property
-    def state(self):
+    def state(self) -> StateType:
         """Return the state of the sensor."""
         __value = self.tuya_device.status.get(self._code)
         if self.tuya_device.status_range.get(self._code).type == "Integer":
