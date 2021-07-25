@@ -2,7 +2,7 @@
 """Support for Tuya Binary Sensor."""
 
 import logging
-from typing import Callable, List, Optional
+from typing import Callable
 
 from homeassistant.components.binary_sensor import (
     DEVICE_CLASS_BATTERY,
@@ -18,6 +18,7 @@ from homeassistant.components.binary_sensor import DOMAIN as DEVICE_DOMAIN
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from tuya_iot import TuyaDevice, TuyaDeviceManager
 
@@ -64,8 +65,8 @@ DPCODE_DOORLOCK_STATE = "closed_opened"
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities
-):
+    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities: AddEntitiesCllback
+) -> None:
     """Set up tuya binary sensors dynamically through tuya discovery."""
     _LOGGER.info("binary sensor init")
 
@@ -92,7 +93,7 @@ async def async_setup_entry(
     await async_discover_device(device_ids)
 
 
-def _setup_entities(hass, device_ids: List):
+def _setup_entities(hass: HomeAssistant, device_ids: list):
     """Set up Tuya Switch device."""
     device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
     entities = []
@@ -231,7 +232,7 @@ class TuyaHaBSensor(TuyaHaDevice, BinarySensorEntity):
         device_manager: TuyaDeviceManager,
         sensor_type: str,
         sensor_is_on: Callable[..., bool],
-    ):
+    ) -> None:
         """Init TuyaHaBSensor."""
         self._attr_device_class = sensor_type
         self._attr_name = self.tuya_device.name + "_" + self._attr_device_class
