@@ -404,9 +404,9 @@ class TuyaHaSensor(TuyaHaDevice, SensorEntity):
     ):
         """Init TuyaHaSensor."""
         self._code = sensor_code
+        self._attr_device_class = sensor_type
         self._attr_name = self.tuya_device.name + "_" + self._attr_device_class
         self._attr_unique_id = f"{super().unique_id}{self._code}"
-        self._attr_device_class = sensor_type
         self._attr_unit_of_measurement = sensor_unit
         self._attr_available = True
         super().__init__(device, device_manager)
