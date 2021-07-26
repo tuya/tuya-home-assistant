@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: Create a report to help us improve, Not leave sensitive info in the log.
 title: ''
 labels: bug
 assignees: ''

@@ -1,6 +1,6 @@
 ---
 name: New Device Support
-about: New device that wants to be supported
+about: New device that wants to be supported, Not leave sensitive info in the log.
 title: ''
 labels: enhancement, help wanted
 assignees: ''
