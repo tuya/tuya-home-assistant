@@ -78,7 +78,7 @@ CONFIG_SCHEMA = vol.Schema(
 def entry_decrypt(hass: HomeAssistant, entry: ConfigEntry, init_entry_data):
     aes = Aes()
     # decrypt the new account info
-    if init_entry_data[XOR_KEY]:
+    if XOR_KEY in init_entry_data:
         _LOGGER.info("tuya.__init__.exist_xor_cache-->True")
         key_iv = aes.xor_decrypt(init_entry_data[XOR_KEY], init_entry_data[KEY_KEY])
         cbc_key = key_iv[0:16]
