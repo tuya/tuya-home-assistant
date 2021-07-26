@@ -8,6 +8,7 @@ from tuya_iot import TuyaDevice, TuyaDeviceManager
 
 from homeassistant.components.binary_sensor import (
     DEVICE_CLASS_DOOR,
+    DEVICE_CLASS_GARAGE_DOOR,
     DEVICE_CLASS_GAS,
     DEVICE_CLASS_MOISTURE,
     DEVICE_CLASS_MOTION,
@@ -41,7 +42,8 @@ TUYA_SUPPORT_TYPE = [
     "sj",  # Water Detector
     "sos",  # Emergency Button
     "hps",  # Human Presence Sensor
-    "ms", # Residential Lock
+    "ms",  # Residential Lock
+    "ckmkzq",  # Garage Door Opener
 ]
 
 # Door Window Sensor
@@ -112,11 +114,15 @@ def _setup_entities(hass, device_ids: List):
                 )
             )
         if DPCODE_DOORCONTACT_STATE in device.status:
+            if device.category == "ckmkzq":
+                device_class_d = DEVICE_CLASS_GARAGE_DOOR
+            else:
+                device_class_d = DEVICE_CLASS_DOOR
             entities.append(
                 TuyaHaBSensor(
                     device,
                     device_manager,
-                    DEVICE_CLASS_DOOR,
+                    device_class_d,
                     (lambda d: d.status.get(DPCODE_DOORCONTACT_STATE, False)),
                 )
             )
@@ -144,7 +150,10 @@ def _setup_entities(hass, device_ids: List):
                     device,
                     device_manager,
                     DEVICE_CLASS_SMOKE,
-                    (lambda d: d.status.get(DPCODE_SMOKE_SENSOR_STATUS, 'normal') == "alarm"),
+                    (
+                        lambda d: d.status.get(DPCODE_SMOKE_SENSOR_STATUS, "normal")
+                        == "alarm"
+                    ),
                 )
             )
         if DPCODE_BATTERY_STATE in device.status:
@@ -153,7 +162,7 @@ def _setup_entities(hass, device_ids: List):
                     device,
                     device_manager,
                     DEVICE_CLASS_BATTERY,
-                    (lambda d: d.status.get(DPCODE_BATTERY_STATE, 'normal') == "low"),
+                    (lambda d: d.status.get(DPCODE_BATTERY_STATE, "normal") == "low"),
                 )
             )
         if DPCODE_TEMPER_ALRAM in device.status:
@@ -189,7 +198,10 @@ def _setup_entities(hass, device_ids: List):
                     device,
                     device_manager,
                     DEVICE_CLASS_MOISTURE,
-                    (lambda d: d.status.get(DPCODE_WATER_SENSOR_STATE, "normal") == "alarm"),
+                    (
+                        lambda d: d.status.get(DPCODE_WATER_SENSOR_STATE, "normal")
+                        == "alarm"
+                    ),
                 )
             )
         if DPCODE_SOS_STATE in device.status:
