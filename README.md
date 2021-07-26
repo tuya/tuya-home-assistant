@@ -21,8 +21,6 @@ The [Tuya Home Assistant integration Wiki](https://github.com/tuya/tuya-home-ass
 - [Tuya-IoT-Platform-Configuration](https://github.com/tuya/tuya-home-assistant/wiki/Tuya-IoT-Platform-Configuration-Guide-Using-Smart-Home-PaaS)
 - [Install-Tuya-v2](https://github.com/tuya/tuya-home-assistant/wiki/Install-Tuya-v2)
 
-[![Youtube](https://img.youtube.com/vi/Amc_fmYMQEo/0.jpg)](https://www.youtube.com/watch?v=Amc_fmYMQEo)
-
 ## [Tuya Beta Test Program](https://pages.tuya.com/develop/HomeAssistantBetaTest_V2?_source=df3c37ad796d2388fc5527a8029c7889)
 Welcome to join the [Tuya Beta Test Program](https://pages.tuya.com/develop/HomeAssistantBetaTest_V2?_source=df3c37ad796d2388fc5527a8029c7889) to get your development gifts and make a contribution to the integration. Your feedback is valuable to the whole community.
 
