@@ -1,6 +1,6 @@
 ---
 name: New Device Support
-about: New device that wants to be supported
+about: New device that wants to be supported, Not leave sensitive info in the log.
 title: ''
 labels: enhancement, help wanted
 assignees: ''
@@ -21,9 +21,9 @@ like this:
       "icon": "smart/product_icon/cz.png",
       "id": "aaaaaaaaaaa",
       "ip": "xxxxxxxxxxxxxxxx",
-      "lat": "30.30286857361191",
+      "lat": "xxxxxxxxxxxxxxxx",
       "local_key": "xxxxxxxxxxxxx",
-      "lon": "120.0639743842656",
+      "lon": "xxxxxxxxxxxxxxx",
       "model": "",
       "name": "Living Room Socket",
       "online": false,
