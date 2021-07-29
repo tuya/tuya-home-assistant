@@ -230,7 +230,6 @@ class TuyaHaClimate(TuyaHaDevice, ClimateEntity):
         return (
             self.dp_temp_unit in self.tuya_device.status
             and self.tuya_device.status.get(self.dp_temp_unit).lower() == "c"
-            or DPCODE_TEMP_CURRENT in self.tuya_device.status
         )
 
     @property
