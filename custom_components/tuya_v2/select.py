@@ -25,14 +25,16 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 TUYA_SUPPORT_TYPE = {
-    "xxj" #Diffuser
+    "xxj",    # Diffuser
+    "msp",    # Cat Toilet
 }
 
 DPCODE_MODE = "mode"
 DPCODE_COUNTDOWN = "countdown"
 DPCODE_WORK_MODE = "work_mode"
+DPCODE_STATUS = "status"
 
-AUTO_GENERATE_DP_LIST = [DPCODE_MODE, DPCODE_COUNTDOWN, DPCODE_WORK_MODE]
+AUTO_GENERATE_DP_LIST = [DPCODE_MODE, DPCODE_COUNTDOWN, DPCODE_WORK_MODE, DPCODE_STATUS]
 
 async def async_setup_entry(hass: HomeAssistant, _entry: ConfigEntry, async_add_entities):
     _LOGGER.info("select init")

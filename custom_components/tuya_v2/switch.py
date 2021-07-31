@@ -31,7 +31,8 @@ TUYA_SUPPORT_TYPE = {
     "dlq",    # Breaker
     "cwysj",  # Pet Water Feeder
     "kj",     # Air Purifier
-    "xxj"     # Diffuser
+    "xxj",    # Diffuser
+    "msp",    # Cat Toilet
 }
 
 # Switch(kg), Socket(cz), Power Strip(pc)
@@ -53,8 +54,13 @@ DPCODE_WET = "wet"          # Air Purifier - Humidification unit
 DPCODE_PRESET = "pump_reset"   # Pet Water Feeder - Water pump resetting
 DPCODE_WRESET = "water_reset"  # Pet Water Feeder - Resetting of water usage days
 
-
 DPCODE_START = "start"
+
+# Cat Toilet
+# https://developer.tuya.com/en/docs/iot/f?id=Kakg309qkmuit
+DPCODE_AUTOCLEAN = "auto_clean"
+DPCODE_MANUALCLEAN = "manual_clean"
+DPCODE_SLEEP = "sleep"
 
 
 async def async_setup_entry(
@@ -112,6 +118,12 @@ def _setup_entities(hass, device_ids: list):
                     entities.append(TuyaHaSwitch(
                         device, device_manager, function))
                     continue
+
+            elif device.category == "msp":
+                if function in [DPCODE_SWITCH, DPCODE_START, DPCODE_AUTOCLEAN, DPCODE_MANUALCLEAN, DPCODE_UV, DPCODE_SLEEP]:
+                    entities.append(TuyaHaSwitch(
+                        device, device_manager, function))
+
             else:
                 if function.startswith(DPCODE_START):
                     entities.append(TuyaHaSwitch(
