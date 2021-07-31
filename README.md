@@ -21,16 +21,13 @@ The [Tuya Home Assistant integration Wiki](https://github.com/tuya/tuya-home-ass
 - [Tuya-IoT-Platform-Configuration](https://github.com/tuya/tuya-home-assistant/wiki/Tuya-IoT-Platform-Configuration-Guide-Using-Smart-Home-PaaS)
 - [Install-Tuya-v2](https://github.com/tuya/tuya-home-assistant/wiki/Install-Tuya-v2)
 
-[![Youtube](https://img.youtube.com/vi/Amc_fmYMQEo/0.jpg)](https://www.youtube.com/watch?v=Amc_fmYMQEo)
-
 ## [Tuya Beta Test Program](https://pages.tuya.com/develop/HomeAssistantBetaTest_V2?_source=df3c37ad796d2388fc5527a8029c7889)
 Welcome to join the [Tuya Beta Test Program](https://pages.tuya.com/develop/HomeAssistantBetaTest_V2?_source=df3c37ad796d2388fc5527a8029c7889) to get your development gifts and make a contribution to the integration. Your feedback is valuable to the whole community.
 
 ## Supported Tuya Device Types
-Five primary categories, 26 secondary categories are supported now!
+Six primary categories, 31 secondary categories are supported now!
 
 :clap: [Supported Device Category](https://github.com/tuya/tuya-home-assistant/wiki/Supported-Device-Category)
-
 
  :tada: :tada: :tada: [Vote for Tuya v2 Integration New Device Driver Support!](https://github.com/tuya/tuya-home-assistant/discussions/86) :tada::tada::tada:
 

@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: Create a report to help us improve, Not leave sensitive info in the log.
 title: ''
 labels: bug
 assignees: ''
@@ -29,9 +29,9 @@ like this:
       "icon": "smart/product_icon/cz.png",
       "id": "aaaaaaaaaaa",
       "ip": "xxxxxxxxxxxxxxxx",
-      "lat": "30.30286857361191",
+      "lat": "xxxxxxxxxx",
       "local_key": "xxxxxxxxxxxxx",
-      "lon": "120.0639743842656",
+      "lon": "xxxxxxx",
       "model": "",
       "name": "Living Room Socket",
       "online": false,
@@ -69,7 +69,7 @@ like this:
 
 **Device specifications (please complete the following information, which can be found in [log](https://github.com/tuya/tuya-home-assistant/wiki/How-to-get-the-log)):**
 Same device's id, like this:
-[2021-07-01 10:18:01,351] [tuya-openapi] Request: method = GET, url = https://openapi.tuyacn.com/v1.0/devices/aaaaaaaaaaa/specifications, params = None, body = None, headers = {'client_id': 'xxxxxxxxxxxx', 'sign': 'xxxxxxxxxxxx', 'sign_method': 'HMAC-SHA256', 'access_token': '213e2d4af5e8d217abc0b104462a9f72', 't': '1625105881351', 'lang': 'en'}
+[2021-07-01 10:18:01,351] [tuya-openapi] Request: method = GET, url = https://openapi.tuyacn.com/v1.0/devices/aaaaaaaaaaa/specifications, params = None, body = None, headers = {'client_id': 'xxxxxxxxxxxx', 'sign': 'xxxxxxxxxxxx', 'sign_method': 'HMAC-SHA256', 'access_token': 'xxxxxxxxxxxxxxxx', 't': '1625105881351', 'lang': 'en'}
 2021-07-01 10:18:01 DEBUG (SyncWorker_1) [tuya iot] Response: {
   "result": {
     "category": "cz",

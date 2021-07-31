@@ -34,17 +34,16 @@ TUYA_PROJECT_TYPE = {1: "Custom Development", 0: "Smart Home PaaS"}
 TUYA_APP_TYPE = {"tuyaSmart": "TuyaSmart", "smartlife": "Smart Life"}
 
 TUYA_SUPPORT_HA_TYPE = [
-    "switch",
-    "fan",
-    "cover",
-    "climate",
-    "light",
-    "sensor",
     "binary_sensor",
+    "climate",
+    "cover",
+    "fan",
     "humidifier",
+    "light",
     "number",
-    "vacuum",
+    "scene",
     "select",
-    # "remote"
-    # 'alarm_control_panel'
+    "sensor",
+    "switch",
+    "vacuum",
 ]

@@ -86,6 +86,7 @@ class TuyaHaCover(TuyaHaDevice, CoverEntity):
 
     @property
     def is_closed(self) -> bool | None:
+        """Return is cover is closed."""
         return False
 
     @property

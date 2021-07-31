@@ -31,7 +31,7 @@ TUYA_SUPPORT_TYPE = {
     "dlq",    # Breaker
     "cwysj",  # Pet Water Feeder
     "kj",     # Air Purifier
-    "kqzg"    # Air Fryer
+    "xxj"     # Diffuser
 }
 
 # Switch(kg), Socket(cz), Power Strip(pc)

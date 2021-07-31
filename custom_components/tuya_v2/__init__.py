@@ -2,7 +2,14 @@
 """Support for Tuya Smart devices."""
 
 import itertools
+import json
 import logging
+from .aes_cbc import (
+    AesCBC as Aes,
+    XOR_KEY,
+    KEY_KEY,
+    AES_ACCOUNT_KEY,
+)
 from typing import Any
 
 from tuya_iot import (
@@ -65,9 +72,50 @@ CONFIG_SCHEMA = vol.Schema(
     extra=vol.ALLOW_EXTRA,
 )
 
+# decrypt or encrypt entry info
+
+
+def entry_decrypt(hass: HomeAssistant, entry: ConfigEntry, init_entry_data):
+    aes = Aes()
+    # decrypt the new account info
+    if XOR_KEY in init_entry_data:
+        _LOGGER.info("tuya.__init__.exist_xor_cache-->True")
+        key_iv = aes.xor_decrypt(init_entry_data[XOR_KEY], init_entry_data[KEY_KEY])
+        cbc_key = key_iv[0:16]
+        cbc_iv = key_iv[16:32]
+        decrpyt_str = aes.cbc_decrypt(
+            cbc_key, cbc_iv, init_entry_data[AES_ACCOUNT_KEY]
+        )
+        # _LOGGER.info(f"tuya.__init__.exist_xor_cache:::decrpyt_str-->{decrpyt_str}")
+        entry_data = aes.json_to_dict(decrpyt_str)
+    else:
+        # if not exist xor cache, use old account info
+        _LOGGER.info("tuya.__init__.exist_xor_cache-->False")
+        entry_data = init_entry_data
+        cbc_key = aes.random_16()
+        cbc_iv = aes.random_16()
+        access_id = init_entry_data[CONF_ACCESS_ID]
+        access_id_entry = aes.cbc_encrypt(cbc_key, cbc_iv, access_id)
+        c = cbc_key + cbc_iv
+        c_xor_entry = aes.xor_encrypt(c, access_id_entry)
+        # account info encrypted with AES-CBC
+        user_input_encrpt = aes.cbc_encrypt(cbc_key, cbc_iv, json.dumps(dict(init_entry_data)))
+        # udpate old account info
+        hass.config_entries.async_update_entry(
+            entry,
+            data={
+                AES_ACCOUNT_KEY: user_input_encrpt,
+                XOR_KEY: c_xor_entry,
+                KEY_KEY: access_id_entry,
+            },
+        )
+    return entry_data
+
 
 async def _init_tuya_sdk(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    entry_data = entry.data
+    init_entry_data = entry.data
+    # decrypt or encrypt entry info
+    entry_data = entry_decrypt(hass, entry, init_entry_data)
     project_type = ProjectType(entry_data[CONF_PROJECT_TYPE])
     api = TuyaOpenAPI(
         entry_data[CONF_ENDPOINT],
@@ -92,9 +140,7 @@ async def _init_tuya_sdk(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
     )
     if response.get("success", False) is False:
-        _LOGGER.error(
-            f"Tuya login error response: {response}"
-        )
+        _LOGGER.error(f"Tuya login error response: {response}")
         return False
 
     tuya_mq = TuyaOpenMQ(api)
@@ -113,9 +159,7 @@ async def _init_tuya_sdk(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         def update_device(self, device: TuyaDevice):
             for ha_device in hass.data[DOMAIN][TUYA_HA_DEVICES]:
                 if ha_device.tuya_device.id == device.id:
-                    _LOGGER.debug(
-                        f"_update-->{self};->>{ha_device.tuya_device.status}"
-                    )
+                    _LOGGER.debug(f"_update-->{self};->>{ha_device.tuya_device.status}")
                     ha_device.schedule_update_ha_state()
 
         def add_device(self, device: TuyaDevice):
@@ -149,9 +193,9 @@ async def _init_tuya_sdk(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 device_manager.mq = tuya_mq
                 tuya_mq.add_message_listener(device_manager._on_message)
 
-        def remove_device(self, id: str):
-            _LOGGER.info(f"tuya remove device:{id}")
-            remove_hass_device(hass, id)
+        def remove_device(self, device_id: str):
+            _LOGGER.info(f"tuya remove device:{device_id}")
+            remove_hass_device(hass, device_id)
 
     __listener = DeviceListener()
     hass.data[DOMAIN][TUYA_MQTT_LISTENER] = __listener
