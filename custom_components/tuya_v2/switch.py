@@ -32,7 +32,7 @@ TUYA_SUPPORT_TYPE = {
     "cwysj",  # Pet Water Feeder
     "kj",     # Air Purifier
     "xxj",    # Diffuser
-    "kfj"     # Coffee Maker
+    "kfj",    # Coffee Maker
 }
 
 # Switch(kg), Socket(cz), Power Strip(pc)
