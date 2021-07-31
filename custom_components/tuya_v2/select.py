@@ -25,7 +25,8 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 TUYA_SUPPORT_TYPE = {
-    "xxj" #Diffuser
+    "xxj",    # Diffuser
+    "kqzg",   # Air Fryer https://developer.tuya.com/en/docs/iot/f?id=Kakdaoinr5xlu
 }
 
 DPCODE_MODE = "mode"

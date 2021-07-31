@@ -31,7 +31,8 @@ TUYA_SUPPORT_TYPE = {
     "dlq",    # Breaker
     "cwysj",  # Pet Water Feeder
     "kj",     # Air Purifier
-    "xxj"     # Diffuser
+    "xxj",    # Diffuser
+    "kqzg",   # Air Fryer https://developer.tuya.com/en/docs/iot/f?id=Kakdaoinr5xlu
 }
 
 # Switch(kg), Socket(cz), Power Strip(pc)
@@ -52,7 +53,6 @@ DPCODE_UV = "uv"
 DPCODE_WET = "wet"          # Air Purifier - Humidification unit
 DPCODE_PRESET = "pump_reset"   # Pet Water Feeder - Water pump resetting
 DPCODE_WRESET = "water_reset"  # Pet Water Feeder - Resetting of water usage days
-
 
 DPCODE_START = "start"
 
