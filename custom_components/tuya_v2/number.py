@@ -24,13 +24,20 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 TUYA_SUPPORT_TYPE = {
-    "hps",  # Human Presence Sensor
+    "hps",    # Human Presence Sensor
+    "dcl",    # Induction Cooker
 }
 
 # Switch(kg), Socket(cz), Power Strip(pc)
 # https://developer.tuya.com/docs/iot/open-api/standard-function/electrician-category/categorykgczpc?categoryId=486118
 DPCODE_SENSITIVITY = "sensitivity"
-
+# Induction Cooker
+# https://developer.tuya.com/en/docs/iot/f?id=K9gf46j872iaz
+DPCODE_CLOUDRECIPENUMBER = "cloud_recipe_number"
+DPCODE_APPOINTMENTTIME = "appointment_time"
+DPCODE_COOKTIME = "cook_time"
+DPCODE_COOKTEMPERATURE = "cook_temperature"
+DPCODE_COOKPOWER = "cook_power"
 
 async def async_setup_entry(
     hass: HomeAssistant, _entry: ConfigEntry, async_add_entities
@@ -72,6 +79,21 @@ def _setup_entities(hass, device_ids: List):
 
         if DPCODE_SENSITIVITY in device.status:
             entities.append(TuyaHaNumber(device, device_manager, DPCODE_SENSITIVITY))
+
+        if DPCODE_CLOUDRECIPENUMBER in device.status:
+            entities.append(TuyaHaNumber(device, device_manager, DPCODE_CLOUDRECIPENUMBER))
+
+        if DPCODE_APPOINTMENTTIME in device.status:
+            entities.append(TuyaHaNumber(device, device_manager, DPCODE_APPOINTMENTTIME))
+
+        if DPCODE_COOKTIME in device.status:
+            entities.append(TuyaHaNumber(device, device_manager, DPCODE_COOKTIME))
+
+        if DPCODE_COOKTEMPERATURE in device.status:
+            entities.append(TuyaHaNumber(device, device_manager, DPCODE_COOKTEMPERATURE ))
+
+        if DPCODE_COOKPOWER in device.status:
+            entities.append(TuyaHaNumber(device, device_manager, DPCODE_COOKPOWER))
 
     return entities
 

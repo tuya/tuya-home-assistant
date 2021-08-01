@@ -31,7 +31,8 @@ TUYA_SUPPORT_TYPE = {
     "dlq",    # Breaker
     "cwysj",  # Pet Water Feeder
     "kj",     # Air Purifier
-    "xxj"     # Diffuser
+    "xxj",    # Diffuser
+    "dcl",    # Induction Cooker
 }
 
 # Switch(kg), Socket(cz), Power Strip(pc)
@@ -55,7 +56,7 @@ DPCODE_WRESET = "water_reset"  # Pet Water Feeder - Resetting of water usage day
 
 
 DPCODE_START = "start"
-
+DPCODE_PAUSE = "pause"
 
 async def async_setup_entry(
     hass: HomeAssistant, _entry: ConfigEntry, async_add_entities
@@ -112,6 +113,12 @@ def _setup_entities(hass, device_ids: list):
                     entities.append(TuyaHaSwitch(
                         device, device_manager, function))
                     continue
+
+            elif device.category == "dcl":
+                if function in [DPCODE_SWITCH, DPCODE_START, DPCODE_PAUSE]:
+                    entities.append(TuyaHaSwitch(
+                        device, device_manager, function))
+
             else:
                 if function.startswith(DPCODE_START):
                     entities.append(TuyaHaSwitch(

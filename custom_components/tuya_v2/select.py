@@ -25,7 +25,8 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 TUYA_SUPPORT_TYPE = {
-    "xxj" #Diffuser
+    "xxj",     # Diffuser
+    "dcl",    # Induction Cooker
 }
 
 DPCODE_MODE = "mode"
