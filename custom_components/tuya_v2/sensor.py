@@ -417,8 +417,6 @@ def _setup_entities(hass, device_ids: List):
                     )
                 )
             if DPCODE_FORWARD_ENERGY_TOTAL in device.status:
-                _LOGGER.debug(device.status)
-                _LOGGER.debug(device.status_range)
                 entities.append(
                     TuyaHaSensor(
                         device,
