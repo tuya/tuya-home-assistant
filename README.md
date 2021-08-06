@@ -18,8 +18,8 @@ The Tuya Home Assistant integration (Tuya v2) is developed for controlling **Pow
 ## Installation
 The [Tuya Home Assistant integration Wiki](https://github.com/tuya/tuya-home-assistant/wiki) contains step-by-step instruction on how to install Tuya Home Assistant Integration.
 
-- [Tuya-IoT-Platform-Configuration](https://github.com/tuya/tuya-home-assistant/wiki/Tuya-IoT-Platform-Configuration-Guide-Using-Smart-Home-PaaS)
-- [Install-Tuya-v2](https://github.com/tuya/tuya-home-assistant/wiki/Install-Tuya-v2)
+- [Tuya-IoT-Platform-Configuration](https://github.com/tuya/tuya-home-assistant/wiki/Tuya-IoT-Platform-Configuration-Guide-Using-Smart-Home-PaaS?_source=27c468b2abbb019eb4983fc8cea49b90)
+- [Install-Tuya-v2](https://github.com/tuya/tuya-home-assistant/wiki/Install-Tuya-v2?_source=d10de34623e3daca5b02e3c31528a0c4)
 
 ## [Tuya Beta Test Program](https://pages.tuya.com/develop/HomeAssistantBetaTest_V2?_source=df3c37ad796d2388fc5527a8029c7889)
 Welcome to join the [Tuya Beta Test Program](https://pages.tuya.com/develop/HomeAssistantBetaTest_V2?_source=df3c37ad796d2388fc5527a8029c7889) to get your development gifts and make a contribution to the integration. Your feedback is valuable to the whole community.
@@ -27,7 +27,7 @@ Welcome to join the [Tuya Beta Test Program](https://pages.tuya.com/develop/Home
 ## Supported Tuya Device Types
 Six primary categories, 31 secondary categories are supported now!
 
-:clap: [Supported Device Category](https://github.com/tuya/tuya-home-assistant/wiki/Supported-Device-Category)
+:clap: [Supported Device Category](https://github.com/tuya/tuya-home-assistant/wiki/Supported-Device-Category?_source=f5f782752be3c4a9157ec47514d6091b)
 
  :tada: :tada: :tada: [Vote for Tuya v2 Integration New Device Driver Support!](https://github.com/tuya/tuya-home-assistant/discussions/86) :tada::tada::tada:
 
@@ -40,12 +40,12 @@ Six primary categories, 31 secondary categories are supported now!
 - <img src="https://img.icons8.com/fluent/48/000000/linkedin.png"/>  [Linkedin](https://www.linkedin.com/company/develop-with-tuya)
 - <img src="https://img.icons8.com/color/48/000000/discord-logo.png"/>  [Discord](https://discord.gg/E2Xs97N9RK)
 
-Follow us to get more information and leading technology on the Internet of Things, as well as updates and activities on the [Tuya IoT Developer Platform](https://developer.tuya.com/)
+Follow us to get more information and leading technology on the Internet of Things, as well as updates and activities on the [Tuya IoT Developer Platform](https://developer.tuya.com/?_source=6d8d369b1b09336f622047669af507c4)
 
 ## Documentation
 
-- :computer: [How to Get the Log](https://github.com/tuya/tuya-home-assistant/wiki/How-to-Get-the-Log)
-- **🎨** [How to Develop a New Driver](https://github.com/tuya/tuya-home-assistant/wiki/How-to-Develop-a-New-Driver)
+- :computer: [How to Get the Log](https://github.com/tuya/tuya-home-assistant/wiki/How-to-Get-the-Log?_source=f75a22f47cc75545545c239077c07e53)
+- **🎨** [How to Develop a New Driver](https://github.com/tuya/tuya-home-assistant/wiki/How-to-Develop-a-New-Driver?_source=dbf3bf17966af48325e4328b2535eefe)
 - :grey_question:  [Why does my device not update automatically?](https://github.com/tuya/tuya-home-assistant/discussions/113)
 
 ## Link Tuya Devices to Home Assistant
