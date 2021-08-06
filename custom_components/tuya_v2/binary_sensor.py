@@ -72,7 +72,8 @@ async def async_setup_entry(
     """Set up tuya binary sensors dynamically through tuya discovery."""
     _LOGGER.info("binary sensor init")
 
-    hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update({DEVICE_DOMAIN: TUYA_SUPPORT_TYPE})
+    hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update(
+        {DEVICE_DOMAIN: TUYA_SUPPORT_TYPE})
 
     async def async_discover_device(dev_ids):
         """Discover and add a discovered tuya sensor."""
@@ -124,7 +125,6 @@ def _setup_entities(hass, device_ids: List):
                     device,
                     device_manager,
                     device_class_d,
-                    DEVICE_CLASS_DOOR,
                     DPCODE_DOORCONTACT_STATE,
                     (lambda d: d.status.get(DPCODE_DOORCONTACT_STATE, False)),
                 )
@@ -156,7 +156,8 @@ def _setup_entities(hass, device_ids: List):
                     device_manager,
                     DEVICE_CLASS_SMOKE,
                     DPCODE_SMOKE_SENSOR_STATUS,
-                    (lambda d: d.status.get(DPCODE_SMOKE_SENSOR_STATUS, 'normal') == "alarm"),
+                    (lambda d: d.status.get(
+                        DPCODE_SMOKE_SENSOR_STATUS, 'normal') == "alarm"),
                 )
             )
         if DPCODE_BATTERY_STATE in device.status:
@@ -206,7 +207,8 @@ def _setup_entities(hass, device_ids: List):
                     device_manager,
                     DEVICE_CLASS_MOISTURE,
                     DPCODE_WATER_SENSOR_STATE,
-                    (lambda d: d.status.get(DPCODE_WATER_SENSOR_STATE, "normal") == "alarm"),
+                    (lambda d: d.status.get(
+                        DPCODE_WATER_SENSOR_STATE, "normal") == "alarm"),
                 )
             )
         if DPCODE_SOS_STATE in device.status:
