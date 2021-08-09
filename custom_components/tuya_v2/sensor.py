@@ -11,8 +11,11 @@ from homeassistant.components.sensor import DOMAIN as DEVICE_DOMAIN, SensorEntit
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     DEVICE_CLASS_BATTERY,
-    DEVICE_CLASS_HUMIDITY,
+    DEVICE_CLASS_CURRENT,
+    DEVICE_CLASS_ENERGY,
     DEVICE_CLASS_POWER,
+    DEVICE_CLASS_VOLTAGE,
+    DEVICE_CLASS_HUMIDITY,
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_ILLUMINANCE,
     DEVICE_CLASS_CO2,
@@ -54,7 +57,8 @@ TUYA_SUPPORT_TYPE = [
     "ms",  # Residential Lock
     "dj",  # Smart RGB Plug
     "kj",  # Air Purifier,
-    "xxj"  # Diffuser
+    "xxj",  # Diffuser
+    "zndb"  # Smart Electricity Meter
 ]
 
 # Smoke Detector
@@ -98,6 +102,14 @@ DPCODE_AP_TTIME = "total_time"          # Total operating time [minute]
 DPCODE_AP_TPM = "total_pm"              # Total absorption of particles [mg]
 DPCODE_AP_COUNTDOWN = "countdown_left"  # Remaining time of countdown [minute]
 
+# Smart Electricity Meter (zndb)
+# https://developer.tuya.com/en/docs/iot/smart-meter?id=Kaiuz4gv6ack7
+DPCODE_FORWARD_ENERGY_TOTAL = "forward_energy_total"
+DPCODE_PHASE = ["phase_a", "phase_b", "phase_c"]
+JSON_CODE_CURRENT = "electricCurrent"
+JSON_CODE_POWER = "power"
+JSON_CODE_VOLTAGE = "voltage"
+
 
 async def async_setup_entry(
     hass: HomeAssistant, _entry: ConfigEntry, async_add_entities
@@ -136,7 +148,7 @@ def _setup_entities(hass, device_ids: List):
         device = device_manager.device_map[device_id]
         if device is None:
             continue
-            
+
         if device.category == "kj":
             if DPCODE_AP_PM25 in device.status:
                 entities.append(
@@ -346,7 +358,7 @@ def _setup_entities(hass, device_ids: List):
                     TuyaHaSensor(
                         device,
                         device_manager,
-                        "Current",
+                        DEVICE_CLASS_CURRENT,
                         DPCODE_CURRENT,
                         json.loads(device.status_range.get(DPCODE_CURRENT).values).get(
                             "unit", 0
@@ -370,7 +382,7 @@ def _setup_entities(hass, device_ids: List):
                     TuyaHaSensor(
                         device,
                         device_manager,
-                        DEVICE_CLASS_POWER,
+                        DEVICE_CLASS_ENERGY,
                         DPCODE_TOTAL_FORWARD_ENERGY,
                         json.loads(device.status_range.get(DPCODE_TOTAL_FORWARD_ENERGY).values).get(
                             "unit", 0
@@ -382,7 +394,7 @@ def _setup_entities(hass, device_ids: List):
                     TuyaHaSensor(
                         device,
                         device_manager,
-                        "Voltage",
+                        DEVICE_CLASS_VOLTAGE,
                         DPCODE_VOLTAGE,
                         json.loads(device.status_range.get(DPCODE_VOLTAGE).values).get(
                             "unit", 0
@@ -401,9 +413,49 @@ def _setup_entities(hass, device_ids: List):
                         ),
                     )
                 )
-
+            if DPCODE_FORWARD_ENERGY_TOTAL in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DEVICE_CLASS_ENERGY,
+                        DPCODE_FORWARD_ENERGY_TOTAL,
+                        json.loads(device.status_range.get(DPCODE_FORWARD_ENERGY_TOTAL).values).get(
+                        "unit", 0
+                        ),
+                    )
+                )
+            if device.category == "zndb":
+                for phase in DPCODE_PHASE:
+                    if phase in device.status:
+                        entities.append(
+                            TuyaHaSensor(
+                                device,
+                                device_manager,
+                                DEVICE_CLASS_CURRENT,
+                                phase + "_" + JSON_CODE_CURRENT,
+                                "A",
+                            )
+                        )
+                        entities.append(
+                            TuyaHaSensor(
+                                device,
+                                device_manager,
+                                DEVICE_CLASS_POWER,
+                                phase + "_" + JSON_CODE_POWER,
+                                "kW",
+                            )
+                        )
+                        entities.append(
+                            TuyaHaSensor(
+                                device,
+                                device_manager,
+                                DEVICE_CLASS_VOLTAGE,
+                                phase + "_" + JSON_CODE_VOLTAGE,
+                                "V",
+                            )
+                        )
     return entities
-
 
 class TuyaHaSensor(TuyaHaDevice, SensorEntity):
     """Tuya Sensor Device."""
@@ -435,6 +487,10 @@ class TuyaHaSensor(TuyaHaDevice, SensorEntity):
     @property
     def state(self):
         """Return the state of the sensor."""
+        if self.tuya_device.category == "zndb" and self._code.startswith("phase_"):
+            __value = json.loads(self.tuya_device.status.get(self._code[:7])).get(self._code[8:])
+            return __value
+
         __value = self.tuya_device.status.get(self._code)
         if self.tuya_device.status_range.get(self._code).type == "Integer":
             __value_range = json.loads(

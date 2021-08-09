@@ -116,6 +116,11 @@ class TuyaHaNumber(TuyaHaDevice, NumberEntity):
         return f"{super().unique_id}{self._code}"
 
     @property
+    def name(self) -> Optional[str]:
+        """Return Tuya device name."""
+        return self.tuya_device.name + self._code
+
+    @property
     def value(self) -> float:
         """Return current value."""
         return self.tuya_device.status.get(self._code, 0)
