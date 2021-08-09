@@ -25,6 +25,7 @@ from tuya_iot import (
 import voluptuous as vol
 
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
+from homeassistant.data_entry_flow import UnknownFlow, UnknownStep
 from homeassistant.core import HomeAssistant
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.dispatcher import async_dispatcher_send
@@ -191,7 +192,7 @@ async def _init_tuya_sdk(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 tuya_mq.start()
 
                 device_manager.mq = tuya_mq
-                tuya_mq.add_message_listener(device_manager._on_message)
+                tuya_mq.add_message_listener(device_manager.on_message)
 
         def remove_device(self, device_id: str):
             _LOGGER.info(f"tuya remove device:{device_id}")
@@ -254,8 +255,12 @@ async def async_setup(hass, config):
                 result = await hass.config_entries.flow.async_init(
                     DOMAIN, context={"source": SOURCE_IMPORT}, data=conf
                 )
-            except Exception as inst:
-                _LOGGER.error(inst.args)
+            except UnknownFlow as flow:
+                _LOGGER.error(flow.args)
+            except UnknownStep as step:
+                _LOGGER.error(step.args)
+            except ValueError as err:
+                _LOGGER.error(err.args)
             _LOGGER.info("Tuya async setup flow_init")
             return result
 
