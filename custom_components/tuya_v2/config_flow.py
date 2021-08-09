@@ -62,6 +62,8 @@ DATA_SCHEMA_SMART_HOME = vol.Schema(
     }
 )
 
+COUNTRY_CODE_CHINA = ["86", "+86", "China"]
+
 
 class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Tuya Config Flow."""
@@ -90,7 +92,11 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if project_type == ProjectType.INDUSTY_SOLUTIONS:
             response = api.login(user_input[CONF_USERNAME], user_input[CONF_PASSWORD])
         else:
-            api.endpoint = "https://openapi.tuyacn.com"
+            if user_input[CONF_COUNTRY_CODE] in COUNTRY_CODE_CHINA:
+                api.endpoint = "https://openapi.tuyacn.com"
+            else:
+                api.endpoint = "https://openapi.tuyaus.com"
+
             response = api.login(
                 user_input[CONF_USERNAME],
                 user_input[CONF_PASSWORD],
