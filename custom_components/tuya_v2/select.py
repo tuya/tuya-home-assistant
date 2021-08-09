@@ -99,6 +99,11 @@ class TuyaHaSelect(TuyaHaDevice, SelectEntity):
         return f"{super().unique_id}{self._code}"
 
     @property
+    def name(self) -> Optional[str]:
+        """Return Tuya device name."""
+        return self.tuya_device.name + self._code
+
+    @property
     def current_option(self) -> str:
         return self.tuya_device.status.get(self._code, None)
 
