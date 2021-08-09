@@ -33,6 +33,8 @@ TUYA_SUPPORT_TYPE = {
     "kj",     # Air Purifier
     "xxj",    # Diffuser
     "ckmkzq",  # Garage Door Opener
+    "zndb",    # Smart Electricity Meter
+    "fs",    # Fan
     "zndb"    # Smart Electricity Meter
     "kfj",    # Coffee Maker
 }
@@ -62,6 +64,9 @@ DPCODE_START = "start"
 DPCODE_PAUSE = "pause"
 DPCODE_WARM = "warm"
 DPCODE_CLEANING = "cleaning"
+# Fan
+# https://developer.tuya.com/en/docs/iot/f?id=K9gf45vs7vkge
+DPCODE_FAN_LIGHT = "light"
 
 async def async_setup_entry(
     hass: HomeAssistant, _entry: ConfigEntry, async_add_entities
@@ -110,6 +115,7 @@ def _setup_entities(hass, device_ids: list):
                     DPCODE_LOCK,
                     DPCODE_UV,
                     DPCODE_WET,
+                    DPCODE_FAN_LIGHT
                 ]:
                     entities.append(TuyaHaSwitch(device, device_manager, function))
                     # Main device switch is handled by the Fan object

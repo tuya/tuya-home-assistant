@@ -25,9 +25,6 @@ from homeassistant.const import (
     TIME_DAYS,
     TIME_MINUTES,
     MASS_MILLIGRAMS,
-    POWER_KILO_WATT,
-    ELECTRIC_CURRENT_AMPERE,
-    ELECTRIC_POTENTIAL_VOLT,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
@@ -437,7 +434,7 @@ def _setup_entities(hass, device_ids: List):
                                 device_manager,
                                 DEVICE_CLASS_CURRENT,
                                 phase + "_" + JSON_CODE_CURRENT,
-                                ELECTRIC_CURRENT_AMPERE,
+                                "A",
                             )
                         )
                         entities.append(
@@ -446,7 +443,7 @@ def _setup_entities(hass, device_ids: List):
                                 device_manager,
                                 DEVICE_CLASS_POWER,
                                 phase + "_" + JSON_CODE_POWER,
-                                POWER_KILO_WATT,
+                                "kW",
                             )
                         )
                         entities.append(
@@ -455,7 +452,7 @@ def _setup_entities(hass, device_ids: List):
                                 device_manager,
                                 DEVICE_CLASS_VOLTAGE,
                                 phase + "_" + JSON_CODE_VOLTAGE,
-                                ELECTRIC_POTENTIAL_VOLT,
+                                "V",
                             )
                         )
     return entities

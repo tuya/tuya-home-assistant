@@ -94,24 +94,18 @@ class TuyaHaCover(TuyaHaDevice, CoverEntity):
     @property
     def is_closed(self) -> bool | None:
         """Return is cover is closed."""
-        position = self.tuya_device.status.get(DPCODE_PERCENT_STATE, 0)
-        if DPCODE_SITUATION_SET not in self.tuya_device.status:
-            return 100 - position == 0
-        elif self.tuya_device.status.get(DPCODE_SITUATION_SET) == "fully_open":
-            return position == 0
-        else:
-            return 100 - position == 0
+        return None
 
     @property
     def current_cover_position(self) -> int:
         """Return cover current position."""
         position = self.tuya_device.status.get(DPCODE_PERCENT_STATE, 0)
         if DPCODE_SITUATION_SET not in self.tuya_device.status:
-            return 100 - position
+            return 1 + int(0.98 * (100 - position))
         elif self.tuya_device.status.get(DPCODE_SITUATION_SET) == "fully_open":
-            return position
+            return 1 + 0.98 * position
         else:
-            return 100 - position
+            return 1 + int(0.98 * (100 - position))
 
     def open_cover(self, **kwargs: Any) -> None:
         """Open the cover."""

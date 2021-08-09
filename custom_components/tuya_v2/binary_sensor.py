@@ -5,6 +5,7 @@ import logging
 from typing import Callable, List, Optional
 
 from tuya_iot import TuyaDevice, TuyaDeviceManager
+from threading import Timer
 
 from homeassistant.components.binary_sensor import (
     DEVICE_CLASS_DOOR,
@@ -279,3 +280,14 @@ class TuyaHaBSensor(TuyaHaDevice, BinarySensorEntity):
     def available(self) -> bool:
         """Return if the device is available."""
         return True
+
+    def reset_pir(self):
+        self.tuya_device.status[DPCODE_PIR] = "none"
+        self.schedule_update_ha_state()
+
+    def schedule_update_ha_state(self, force_refresh: bool = False) -> None:
+        if self._code == DPCODE_PIR and len(self.tuya_device.status_range.get(DPCODE_PIR).values) == 2:
+            timer = Timer(5, lambda: self.reset_pir())
+            timer.start()
+
+        super().schedule_update_ha_state(self, force_refresh)
