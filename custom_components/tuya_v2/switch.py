@@ -36,6 +36,8 @@ TUYA_SUPPORT_TYPE = {
     "ckmkzq",  # Garage Door Opener
     "zndb",    # Smart Electricity Meter
     "fs",    # Fan
+    "zndb"    # Smart Electricity Meter
+    "kfj",    # Coffee Maker
 }
 
 # Switch(kg), Socket(cz), Power Strip(pc)
@@ -57,13 +59,17 @@ DPCODE_WET = "wet"  # Air Purifier - Humidification unit
 DPCODE_PRESET = "pump_reset"  # Pet Water Feeder - Water pump resetting
 DPCODE_WRESET = "water_reset"  # Pet Water Feeder - Resetting of water usage days
 
-
 DPCODE_START = "start"
+
+# Coffee Maker
+# https://developer.tuya.com/en/docs/iot/f?id=K9gf4701ox167
 DPCODE_PAUSE = "pause"
+DPCODE_WARM = "warm"
+DPCODE_CLEANING = "cleaning"
+
 # Fan
 # https://developer.tuya.com/en/docs/iot/f?id=K9gf45vs7vkge
 DPCODE_FAN_LIGHT = "light"
-
 
 async def async_setup_entry(
     hass: HomeAssistant, _entry: ConfigEntry, async_add_entities
@@ -125,6 +131,12 @@ def _setup_entities(hass, device_ids: list):
                     entities.append(TuyaHaSwitch(device, device_manager, function))
                     continue
 
+            elif device.category == "kfj":
+                if function in [DPCODE_SWITCH, DPCODE_START, DPCODE_PAUSE, DPCODE_WARM, DPCODE_CLEANING ]:
+                    entities.append(TuyaHaSwitch(
+                        device, device_manager, function))
+                    continue
+                    
             elif device.category == "dcl":
                 if function in [DPCODE_SWITCH, DPCODE_START, DPCODE_PAUSE]:
                     entities.append(TuyaHaSwitch(

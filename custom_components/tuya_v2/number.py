@@ -24,13 +24,20 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 TUYA_SUPPORT_TYPE = {
-    "hps",    # Human Presence Sensor
+    "hps",  # Human Presence Sensor
+    "kfj",  # Coffee Maker
     "dcl",    # Induction Cooker
 }
 
 # Switch(kg), Socket(cz), Power Strip(pc)
 # https://developer.tuya.com/docs/iot/open-api/standard-function/electrician-category/categorykgczpc?categoryId=486118
 DPCODE_SENSITIVITY = "sensitivity"
+# Coffee Maker
+# https://developer.tuya.com/en/docs/iot/f?id=K9gf4701ox167
+DPCODE_TEMPSET = "temp_set"
+DPCODE_WARMTIME = "warm_time"
+DPCODE_WATERSET = "water_set"
+DPCODE_POWDERSET = "powder_set"
 # Induction Cooker
 # https://developer.tuya.com/en/docs/iot/f?id=K9gf46j872iaz
 DPCODE_CLOUDRECIPENUMBER = "cloud_recipe_number"
@@ -94,6 +101,18 @@ def _setup_entities(hass, device_ids: List):
 
         if DPCODE_COOKPOWER in device.status:
             entities.append(TuyaHaNumber(device, device_manager, DPCODE_COOKPOWER))
+
+        if DPCODE_TEMPSET in device.status:
+            entities.append(TuyaHaNumber(device, device_manager, DPCODE_TEMPSET))
+
+        if DPCODE_WARMTIME in device.status:
+            entities.append(TuyaHaNumber(device, device_manager, DPCODE_WARMTIME))
+
+        if DPCODE_WATERSET in device.status:
+            entities.append(TuyaHaNumber(device, device_manager, DPCODE_WATERSET))
+
+        if DPCODE_POWDERSET in device.status:
+            entities.append(TuyaHaNumber(device, device_manager, DPCODE_POWDERSET))
 
     return entities
 
