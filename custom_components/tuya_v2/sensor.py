@@ -401,7 +401,7 @@ def _setup_entities(hass, device_ids: List):
                         ),
                     )
                 )
-            if DPCODE_BRIGHT_VALUE in device.status:
+            if DPCODE_BRIGHT_VALUE in device.status and device.category != "dj":
                 entities.append(
                     TuyaHaSensor(
                         device,
