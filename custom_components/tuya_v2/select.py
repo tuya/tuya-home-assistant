@@ -27,13 +27,22 @@ _LOGGER = logging.getLogger(__name__)
 TUYA_SUPPORT_TYPE = {
     "xxj",    # Diffuser
     "kqzg",   # Air Fryer https://developer.tuya.com/en/docs/iot/f?id=Kakdaoinr5xlu
+    "xxj", # Diffuser
+    "kfj",  # Coffee Maker
 }
 
 DPCODE_MODE = "mode"
 DPCODE_COUNTDOWN = "countdown"
 DPCODE_WORK_MODE = "work_mode"
 
-AUTO_GENERATE_DP_LIST = [DPCODE_MODE, DPCODE_COUNTDOWN, DPCODE_WORK_MODE]
+# Coffee Maker
+# https://developer.tuya.com/en/docs/iot/f?id=K9gf4701ox167
+DPCODE_MATERIAL = "material"
+DPCODE_CONCENTRATIONSET = "concentration_set"
+DPCODE_CUPNUMBER = "cup_number"
+
+
+AUTO_GENERATE_DP_LIST = [DPCODE_MODE, DPCODE_COUNTDOWN, DPCODE_WORK_MODE, DPCODE_MATERIAL, DPCODE_CONCENTRATIONSET, DPCODE_CUPNUMBER]
 
 async def async_setup_entry(hass: HomeAssistant, _entry: ConfigEntry, async_add_entities):
     _LOGGER.info("select init")
