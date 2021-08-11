@@ -58,7 +58,9 @@ TUYA_SUPPORT_TYPE = [
     "dj",  # Smart RGB Plug
     "kj",  # Air Purifier,
     "xxj",  # Diffuser
-    "zndb"  # Smart Electricity Meter
+    "zndb",  # Smart Electricity Meter
+    "tzc1", # Body Fat Scale
+
 ]
 
 # Smoke Detector
@@ -110,6 +112,17 @@ JSON_CODE_CURRENT = "electricCurrent"
 JSON_CODE_POWER = "power"
 JSON_CODE_VOLTAGE = "voltage"
 
+# Body Fat Scale
+# https://developer.tuya.com/en/docs/iot/tzc1?id=Kat27zmbbs56t
+DPCODE_WEIGHT = "weight"
+DPCODE_BODY_R = "body_r"
+DPCODE_LEFTHAND_R = "lefthand_r"
+DPCODE_RIGHTHAND_R = "righthand_r"
+DPCODE_LEFTLEG_R = "leftleg_r"
+DPCODE_RIGHTLEG_R = "rightleg_r"
+DPCODE_REALTIME_DATA = "realtime_data"
+DPCODE_HEART_RATE = "heart_rate"
+
 
 async def async_setup_entry(
     hass: HomeAssistant, _entry: ConfigEntry, async_add_entities
@@ -148,6 +161,88 @@ def _setup_entities(hass, device_ids: List):
         device = device_manager.device_map[device_id]
         if device is None:
             continue
+
+        if device.category == "tzc1":
+            if DPCODE_WEIGHT in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        "WeightR",
+                        DPCODE_WEIGHT,
+                        ""
+                    )
+                )
+            if DPCODE_BODY_R in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        "Body_R",
+                        DPCODE_BODY_R,
+                        ""
+                    )
+                )
+            if DPCODE_LEFTHAND_R in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DPCODE_LEFTHAND_R,
+                        DPCODE_LEFTHAND_R,
+                        ""
+                    )
+                )
+            if DPCODE_RIGHTHAND_R in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DPCODE_RIGHTHAND_R,
+                        DPCODE_RIGHTHAND_R,
+                        ""
+                    )
+                )
+            if DPCODE_LEFTLEG_R in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DPCODE_LEFTLEG_R,
+                        DPCODE_LEFTLEG_R,
+                        ""
+                    )
+                )
+            if DPCODE_RIGHTLEG_R in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DPCODE_RIGHTLEG_R,
+                        DPCODE_RIGHTLEG_R,
+                        ""
+                    )
+                )
+            if DPCODE_REALTIME_DATA in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DPCODE_REALTIME_DATA,
+                        DPCODE_REALTIME_DATA,
+                        ""
+                    )
+                )
+            if DPCODE_HEART_RATE in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DPCODE_HEART_RATE,
+                        DPCODE_HEART_RATE,
+                        ""
+                    )
+                )
 
         if device.category == "kj":
             if DPCODE_AP_PM25 in device.status:

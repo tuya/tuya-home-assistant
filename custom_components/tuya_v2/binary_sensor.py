@@ -46,6 +46,7 @@ TUYA_SUPPORT_TYPE = [
     "hps",  # Human Presence Sensor
     "ms",  # Residential Lock
     "ckmkzq",  # Garage Door Opener
+    "tzc1", # Body Fat Scale
 ]
 
 # Door Window Sensor
@@ -67,6 +68,9 @@ DPCODE_PRESENCE_STATE = "presence_state"
 DPCODE_TEMPER_ALRAM = "temper_alarm"
 DPCODE_DOORLOCK_STATE = "closed_opened"
 
+# Body Fat Scale
+# https://developer.tuya.com/en/docs/iot/tzc1?id=Kat27zmbbs56t
+DPCODE_BATTERY_LOW = "battery_low"
 
 async def async_setup_entry(
     hass: HomeAssistant, _entry: ConfigEntry, async_add_entities
@@ -236,7 +240,16 @@ def _setup_entities(hass, device_ids: List):
                     ),
                 )
             )
-
+        if DPCODE_BATTERY_LOW in device.status:
+            entities.append(
+                TuyaHaBSensor(
+                    device,
+                    device_manager,
+                    DEVICE_CLASS_BATTERY,
+                    DPCODE_BATTERY_LOW,
+                    (lambda d: d.status.get(DPCODE_BATTERY_LOW, False)),
+                )
+            )
     return entities
 
 
