@@ -27,6 +27,7 @@ _LOGGER = logging.getLogger(__name__)
 TUYA_SUPPORT_TYPE = {
     "xxj", # Diffuser
     "kfj",  # Coffee Maker
+    "tzc1", # Body Fat Scale
 }
 
 DPCODE_MODE = "mode"
@@ -39,8 +40,11 @@ DPCODE_MATERIAL = "material"
 DPCODE_CONCENTRATIONSET = "concentration_set"
 DPCODE_CUPNUMBER = "cup_number"
 
+# Body Fat Scale
+# https://developer.tuya.com/en/docs/iot/tzc1?id=Kat27zmbbs56t
+DPCODE_UNIT_SWITCH = "unit_switch"
 
-AUTO_GENERATE_DP_LIST = [DPCODE_MODE, DPCODE_COUNTDOWN, DPCODE_WORK_MODE, DPCODE_MATERIAL, DPCODE_CONCENTRATIONSET, DPCODE_CUPNUMBER]
+AUTO_GENERATE_DP_LIST = [DPCODE_MODE, DPCODE_COUNTDOWN, DPCODE_WORK_MODE, DPCODE_MATERIAL, DPCODE_CONCENTRATIONSET, DPCODE_CUPNUMBER, DPCODE_UNIT_SWITCH]
 
 async def async_setup_entry(hass: HomeAssistant, _entry: ConfigEntry, async_add_entities):
     _LOGGER.info("select init")
