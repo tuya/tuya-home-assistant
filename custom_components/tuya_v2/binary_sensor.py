@@ -2,6 +2,7 @@
 """Support for Tuya Binary Sensor."""
 
 import logging
+import json
 from typing import Callable, List, Optional
 
 from tuya_iot import TuyaDevice, TuyaDeviceManager
@@ -286,8 +287,13 @@ class TuyaHaBSensor(TuyaHaDevice, BinarySensorEntity):
         self.schedule_update_ha_state()
 
     def schedule_update_ha_state(self, force_refresh: bool = False) -> None:
-        if self._code == DPCODE_PIR and len(self.tuya_device.status_range.get(DPCODE_PIR).values) == 2:
-            timer = Timer(5, lambda: self.reset_pir())
-            timer.start()
 
-        super().schedule_update_ha_state(self, force_refresh)
+        if self._code == DPCODE_PIR:
+            pir_range = json.loads(self.tuya_device.status_range.get(DPCODE_PIR, {}).values).get(
+                "range"
+            )
+            if len(pir_range) == 1 and self.tuya_device.status[DPCODE_PIR] == "pir":
+                timer = Timer(10, lambda: self.reset_pir())
+                timer.start()
+
+        super().schedule_update_ha_state(force_refresh)
