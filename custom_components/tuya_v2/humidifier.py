@@ -4,17 +4,14 @@ from __future__ import annotations
 
 import json
 import logging
-from typing import List
 
-from homeassistant.components.humidifier import (
-    DOMAIN as DEVICE_DOMAIN,
-    SUPPORT_MODES,
-    HumidifierEntity,
-    DEVICE_CLASSES,
-)
+from homeassistant.components.humidifier import DEVICE_CLASSES
+from homeassistant.components.humidifier import DOMAIN as DEVICE_DOMAIN
+from homeassistant.components.humidifier import SUPPORT_MODES, HumidifierEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from tuya_iot import TuyaDevice, TuyaDeviceManager
 
 from .base import TuyaHaDevice
@@ -30,7 +27,7 @@ _LOGGER = logging.getLogger(__name__)
 
 TUYA_SUPPORT_TYPE = {
     "jsq",  # Humidifier
-    "cs",   # Dehumidifier
+    "cs",  # Dehumidifier
 }
 
 # Humidifier(jsq)
@@ -41,8 +38,9 @@ DPCODE_SWITCH_SPRAY = "switch_spray"
 DPCODE_HUMIDITY_SET = "humidity_set"
 DPCODE_DEHUMIDITY_SET_VALUE = "dehumidify_set_value"
 
+
 async def async_setup_entry(
-    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities
+    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ):
     """Set up tuya sensors dynamically through tuya discovery."""
     _LOGGER.info("humidifier init")
@@ -70,7 +68,7 @@ async def async_setup_entry(
     await async_discover_device(device_ids)
 
 
-def _setup_entities(hass, device_ids: List):
+def _setup_entities(hass: HomeAssistant, device_ids: list):
     """Set up Tuya Switch device."""
     device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
     entities = []
@@ -86,14 +84,21 @@ def _setup_entities(hass, device_ids: List):
 
 class TuyaHaHumidifier(TuyaHaDevice, HumidifierEntity):
     """Tuya Switch Device."""
-    def __init__(self, device: TuyaDevice, device_manager: TuyaDeviceManager):
+
+    def __init__(self, device: TuyaDevice, device_manager: TuyaDeviceManager) -> None:
         super().__init__(device, device_manager)
-        if DPCODE_SWITCH not in self.tuya_device.status and DPCODE_SWITCH_SPRAY in self.tuya_device.status:
+        if (
+            DPCODE_SWITCH not in self.tuya_device.status
+            and DPCODE_SWITCH_SPRAY in self.tuya_device.status
+        ):
             self.dp_switch = DPCODE_SWITCH_SPRAY
         else:
             self.dp_switch = DPCODE_SWITCH
 
-        if DPCODE_HUMIDITY_SET not in self.tuya_device.status and DPCODE_DEHUMIDITY_SET_VALUE in self.tuya_device.status:
+        if (
+            DPCODE_HUMIDITY_SET not in self.tuya_device.status
+            and DPCODE_DEHUMIDITY_SET_VALUE in self.tuya_device.status
+        ):
             self.dp_humidity = DPCODE_DEHUMIDITY_SET_VALUE
         else:
             self.dp_humidity = DPCODE_HUMIDITY_SET
@@ -118,7 +123,10 @@ class TuyaHaHumidifier(TuyaHaDevice, HumidifierEntity):
     @property
     def target_humidity(self) -> int | None:
         """Return the humidity or dehumidity we try to reach."""
-        if DPCODE_HUMIDITY_SET not in self.tuya_device.status and DPCODE_DEHUMIDITY_SET_VALUE not in self.tuya_device.status:
+        if (
+            DPCODE_HUMIDITY_SET not in self.tuya_device.status
+            and DPCODE_DEHUMIDITY_SET_VALUE not in self.tuya_device.status
+        ):
             return None
         if DPCODE_HUMIDITY_SET in self.tuya_device.status:
             return self.tuya_device.status.get(DPCODE_HUMIDITY_SET, 0)

@@ -3,17 +3,13 @@
 
 import json
 import logging
-from .aes_cbc import (
-    AesCBC as Aes,
-    XOR_KEY,
-    KEY_KEY,
-    AES_ACCOUNT_KEY,
-)
-from tuya_iot import ProjectType, TuyaOpenAPI
+
 import voluptuous as vol
-
 from homeassistant import config_entries
+from tuya_iot import ProjectType, TuyaOpenAPI
 
+from .aes_cbc import AES_ACCOUNT_KEY, KEY_KEY, XOR_KEY
+from .aes_cbc import AesCBC as Aes
 from .const import (
     CONF_ACCESS_ID,
     CONF_ACCESS_SECRET,
@@ -129,7 +125,9 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(self, user_input=None):
         """Step user."""
-        _LOGGER.info(f"TuyaConfigFlow.async_step_user start, is_import= {self.is_import}")
+        _LOGGER.info(
+            f"TuyaConfigFlow.async_step_user start, is_import= {self.is_import}"
+        )
         _LOGGER.info(f"TuyaConfigFlow.async_step_user start, user_input= {user_input}")
 
         if self._async_current_entries():
@@ -154,7 +152,9 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 c = cbc_key + cbc_iv
                 c_xor_entry = aes.xor_encrypt(c, access_id_entry)
                 # account info encrypted with AES-CBC
-                user_input_encrpt = aes.cbc_encrypt(cbc_key, cbc_iv, json.dumps(user_input))
+                user_input_encrpt = aes.cbc_encrypt(
+                    cbc_key, cbc_iv, json.dumps(user_input)
+                )
                 # account info encrypted add to cache
                 return self.async_create_entry(
                     title=user_input[CONF_USERNAME],

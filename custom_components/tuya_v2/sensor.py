@@ -10,14 +10,14 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     CONCENTRATION_PARTS_PER_MILLION,
     DEVICE_CLASS_BATTERY,
+    DEVICE_CLASS_CO2,
     DEVICE_CLASS_CURRENT,
     DEVICE_CLASS_ENERGY,
-    DEVICE_CLASS_POWER,
-    DEVICE_CLASS_VOLTAGE,
     DEVICE_CLASS_HUMIDITY,
-    DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_ILLUMINANCE,
-    DEVICE_CLASS_CO2,
+    DEVICE_CLASS_POWER,
+    DEVICE_CLASS_TEMPERATURE,
+    DEVICE_CLASS_VOLTAGE,
     MASS_MILLIGRAMS,
     PERCENTAGE,
     TEMP_CELSIUS,
@@ -59,7 +59,7 @@ TUYA_SUPPORT_TYPE = [
     "dj",  # Smart RGB Plug
     "kj",  # Air Purifier,
     "xxj",  # Diffuser
-    "zndb"  # Smart Electricity Meter
+    "zndb",  # Smart Electricity Meter
 ]
 
 # Smoke Detector
@@ -407,9 +407,9 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         device_manager,
                         DEVICE_CLASS_ENERGY,
                         DPCODE_FORWARD_ENERGY_TOTAL,
-                        json.loads(device.status_range.get(DPCODE_FORWARD_ENERGY_TOTAL).values).get(
-                        "unit", 0
-                        ),
+                        json.loads(
+                            device.status_range.get(DPCODE_FORWARD_ENERGY_TOTAL).values
+                        ).get("unit", 0),
                     )
                 )
             if device.category == "zndb":
@@ -444,6 +444,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         )
     return entities
 
+
 class TuyaHaSensor(TuyaHaDevice, SensorEntity):
     """Tuya Sensor Device."""
 
@@ -468,7 +469,9 @@ class TuyaHaSensor(TuyaHaDevice, SensorEntity):
     def state(self) -> StateType:
         """Return the state of the sensor."""
         if self.tuya_device.category == "zndb" and self._code.startswith("phase_"):
-            __value = json.loads(self.tuya_device.status.get(self._code[:7])).get(self._code[8:])
+            __value = json.loads(self.tuya_device.status.get(self._code[:7])).get(
+                self._code[8:]
+            )
             return __value
 
         __value = self.tuya_device.status.get(self._code)

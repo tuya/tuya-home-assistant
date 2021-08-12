@@ -3,11 +3,11 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, List
+from typing import Any
 
+from homeassistant.components.cover import DEVICE_CLASS_CURTAIN
+from homeassistant.components.cover import DOMAIN as DEVICE_DOMAIN
 from homeassistant.components.cover import (
-    DEVICE_CLASS_CURTAIN,
-    DOMAIN as DEVICE_DOMAIN,
     SUPPORT_CLOSE,
     SUPPORT_OPEN,
     SUPPORT_SET_POSITION,
@@ -23,8 +23,8 @@ from .const import (
     DOMAIN,
     TUYA_DEVICE_MANAGER,
     TUYA_DISCOVERY_NEW,
-    TUYA_HA_TUYA_MAP,
     TUYA_HA_DEVICES,
+    TUYA_HA_TUYA_MAP,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -70,7 +70,7 @@ async def async_setup_entry(
     await async_discover_device(device_ids)
 
 
-def _setup_entities(hass, device_ids: List):
+def _setup_entities(hass: HomeAssistant, device_ids: list):
     """Set up Tuya Cover."""
     device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
     entities = []
@@ -85,11 +85,7 @@ def _setup_entities(hass, device_ids: List):
 class TuyaHaCover(TuyaHaDevice, CoverEntity):
     """Tuya Switch Device."""
 
-    # property
-    @property
-    def device_class(self) -> str:
-        """Return Entity Properties."""
-        return DEVICE_CLASS_CURTAIN
+    _attr_device_class = DEVICE_CLASS_CURTAIN
 
     @property
     def is_closed(self) -> bool | None:

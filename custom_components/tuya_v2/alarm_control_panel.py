@@ -2,12 +2,10 @@
 """Support for Tuya Alarm Control."""
 
 import logging
-from typing import Callable, List
+from typing import Callable
 
-from tuya_iot import TuyaDevice, TuyaDeviceManager
-
+from homeassistant.components.alarm_control_panel import DOMAIN as DEVICE_DOMAIN
 from homeassistant.components.alarm_control_panel import (
-    DOMAIN as DEVICE_DOMAIN,
     SUPPORT_ALARM_TRIGGER,
     AlarmControlPanelEntity,
 )
@@ -15,6 +13,8 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import STATE_ALARM_ARMING, STATE_ALARM_TRIGGERED
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from tuya_iot import TuyaDevice, TuyaDeviceManager
 
 from .base import TuyaHaDevice
 from .const import (
@@ -42,7 +42,7 @@ DPCODE_PIR = "pir"
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities
+    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ):
     """Set up tuya alarm dynamically through tuya discovery."""
     _LOGGER.info("alarm init")
@@ -70,7 +70,7 @@ async def async_setup_entry(
     await async_discover_device(device_ids)
 
 
-def _setup_entities(hass, device_ids: List):
+def _setup_entities(hass: HomeAssistant, device_ids: list):
     """Set up Tuya Switch device."""
     device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
     entities = []
@@ -127,7 +127,7 @@ class TuyaHaAlarm(TuyaHaDevice, AlarmControlPanelEntity):
         device: TuyaDevice,
         device_manager: TuyaDeviceManager,
         sensor_is_on: Callable[..., str],
-    ):
+    ) -> None:
         """Init TuyaHaAlarm."""
         super().__init__(device, device_manager)
         self._is_on = sensor_is_on

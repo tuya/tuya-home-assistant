@@ -1,19 +1,16 @@
 #!/usr/bin/env python3
 """Support for Tuya Binary Sensor."""
 
-import logging
 import json
-from typing import Callable, List, Optional
-
-from tuya_iot import TuyaDevice, TuyaDeviceManager
+import logging
 from threading import Timer
+from typing import Callable
 
 from homeassistant.components.binary_sensor import (
     DEVICE_CLASS_BATTERY,
     DEVICE_CLASS_DOOR,
     DEVICE_CLASS_GARAGE_DOOR,
     DEVICE_CLASS_GAS,
-    DEVICE_CLASS_LOCK,
     DEVICE_CLASS_MOISTURE,
     DEVICE_CLASS_MOTION,
     DEVICE_CLASS_PROBLEM,
@@ -23,8 +20,8 @@ from homeassistant.components.binary_sensor import DOMAIN as DEVICE_DOMAIN
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from tuya_iot import TuyaDevice, TuyaDeviceManager
 
 from .base import TuyaHaDevice
@@ -76,8 +73,7 @@ async def async_setup_entry(
     """Set up tuya binary sensors dynamically through tuya discovery."""
     _LOGGER.info("binary sensor init")
 
-    hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update(
-        {DEVICE_DOMAIN: TUYA_SUPPORT_TYPE})
+    hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update({DEVICE_DOMAIN: TUYA_SUPPORT_TYPE})
 
     async def async_discover_device(dev_ids):
         """Discover and add a discovered tuya sensor."""
@@ -160,8 +156,10 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                     device_manager,
                     DEVICE_CLASS_SMOKE,
                     DPCODE_SMOKE_SENSOR_STATUS,
-                    (lambda d: d.status.get(
-                        DPCODE_SMOKE_SENSOR_STATUS, 'normal') == "alarm"),
+                    (
+                        lambda d: d.status.get(DPCODE_SMOKE_SENSOR_STATUS, "normal")
+                        == "alarm"
+                    ),
                 )
             )
         if DPCODE_BATTERY_STATE in device.status:
@@ -171,7 +169,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                     device_manager,
                     DEVICE_CLASS_BATTERY,
                     DPCODE_BATTERY_STATE,
-                    (lambda d: d.status.get(DPCODE_BATTERY_STATE, 'normal') == "low"),
+                    (lambda d: d.status.get(DPCODE_BATTERY_STATE, "normal") == "low"),
                 )
             )
         if DPCODE_TEMPER_ALRAM in device.status:
@@ -211,8 +209,10 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                     device_manager,
                     DEVICE_CLASS_MOISTURE,
                     DPCODE_WATER_SENSOR_STATE,
-                    (lambda d: d.status.get(
-                        DPCODE_WATER_SENSOR_STATE, "normal") == "alarm"),
+                    (
+                        lambda d: d.status.get(DPCODE_WATER_SENSOR_STATE, "normal")
+                        == "alarm"
+                    ),
                 )
             )
         if DPCODE_SOS_STATE in device.status:
@@ -258,33 +258,15 @@ class TuyaHaBSensor(TuyaHaDevice, BinarySensorEntity):
         self._code = sensor_code
         self._is_on = sensor_is_on
         self._attr_unique_id = f"{super().unique_id}{self._type}"
+        self._attr_name = f"{self.tuya_device.name}_{self._code}"
+        self._attr_device_class = self._type
         self._attr_available = True
         super().__init__(device, device_manager)
-
-    @property
-    def unique_id(self) -> Optional[str]:
-        """Return a unique ID."""
-        return f"{super().unique_id}{self._code}"
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return self.tuya_device.name + "_" + self._code
 
     @property
     def is_on(self):
         """Return true if the binary sensor is on."""
         return self._is_on(self.tuya_device)
-
-    @property
-    def device_class(self):
-        """Device class of this entity."""
-        return self._type
-
-    @property
-    def available(self) -> bool:
-        """Return if the device is available."""
-        return True
 
     def reset_pir(self):
         self.tuya_device.status[DPCODE_PIR] = "none"
@@ -293,9 +275,9 @@ class TuyaHaBSensor(TuyaHaDevice, BinarySensorEntity):
     def schedule_update_ha_state(self, force_refresh: bool = False) -> None:
 
         if self._code == DPCODE_PIR:
-            pir_range = json.loads(self.tuya_device.status_range.get(DPCODE_PIR, {}).values).get(
-                "range"
-            )
+            pir_range = json.loads(
+                self.tuya_device.status_range.get(DPCODE_PIR, {}).values
+            ).get("range")
             if len(pir_range) == 1 and self.tuya_device.status[DPCODE_PIR] == "pir":
                 timer = Timer(10, lambda: self.reset_pir())
                 timer.start()

@@ -4,14 +4,14 @@
 import itertools
 import json
 import logging
-from .aes_cbc import (
-    AesCBC as Aes,
-    XOR_KEY,
-    KEY_KEY,
-    AES_ACCOUNT_KEY,
-)
 from typing import Any
 
+import homeassistant.helpers.config_validation as cv
+import voluptuous as vol
+from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
+from homeassistant.core import HomeAssistant
+from homeassistant.data_entry_flow import UnknownFlow, UnknownStep
+from homeassistant.helpers.dispatcher import async_dispatcher_send
 from tuya_iot import (
     ProjectType,
     TuyaDevice,
@@ -22,14 +22,9 @@ from tuya_iot import (
     TuyaOpenMQ,
     tuya_logger,
 )
-import voluptuous as vol
 
-from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
-from homeassistant.data_entry_flow import UnknownFlow, UnknownStep
-from homeassistant.core import HomeAssistant
-import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.dispatcher import async_dispatcher_send
-
+from .aes_cbc import AES_ACCOUNT_KEY, KEY_KEY, XOR_KEY
+from .aes_cbc import AesCBC as Aes
 from .const import (
     CONF_ACCESS_ID,
     CONF_ACCESS_SECRET,
@@ -84,9 +79,7 @@ def entry_decrypt(hass: HomeAssistant, entry: ConfigEntry, init_entry_data):
         key_iv = aes.xor_decrypt(init_entry_data[XOR_KEY], init_entry_data[KEY_KEY])
         cbc_key = key_iv[0:16]
         cbc_iv = key_iv[16:32]
-        decrpyt_str = aes.cbc_decrypt(
-            cbc_key, cbc_iv, init_entry_data[AES_ACCOUNT_KEY]
-        )
+        decrpyt_str = aes.cbc_decrypt(cbc_key, cbc_iv, init_entry_data[AES_ACCOUNT_KEY])
         # _LOGGER.info(f"tuya.__init__.exist_xor_cache:::decrpyt_str-->{decrpyt_str}")
         entry_data = aes.json_to_dict(decrpyt_str)
     else:
@@ -100,7 +93,9 @@ def entry_decrypt(hass: HomeAssistant, entry: ConfigEntry, init_entry_data):
         c = cbc_key + cbc_iv
         c_xor_entry = aes.xor_encrypt(c, access_id_entry)
         # account info encrypted with AES-CBC
-        user_input_encrpt = aes.cbc_encrypt(cbc_key, cbc_iv, json.dumps(dict(init_entry_data)))
+        user_input_encrpt = aes.cbc_encrypt(
+            cbc_key, cbc_iv, json.dumps(dict(init_entry_data))
+        )
         # udpate old account info
         hass.config_entries.async_update_entry(
             entry,
@@ -242,7 +237,7 @@ def remove_hass_device(hass: HomeAssistant, device_id: str):
                 device_registry.async_remove_device(entity.device_id)
 
 
-async def async_setup(hass, config):
+async def async_setup(hass: HomeAssistant, config):
     """Set up the Tuya integration."""
     tuya_logger.setLevel(_LOGGER.level)
     conf = config.get(DOMAIN)
