@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Support for Tuya vacuum."""
+"""Support for Tuya Vacuums."""
 from __future__ import annotations
 
 import logging

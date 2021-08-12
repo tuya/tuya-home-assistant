@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-"""Support for Tuya switches."""
+"""Support for Tuya sensors."""
 
 import json
 import logging

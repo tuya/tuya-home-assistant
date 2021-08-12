@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-"""Support for Tuya switches."""
+"""Support for Tuya scenes."""
 from __future__ import annotations
 
 import logging

@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-"""Support for Tuya Mode Sensor."""
+"""Support for Tuya Select entities."""
 from __future__ import annotations
 
 import json
@@ -76,7 +75,7 @@ async def async_setup_entry(
     await async_discover_device(device_ids)
 
 
-def get_auto_generate_data_points(status):
+def get_auto_generate_data_points(status) -> list:
     dps = []
     for data_point in AUTO_GENERATE_DP_LIST:
         if data_point in status:

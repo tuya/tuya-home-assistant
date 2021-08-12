@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-"""Support for Tuya switches."""
+"""Support for Tuya Number entities."""
 from __future__ import annotations
 
 import json
