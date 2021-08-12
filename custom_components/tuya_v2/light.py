@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Support for the Tuya lights."""
 
 import json

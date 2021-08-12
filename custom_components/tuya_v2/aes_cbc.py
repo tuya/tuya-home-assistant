@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """AES-CBC encryption and decryption for account info."""
 
 import base64 as b64
