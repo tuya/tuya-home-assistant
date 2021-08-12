@@ -68,10 +68,9 @@ CONFIG_SCHEMA = vol.Schema(
     extra=vol.ALLOW_EXTRA,
 )
 
-# decrypt or encrypt entry info
-
 
 def entry_decrypt(hass: HomeAssistant, entry: ConfigEntry, init_entry_data):
+    """Decript or encrypt entry info."""
     aes = Aes()
     # decrypt the new account info
     if XOR_KEY in init_entry_data:
@@ -109,6 +108,7 @@ def entry_decrypt(hass: HomeAssistant, entry: ConfigEntry, init_entry_data):
 
 
 async def _init_tuya_sdk(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Initialize the Tuya SDK."""
     init_entry_data = entry.data
     # decrypt or encrypt entry info
     entry_data = entry_decrypt(hass, entry, init_entry_data)
