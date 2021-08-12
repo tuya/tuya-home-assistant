@@ -25,14 +25,22 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 TUYA_SUPPORT_TYPE = {
-    "xxj" #Diffuser
+    "xxj", # Diffuser
+    "kfj",  # Coffee Maker
 }
 
 DPCODE_MODE = "mode"
 DPCODE_COUNTDOWN = "countdown"
 DPCODE_WORK_MODE = "work_mode"
 
-AUTO_GENERATE_DP_LIST = [DPCODE_MODE, DPCODE_COUNTDOWN, DPCODE_WORK_MODE]
+# Coffee Maker
+# https://developer.tuya.com/en/docs/iot/f?id=K9gf4701ox167
+DPCODE_MATERIAL = "material"
+DPCODE_CONCENTRATIONSET = "concentration_set"
+DPCODE_CUPNUMBER = "cup_number"
+
+
+AUTO_GENERATE_DP_LIST = [DPCODE_MODE, DPCODE_COUNTDOWN, DPCODE_WORK_MODE, DPCODE_MATERIAL, DPCODE_CONCENTRATIONSET, DPCODE_CUPNUMBER]
 
 async def async_setup_entry(hass: HomeAssistant, _entry: ConfigEntry, async_add_entities):
     _LOGGER.info("select init")
@@ -89,6 +97,11 @@ class TuyaHaSelect(TuyaHaDevice, SelectEntity):
     @property
     def unique_id(self) -> Optional[str]:
         return f"{super().unique_id}{self._code}"
+
+    @property
+    def name(self) -> Optional[str]:
+        """Return Tuya device name."""
+        return self.tuya_device.name + self._code
 
     @property
     def current_option(self) -> str:

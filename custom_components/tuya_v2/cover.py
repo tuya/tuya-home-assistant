@@ -19,7 +19,13 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
 from .base import TuyaHaDevice
-from .const import DOMAIN, TUYA_DEVICE_MANAGER, TUYA_DISCOVERY_NEW, TUYA_HA_TUYA_MAP, TUYA_HA_DEVICES
+from .const import (
+    DOMAIN,
+    TUYA_DEVICE_MANAGER,
+    TUYA_DISCOVERY_NEW,
+    TUYA_HA_TUYA_MAP,
+    TUYA_HA_DEVICES,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -30,6 +36,7 @@ TUYA_SUPPORT_TYPE = {"cl", "clkg"}  # Curtain  # Curtain Switch
 DPCODE_CONTROL = "control"
 DPCODE_PERCENT_CONTROL = "percent_control"
 DPCODE_PERCENT_STATE = "percent_state"
+DPCODE_SITUATION_SET = "situation_set"
 
 ATTR_POSITION = "position"
 
@@ -87,13 +94,18 @@ class TuyaHaCover(TuyaHaDevice, CoverEntity):
     @property
     def is_closed(self) -> bool | None:
         """Return is cover is closed."""
-        return False
+        return None
 
     @property
     def current_cover_position(self) -> int:
         """Return cover current position."""
         position = self.tuya_device.status.get(DPCODE_PERCENT_STATE, 0)
-        return 100 - position
+        if DPCODE_SITUATION_SET not in self.tuya_device.status:
+            return 1 + int(0.98 * (100 - position))
+        elif self.tuya_device.status.get(DPCODE_SITUATION_SET) == "fully_open":
+            return 1 + 0.98 * position
+        else:
+            return 1 + int(0.98 * (100 - position))
 
     def open_cover(self, **kwargs: Any) -> None:
         """Open the cover."""
