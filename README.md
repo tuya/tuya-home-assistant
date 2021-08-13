@@ -40,7 +40,7 @@ It's a collection of known working PBT Products that are compatible with Home As
 We appreciate your contribution!
 
 #### DISCLAIMER
-[Mark Watt](https://github.com/MarkWattTech) is not associated with Home Assistant or Tuya. He is a Smart Home and Home Assistant Enthusiast, and would like to help make the Tuya v2 integration the best it can be.
+[Mark Watt](https://www.youtube.com/channel/UCQRm_z7seHnGsBiWDNEWr6A) is not associated with Home Assistant or Tuya. He is a Smart Home and Home Assistant Enthusiast, and would like to help make the Tuya v2 integration the best it can be.
 
 ## Follow us
 
