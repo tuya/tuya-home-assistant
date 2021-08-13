@@ -256,7 +256,7 @@ class TuyaHaBSensor(TuyaHaDevice, BinarySensorEntity):
         self._type = sensor_type
         self._code = sensor_code
         self._is_on = sensor_is_on
-        self._attr_unique_id = f"{super().unique_id}{self._type}"
+        self._attr_unique_id = f"{super().unique_id}{self._code}"
         self._attr_name = f"{self.tuya_device.name}_{self._code}"
         self._attr_device_class = self._type
         self._attr_available = True
