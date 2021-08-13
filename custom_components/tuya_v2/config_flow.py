@@ -76,7 +76,7 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         project_type = ProjectType(user_input[CONF_PROJECT_TYPE])
         api = TuyaOpenAPI(
             user_input[CONF_ENDPOINT]
-            if project_type == ProjectType.INDUSTY_SOLUTIONS
+            if project_type == ProjectType.INDUSTRY_SOLUTIONS
             else "",
             user_input[CONF_ACCESS_ID],
             user_input[CONF_ACCESS_SECRET],
@@ -84,7 +84,7 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
         api.set_dev_channel("hass")
 
-        if project_type == ProjectType.INDUSTY_SOLUTIONS:
+        if project_type == ProjectType.INDUSTRY_SOLUTIONS:
             response = api.login(user_input[CONF_USERNAME], user_input[CONF_PASSWORD])
         else:
             if user_input[CONF_COUNTRY_CODE] in COUNTRY_CODE_CHINA:

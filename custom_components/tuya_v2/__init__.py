@@ -125,7 +125,7 @@ async def _init_tuya_sdk(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         await hass.async_add_executor_job(
             api.login, entry_data[CONF_USERNAME], entry_data[CONF_PASSWORD]
         )
-        if project_type == ProjectType.INDUSTY_SOLUTIONS
+        if project_type == ProjectType.INDUSTRY_SOLUTIONS
         else await hass.async_add_executor_job(
             api.login,
             entry_data[CONF_USERNAME],
