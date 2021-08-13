@@ -1,19 +1,17 @@
-#!/usr/bin/env python3
-"""Support for Tuya Mode Sensor."""
+"""Support for Tuya Select entities."""
+from __future__ import annotations
 
 import json
 import logging
-from typing import List, Optional
 
-from tuya_iot import TuyaDevice, TuyaDeviceManager
-
+from homeassistant.components.select import DOMAIN as DEVICE_DOMAIN
+from homeassistant.components.select import SelectEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.components.select import DOMAIN as DEVICE_DOMAIN, SelectEntity
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from tuya_iot import TuyaDevice, TuyaDeviceManager
 
 from .base import TuyaHaDevice
-
 from .const import (
     DOMAIN,
     TUYA_DEVICE_MANAGER,
@@ -25,7 +23,7 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 TUYA_SUPPORT_TYPE = {
-    "xxj", # Diffuser
+    "xxj",  # Diffuser
     "kfj",  # Coffee Maker
 }
 
@@ -40,9 +38,19 @@ DPCODE_CONCENTRATIONSET = "concentration_set"
 DPCODE_CUPNUMBER = "cup_number"
 
 
-AUTO_GENERATE_DP_LIST = [DPCODE_MODE, DPCODE_COUNTDOWN, DPCODE_WORK_MODE, DPCODE_MATERIAL, DPCODE_CONCENTRATIONSET, DPCODE_CUPNUMBER]
+AUTO_GENERATE_DP_LIST = [
+    DPCODE_MODE,
+    DPCODE_COUNTDOWN,
+    DPCODE_WORK_MODE,
+    DPCODE_MATERIAL,
+    DPCODE_CONCENTRATIONSET,
+    DPCODE_CUPNUMBER,
+]
 
-async def async_setup_entry(hass: HomeAssistant, _entry: ConfigEntry, async_add_entities):
+
+async def async_setup_entry(
+    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities
+):
     _LOGGER.info("select init")
 
     hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update({DEVICE_DOMAIN: TUYA_SUPPORT_TYPE})
@@ -66,7 +74,8 @@ async def async_setup_entry(hass: HomeAssistant, _entry: ConfigEntry, async_add_
             device_ids.append(device_id)
     await async_discover_device(device_ids)
 
-def get_auto_generate_data_points(status):
+
+def get_auto_generate_data_points(status) -> list:
     dps = []
     for data_point in AUTO_GENERATE_DP_LIST:
         if data_point in status:
@@ -74,7 +83,8 @@ def get_auto_generate_data_points(status):
 
     return dps
 
-def _setup_entities(hass, device_ids: List):
+
+def _setup_entities(hass: HomeAssistant, device_ids: list):
     device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
     entities = []
     for device_id in device_ids:
@@ -86,20 +96,22 @@ def _setup_entities(hass, device_ids: List):
             entities.append(TuyaHaSelect(device, device_manager, data_point))
 
     return entities
-    
+
 
 class TuyaHaSelect(TuyaHaDevice, SelectEntity):
-    def __init__(self, device: TuyaDevice, device_manager: TuyaDeviceManager, code: str = ""):
+    def __init__(
+        self, device: TuyaDevice, device_manager: TuyaDeviceManager, code: str = ""
+    ):
         self._code = code
         self._attr_current_option = None
         super().__init__(device, device_manager)
 
     @property
-    def unique_id(self) -> Optional[str]:
+    def unique_id(self) -> str | None:
         return f"{super().unique_id}{self._code}"
 
     @property
-    def name(self) -> Optional[str]:
+    def name(self) -> str | None:
         """Return Tuya device name."""
         return self.tuya_device.name + self._code
 
@@ -108,10 +120,9 @@ class TuyaHaSelect(TuyaHaDevice, SelectEntity):
         return self.tuya_device.status.get(self._code, None)
 
     def select_option(self, option: str) -> None:
-        self._send_command([{"code": self._code, "value": option}])        
+        self._send_command([{"code": self._code, "value": option}])
 
     @property
-    def options(self) -> List:
+    def options(self) -> list:
         dp_range = json.loads(self.tuya_device.function.get(self._code).values)
-        return dp_range.get("range",[])
-    
+        return dp_range.get("range", [])

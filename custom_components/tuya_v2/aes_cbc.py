@@ -1,12 +1,11 @@
-#!/usr/bin/env python3
 """AES-CBC encryption and decryption for account info."""
 
-from Crypto.Cipher import AES
-from binascii import b2a_hex, a2b_hex
 import base64 as b64
-import random
 import json
-import os.path
+import random
+from binascii import a2b_hex, b2a_hex
+
+from Crypto.Cipher import AES
 
 AES_ACCOUNT_KEY = "o0o0o0"
 XOR_KEY = "00oo00"
