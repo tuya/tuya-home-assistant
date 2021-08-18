@@ -87,9 +87,9 @@ class TuyaHaCover(TuyaHaDevice, CoverEntity):
     _attr_device_class = DEVICE_CLASS_CURTAIN
 
     @property
-    def is_closed(self) -> bool | None:
+    def is_closed(self) -> bool:
         """Return is cover is closed."""
-        return None
+        return self.current_cover_position <= 1
 
     @property
     def current_cover_position(self) -> int:
