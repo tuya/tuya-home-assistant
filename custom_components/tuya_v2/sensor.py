@@ -41,6 +41,7 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 TUYA_SUPPORT_TYPE = [
+    "wg2", # Smart power monitor
     "wsdcg",  # Temperature and Humidity Sensor
     "mcs",  # Door Window Sensor
     "ywbj",  # Somke Detector
