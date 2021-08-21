@@ -123,10 +123,12 @@ class TuyaHaVacuum(TuyaHaDevice, StateVacuumEntity):
 
         if status == "standby":
             return STATE_IDLE
-        if status == "goto_charge":
+        if status == "goto_charge" or status == "docking":
             return STATE_RETURNING
         if status == "charging" or status == "charge_done":
             return STATE_DOCKED
+        if status == "pause":
+            return STATE_PAUSED
         return STATE_CLEANING
 
     @property
