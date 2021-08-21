@@ -23,13 +23,15 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 TUYA_SUPPORT_TYPE = {
-    "xxj",  # Diffuser
-    "kfj",  # Coffee Maker
+    "xxj", # Diffuser
+    "kfj", # Coffee Maker
+    "sd",  # Vacuum Robot
 }
 
 DPCODE_MODE = "mode"
 DPCODE_COUNTDOWN = "countdown"
 DPCODE_WORK_MODE = "work_mode"
+DPCODE_DIRECTIONCONTROL = "direction_control"
 
 # Coffee Maker
 # https://developer.tuya.com/en/docs/iot/f?id=K9gf4701ox167
@@ -45,6 +47,7 @@ AUTO_GENERATE_DP_LIST = [
     DPCODE_MATERIAL,
     DPCODE_CONCENTRATIONSET,
     DPCODE_CUPNUMBER,
+    DPCODE_DIRECTIONCONTROL
 ]
 
 
