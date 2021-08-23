@@ -50,6 +50,7 @@ DPCODE_POWER_GO = "power_go"  # Cleaning switch
 DPCODE_STATUS = "status"
 DPCODE_PAUSE = "pause"
 DPCODE_RETURN_HOME = "switch_charge"
+DPCODE_LOCATE = "seek"
 
 DPCODE_BATTERY = "electricity_left"
 
@@ -193,3 +194,8 @@ class TuyaHaVacuum(TuyaHaDevice, StateVacuumEntity):
         """Return device to Dock"""
         _LOGGER.debug(f"Return to base device {self.name}")
         self._send_command([{"code": DPCODE_MODE, "value": "chargego"}])
+
+    def locate(self, **kwargs: Any) -> None:
+        """Return device to Dock"""
+        _LOGGER.debug(f"Locate the device {self.name}")
+        self._send_command([{"code": DPCODE_LOCATE, "value": True}])
