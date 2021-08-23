@@ -53,6 +53,10 @@ DPCODE_RETURN_HOME = "switch_charge"
 
 DPCODE_BATTERY = "electricity_left"
 
+DPCODE_STATUS_FULL = "status_full"
+DPCODE_CLEAN_AREA = "clean_area"
+DPCODE_CLEAN_TIME = "clean_time"
+DPCODE_CLEAN_RECORD = "clean_record"
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
@@ -110,6 +114,20 @@ class TuyaHaVacuum(TuyaHaDevice, StateVacuumEntity):
         """Return Tuya device state."""
         return self.tuya_device.status.get(DPCODE_BATTERY)
 
+    @property
+    def device_state_attributes(self):
+        """Return the optional state attributes with device specific additions."""
+        attr = {}
+        if self.tuya_device.status.get(DPCODE_STATUS):
+          attr[DPCODE_STATUS_FULL] = self.tuya_device.status.get(DPCODE_STATUS)
+        if self.tuya_device.status.get(DPCODE_CLEAN_AREA):
+          attr[DPCODE_CLEAN_AREA] = self.tuya_device.status.get(DPCODE_CLEAN_AREA)
+        if self.tuya_device.status.get(DPCODE_CLEAN_TIME):
+          attr[DPCODE_CLEAN_TIME] = self.tuya_device.status.get(DPCODE_CLEAN_TIME)
+        if self.tuya_device.status.get(DPCODE_CLEAN_RECORD):
+          attr[DPCODE_CLEAN_RECORD] = self.tuya_device.status.get(DPCODE_CLEAN_RECORD)
+        return attr
+    
     @property
     def state(self):
         """Return Tuya device state."""
