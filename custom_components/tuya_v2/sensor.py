@@ -110,6 +110,8 @@ JSON_CODE_CURRENT = "electricCurrent"
 JSON_CODE_POWER = "power"
 JSON_CODE_VOLTAGE = "voltage"
 
+# Door Window Sensor (mcs)
+DPCODE_BATTERY_VALUE = "battery_value"
 
 async def async_setup_entry(
     hass: HomeAssistant, _entry: ConfigEntry, async_add_entities: AddEntitiesCallback
@@ -264,6 +266,16 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         device_manager,
                         DEVICE_CLASS_BATTERY,
                         DPCODE_BATTERY_PERCENTAGE,
+                        PERCENTAGE,
+                    )
+                )
+            if DPCODE_BATTERY_VALUE in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DEVICE_CLASS_BATTERY,
+                        DPCODE_BATTERY_VALUE,
                         PERCENTAGE,
                     )
                 )
