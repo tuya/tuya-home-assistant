@@ -222,10 +222,10 @@ class TuyaHaLight(TuyaHaDevice, LightEntity):
             commands += [{"code": self.dp_code_temp, "value": int(color_temp)}]
 
             # brightness
-            ha_brightness = self.brightness
+            new_brightness = kwargs[ATTR_BRIGHTNESS] or self.brightness
             new_range = self._tuya_brightness_range()
             tuya_brightness = self.remap(
-                ha_brightness, 0, 255, new_range[0], new_range[1]
+                new_brightness, 0, 255, new_range[0], new_range[1]
             )
             commands += [{"code": self.dp_code_bright, "value": int(tuya_brightness)}]
 
