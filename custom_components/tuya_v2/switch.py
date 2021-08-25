@@ -35,8 +35,7 @@ TUYA_SUPPORT_TYPE = {
     "ckmkzq",  # Garage Door Opener
     "zndb",  # Smart Electricity Meter
     "fs",  # Fan
-    "zndb", # Smart Electricity Meter
-    "kfj",   # Coffee Maker
+    "zndb" "kfj",  # Smart Electricity Meter  # Coffee Maker
     "wg2", # Smart power monitor
 }
 
