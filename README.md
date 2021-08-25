@@ -76,6 +76,12 @@ Please refer to the [Contributing.md](./contributing.md) for contributing guide.
 
 You can give feedback on issues you encounter via **GitHub Issue**.
 
+## Related Projects
+
+- [Tuya IoT Python SDK](https://github.com/tuya/tuya-iot-python-sdk)
+
+- [Tuya Connector Python](https://github.com/tuya/tuya-connector-python)
+
 ## LICENSE
 
 For more information, please refer to the [LICENSE](LICENSE) file.
