@@ -210,7 +210,6 @@ class TuyaHaLight(TuyaHaDevice, LightEntity):
                 commands += [{"code": DPCODE_WORK_MODE, "value": "colour"}]
 
         if ATTR_COLOR_TEMP in kwargs:
-            # temp color
             new_range = self._tuya_temp_range()
             color_temp = self.remap(
                 self.max_mireds - kwargs[ATTR_COLOR_TEMP] + self.min_mireds,
@@ -220,14 +219,6 @@ class TuyaHaLight(TuyaHaDevice, LightEntity):
                 new_range[1],
             )
             commands += [{"code": self.dp_code_temp, "value": int(color_temp)}]
-
-            # brightness
-            new_brightness = kwargs[ATTR_BRIGHTNESS] or self.brightness
-            new_range = self._tuya_brightness_range()
-            tuya_brightness = self.remap(
-                new_brightness, 0, 255, new_range[0], new_range[1]
-            )
-            commands += [{"code": self.dp_code_bright, "value": int(tuya_brightness)}]
 
             if self.tuya_device.status[DPCODE_WORK_MODE] != "white":
                 commands += [{"code": DPCODE_WORK_MODE, "value": "white"}]
