@@ -45,4 +45,5 @@ TUYA_SUPPORT_HA_TYPE = [
     "sensor",
     "switch",
     "vacuum",
+    "remote"
 ]
