@@ -59,6 +59,7 @@ TUYA_SUPPORT_TYPE = [
     "kj",  # Air Purifier,
     "xxj",  # Diffuser
     "zndb",  # Smart Electricity Meter
+    "wnykq", # Smart IR
 ]
 
 # Smoke Detector
