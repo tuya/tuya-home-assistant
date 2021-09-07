@@ -57,6 +57,7 @@ DPCODE_STATUS_FULL = "status_full"
 DPCODE_CLEAN_AREA = "clean_area"
 DPCODE_CLEAN_TIME = "clean_time"
 DPCODE_CLEAN_RECORD = "clean_record"
+DPCODE_FAULT = "fault"
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
@@ -128,6 +129,8 @@ class TuyaHaVacuum(TuyaHaDevice, StateVacuumEntity):
           attr[DPCODE_CLEAN_TIME] = self.tuya_device.status.get(DPCODE_CLEAN_TIME)
         if self.tuya_device.status.get(DPCODE_CLEAN_RECORD):
           attr[DPCODE_CLEAN_RECORD] = self.tuya_device.status.get(DPCODE_CLEAN_RECORD)
+        if self.tuya_device.status.get(DPCODE_FAULT):
+          attr[DPCODE_FAULT] = self.tuya_device.status.get(DPCODE_FAULT)
         return attr
 		
     @property
