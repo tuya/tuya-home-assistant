@@ -223,3 +223,8 @@ class TuyaHaVacuum(TuyaHaDevice, StateVacuumEntity):
         """Return device to Dock"""
         _LOGGER.debug(f"Locate the device {self.name}")
         self._send_command([{"code": DPCODE_LOCATE, "value": True}])
+	
+    def send_command(self, command, params, **kwargs):
+        """Send raw command."""
+        _LOGGER.debug(f"Send Command the device {self.name}", command)
+        self._send_command(command)
