@@ -144,7 +144,7 @@ class TuyaHaVacuum(TuyaHaDevice, StateVacuumEntity):
 
         status = self.tuya_device.status.get(DPCODE_STATUS)
 
-        if status == "standby":
+        if status == "standby" or status=="sleep":
             return STATE_IDLE
         if status == "goto_charge" or status == "docking":
             return STATE_RETURNING
