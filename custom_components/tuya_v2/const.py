@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Constants for the Tuya integration."""
 
 DOMAIN = "tuya_v2"
@@ -18,7 +17,6 @@ TUYA_HOME_MANAGER = "tuya_home_manager"
 TUYA_MQTT_LISTENER = "tuya_mqtt_listener"
 TUYA_HA_TUYA_MAP = "tuya_ha_tuya_map"
 TUYA_HA_DEVICES = "tuya_ha_devices"
-TUYA_SETUP_PLATFORM = "setup_platform"
 
 TUYA_ENDPOINT = {
     "https://openapi.tuyaus.com": "America",
@@ -33,7 +31,7 @@ TUYA_PROJECT_TYPE = {1: "Custom Development", 0: "Smart Home PaaS"}
 
 TUYA_APP_TYPE = {"tuyaSmart": "TuyaSmart", "smartlife": "Smart Life"}
 
-TUYA_SUPPORT_HA_TYPE = [
+PLATFORMS = [
     "binary_sensor",
     "climate",
     "cover",

@@ -1,18 +1,11 @@
-#!/usr/bin/env python3
 """Config flow for Tuya."""
 
 import json
 import logging
-from .aes_cbc import (
-    AesCBC as Aes,
-    XOR_KEY,
-    KEY_KEY,
-    AES_ACCOUNT_KEY,
-)
-from tuya_iot import DevelopMethod, TuyaOpenAPI
-import voluptuous as vol
 
+import voluptuous as vol
 from homeassistant import config_entries
+from tuya_iot import TuyaOpenAPI, DevelopMethod, TuyaCloudOpenAPIEndpoint
 
 from .const import (
     CONF_ACCESS_ID,
@@ -75,8 +68,8 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self.project_type = DevelopMethod.SMART_HOME
         self.is_import = False
 
-    @classmethod
-    def _try_login(cls, user_input):
+    @staticmethod
+    def _try_login(user_input):
         _LOGGER.info(f"TuyaConfigFlow._try_login start, user_input: {user_input}")
         project_type = DevelopMethod(user_input[CONF_PROJECT_TYPE])
         api = TuyaOpenAPI(
@@ -93,9 +86,9 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             response = api.connect(user_input[CONF_USERNAME], user_input[CONF_PASSWORD])
         else:
             if user_input[CONF_COUNTRY_CODE] in COUNTRY_CODE_CHINA:
-                api.endpoint = "https://openapi.tuyacn.com"
+                api.endpoint = TuyaCloudOpenAPIEndpoint.CHINA
             else:
-                api.endpoint = "https://openapi.tuyaus.com"
+                api.endpoint = TuyaCloudOpenAPIEndpoint.AMERICA
 
             response = api.connect(
                 user_input[CONF_USERNAME],
@@ -107,7 +100,7 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 api.endpoint = api.token_info.platform_url
                 user_input[CONF_ENDPOINT] = api.token_info.platform_url
 
-        _LOGGER.info(f"TuyaConfigFlow._try_login finish, response:, {response}")
+        _LOGGER.debug(f"TuyaConfigFlow._try_login finish, response:, {response}")
         return response
 
     async def async_step_import(self, user_input=None):
@@ -115,72 +108,65 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self.is_import = True
         return await self.async_step_user(user_input)
 
-    async def async_step_project_type(self, user_input=None):
-        """Step project type."""
-        self.conf_project_type = user_input[CONF_PROJECT_TYPE]
-        self.project_type = DevelopMethod(self.conf_project_type)
-        return (
-            self.async_show_form(step_id="user", data_schema=DATA_SCHEMA_SMART_HOME)
-            if self.project_type == DevelopMethod.SMART_HOME
-            else self.async_show_form(
-                step_id="user", data_schema=DATA_SCHEMA_INDUSTRY_SOLUTIONS
-            )
-        )
-
+    # async def async_step_project_type(self, user_input=None):
+    #     """Step project type."""
+    #     self.conf_project_type = user_input[CONF_PROJECT_TYPE]
+    #     self.project_type = DevelopMethod(self.conf_project_type)
+    #     return (
+    #         self.async_show_form(step_id="user", data_schema=DATA_SCHEMA_SMART_HOME)
+    #         if self.project_type == DevelopMethod.SMART_HOME
+    #         else self.async_show_form(
+    #             step_id="user", data_schema=DATA_SCHEMA_INDUSTRY_SOLUTIONS
+    #         )
+    #     )
+    
     async def async_step_user(self, user_input=None):
         """Step user."""
-        _LOGGER.info(f"TuyaConfigFlow.async_step_user start, is_import= {self.is_import}")
-        _LOGGER.info(f"TuyaConfigFlow.async_step_user start, user_input= {user_input}")
+        if user_input is None:
+            return self.async_show_form(
+                step_id="user", data_schema=DATA_SCHEMA_PROJECT_TYPE
+            )
 
-        if self._async_current_entries():
-            return self.async_abort(reason=RESULT_SINGLE_INSTANCE)
+        self.conf_project_type = user_input[CONF_PROJECT_TYPE]
+
+        return await self.async_step_login()
+
+    async def async_step_login(self, user_input=None):
+        """Step login."""
+        _LOGGER.info(
+            f"TuyaConfigFlow.async_step_user start, is_import= {self.is_import}"
+        )
+
+        # if self._async_current_entries():
+        #     return self.async_abort(reason=RESULT_SINGLE_INSTANCE)
 
         errors = {}
         if user_input is not None:
-            if self.conf_project_type is not None:
-                user_input[CONF_PROJECT_TYPE] = self.conf_project_type
+            assert self.conf_project_type is not None
+            user_input[CONF_PROJECT_TYPE] = self.conf_project_type
 
             response = await self.hass.async_add_executor_job(
                 self._try_login, user_input
             )
 
             if response.get("success", False):
-                aes = Aes()
                 _LOGGER.info("TuyaConfigFlow.async_step_user login success")
-                cbc_key = aes.random_16()
-                cbc_iv = aes.random_16()
-                access_id = user_input[CONF_ACCESS_ID]
-                access_id_entry = aes.cbc_encrypt(cbc_key, cbc_iv, access_id)
-                c = cbc_key + cbc_iv
-                c_xor_entry = aes.xor_encrypt(c, access_id_entry)
-                # account info encrypted with AES-CBC
-                user_input_encrpt = aes.cbc_encrypt(cbc_key, cbc_iv, json.dumps(user_input))
-                # account info encrypted add to cache
                 return self.async_create_entry(
                     title=user_input[CONF_USERNAME],
-                    data={
-                        AES_ACCOUNT_KEY: user_input_encrpt,
-                        XOR_KEY: c_xor_entry,
-                        KEY_KEY: access_id_entry,
-                    },
+                    data=user_input,
                 )
 
             errors["base"] = RESULT_AUTH_FAILED
             if self.is_import:
                 return self.async_abort(reason=errors["base"])
 
-            return (
-                self.async_show_form(
-                    step_id="user", data_schema=DATA_SCHEMA_SMART_HOME, errors=errors
-                )
-                if self.project_type == DevelopMethod.SMART_HOME
-                else self.async_show_form(
-                    step_id="user",
-                    data_schema=DATA_SCHEMA_INDUSTRY_SOLUTIONS,
-                    errors=errors,
-                )
+        if DevelopMethod(self.conf_project_type) == DevelopMethod.SMART_HOME:
+            return self.async_show_form(
+                step_id="login", data_schema=DATA_SCHEMA_SMART_HOME, errors=errors
             )
 
         return self.async_show_form(
-            step_id="project_type", data_schema=DATA_SCHEMA_PROJECT_TYPE, errors=errors
+            step_id="login",
+            data_schema=DATA_SCHEMA_INDUSTRY_SOLUTIONS,
+            errors=errors,
         )

@@ -5,12 +5,12 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from tuya_iot import TuyaDevice, TuyaDeviceManager
-
-from homeassistant.components.switch import DOMAIN as DEVICE_DOMAIN, SwitchEntity
+from homeassistant.components.switch import DOMAIN as DEVICE_DOMAIN
+from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from tuya_iot import TuyaDevice, TuyaDeviceManager
 
 from .base import TuyaHaDevice
 from .const import (
@@ -29,14 +29,15 @@ TUYA_SUPPORT_TYPE = {
     "pc",  # Power Strip
     "bh",  # Smart Kettle
     "dlq",  # Breaker
+    "tdq", # Breaker
     "cwysj",  # Pet Water Feeder
-    "kj",     # Air Purifier
-    "xxj",    # Diffuser
+    "kj",  # Air Purifier
+    "xxj",  # Diffuser
     "ckmkzq",  # Garage Door Opener
-    "zndb",    # Smart Electricity Meter
-    "fs",    # Fan
-    "zndb"    # Smart Electricity Meter
-    "kfj",    # Coffee Maker
+    "zndb",  # Smart Electricity Meter
+    "fs",  # Fan
+    "sd",  # Vacuum
+    "zndb" "kfj",  # Smart Electricity Meter  # Coffee Maker
 }
 
 # Switch(kg), Socket(cz), Power Strip(pc)
@@ -68,6 +69,10 @@ DPCODE_CLEANING = "cleaning"
 # https://developer.tuya.com/en/docs/iot/f?id=K9gf45vs7vkge
 DPCODE_FAN_LIGHT = "light"
 
+# Vacuum
+#https://developer.tuya.com/en/docs/iot/fsd?id=K9gf487ck1tlo
+DPCODE_VOICE = "voice_switch"
+
 async def async_setup_entry(
     hass: HomeAssistant, _entry: ConfigEntry, async_add_entities
 ):
@@ -97,7 +102,7 @@ async def async_setup_entry(
     await async_discover_device(device_ids)
 
 
-def _setup_entities(hass, device_ids: list):
+def _setup_entities(hass: HomeAssistant, device_ids: list):
     """Set up Tuya Switch device."""
     device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
     entities = []
@@ -115,7 +120,7 @@ def _setup_entities(hass, device_ids: list):
                     DPCODE_LOCK,
                     DPCODE_UV,
                     DPCODE_WET,
-                    DPCODE_FAN_LIGHT
+                    DPCODE_FAN_LIGHT,
                 ]:
                     entities.append(TuyaHaSwitch(device, device_manager, function))
                     # Main device switch is handled by the Fan object
@@ -129,11 +134,22 @@ def _setup_entities(hass, device_ids: list):
                     continue
 
             elif device.category == "kfj":
-                if function in [DPCODE_SWITCH, DPCODE_START, DPCODE_PAUSE, DPCODE_WARM, DPCODE_CLEANING ]:
+                if function in [
+                    DPCODE_SWITCH,
+                    DPCODE_START,
+                    DPCODE_PAUSE,
+                    DPCODE_WARM,
+                    DPCODE_CLEANING,
+                ]:
+                    entities.append(TuyaHaSwitch(device, device_manager, function))
+                    continue
+					
+            elif device.category == "sd":
+                if function in [DPCODE_VOICE ]:
                     entities.append(TuyaHaSwitch(
                         device, device_manager, function))
                     continue
-
+                    
             else:
                 if function.startswith(DPCODE_START):
                     entities.append(TuyaHaSwitch(device, device_manager, function))

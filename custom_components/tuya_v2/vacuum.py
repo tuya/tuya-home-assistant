@@ -1,31 +1,30 @@
 #!/usr/bin/env python3
-"""Support for Tuya vacuum."""
+"""Support for Tuya Vacuums."""
 from __future__ import annotations
 
 import logging
 from typing import Any
 
-from tuya_iot import TuyaDevice, TuyaDeviceManager
-
+from homeassistant.components.vacuum import DOMAIN as DEVICE_DOMAIN
 from homeassistant.components.vacuum import (
-    DOMAIN as DEVICE_DOMAIN,
-    SUPPORT_STATE,
-    SUPPORT_STATUS,
-    SUPPORT_BATTERY,
-    SUPPORT_START,
-    SUPPORT_PAUSE,
-    SUPPORT_RETURN_HOME,
-    SUPPORT_STOP,
     STATE_CLEANING,
     STATE_DOCKED,
-    STATE_PAUSED,
     STATE_IDLE,
+    STATE_PAUSED,
     STATE_RETURNING,
+    SUPPORT_BATTERY,
+    SUPPORT_PAUSE,
+    SUPPORT_RETURN_HOME,
+    SUPPORT_START,
+    SUPPORT_STATE,
+    SUPPORT_STATUS,
+    SUPPORT_STOP,
     StateVacuumEntity,
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .base import TuyaHaDevice
 from .const import (
@@ -35,6 +34,7 @@ from .const import (
     TUYA_HA_DEVICES,
     TUYA_HA_TUYA_MAP,
 )
+
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -46,16 +46,20 @@ TUYA_SUPPORT_TYPE = {
 # https://developer.tuya.com/docs/iot/open-api/standard-function/electrician-category/categorykgczpc?categoryId=486118
 DPCODE_MODE = "mode"
 DPCODE_POWER = "power"  # Device switch
-DPCODE_POWER_GO = "power_go"    # Cleaning switch
+DPCODE_POWER_GO = "power_go"  # Cleaning switch
 DPCODE_STATUS = "status"
 DPCODE_PAUSE = "pause"
 DPCODE_RETURN_HOME = "switch_charge"
 
 DPCODE_BATTERY = "electricity_left"
-
+DPCODE_LOCATE = "seek"
+DPCODE_STATUS_FULL = "status_full"
+DPCODE_CLEAN_AREA = "clean_area"
+DPCODE_CLEAN_TIME = "clean_time"
+DPCODE_CLEAN_RECORD = "clean_record"
 
 async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ):
     """Set up tuya vacuum dynamically through tuya discovery."""
     _LOGGER.info("vacuum init")
@@ -83,7 +87,7 @@ async def async_setup_entry(
     await async_discover_device(device_ids)
 
 
-def _setup_entities(hass, device_ids: list):
+def _setup_entities(hass: HomeAssistant, device_ids: list):
     """Set up Tuya Switch device."""
     device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
     entities = []
@@ -109,21 +113,42 @@ class TuyaHaVacuum(TuyaHaDevice, StateVacuumEntity):
     def battery_level(self) -> int | None:
         """Return Tuya device state."""
         return self.tuya_device.status.get(DPCODE_BATTERY)
-
+		
+    @property
+    def device_state_attributes(self):
+        """Return the optional state attributes with device specific additions."""
+        attr = {}
+        if self.tuya_device.status.get(DPCODE_MODE):
+          attr[DPCODE_MODE] = self.tuya_device.status.get(DPCODE_MODE)
+        if self.tuya_device.status.get(DPCODE_STATUS):
+          attr[DPCODE_STATUS_FULL] = self.tuya_device.status.get(DPCODE_STATUS)
+        if self.tuya_device.status.get(DPCODE_CLEAN_AREA):
+          attr[DPCODE_CLEAN_AREA] = self.tuya_device.status.get(DPCODE_CLEAN_AREA)
+        if self.tuya_device.status.get(DPCODE_CLEAN_TIME):
+          attr[DPCODE_CLEAN_TIME] = self.tuya_device.status.get(DPCODE_CLEAN_TIME)
+        if self.tuya_device.status.get(DPCODE_CLEAN_RECORD):
+          attr[DPCODE_CLEAN_RECORD] = self.tuya_device.status.get(DPCODE_CLEAN_RECORD)
+        return attr
+		
     @property
     def state(self):
         """Return Tuya device state."""
-        if DPCODE_PAUSE in self.tuya_device.status and self.tuya_device.status[DPCODE_PAUSE]:
+        if (
+            DPCODE_PAUSE in self.tuya_device.status
+            and self.tuya_device.status[DPCODE_PAUSE]
+        ):
             return STATE_PAUSED
 
         status = self.tuya_device.status.get(DPCODE_STATUS)
 
         if status == "standby":
             return STATE_IDLE
-        if status == "goto_charge":
+        if status == "goto_charge" or status == "docking":
             return STATE_RETURNING
-        if status == "charging" or status == "charge_done":
+        if status == "charging" or status == "charge_done" or status == "chargecompleted":
             return STATE_DOCKED
+        if status == "pause":
+            return STATE_PAUSED
         return STATE_CLEANING
 
     @property
@@ -144,7 +169,6 @@ class TuyaHaVacuum(TuyaHaDevice, StateVacuumEntity):
             supports = supports | SUPPORT_BATTERY
         return supports
 
-    # Functions
     # def turn_on(self, **kwargs: Any) -> None:
     #     """Turn the device on."""
     #     _LOGGER.debug(f"Turning on {self.name}")
@@ -191,3 +215,8 @@ class TuyaHaVacuum(TuyaHaDevice, StateVacuumEntity):
         """Return device to Dock"""
         _LOGGER.debug(f"Return to base device {self.name}")
         self._send_command([{"code": DPCODE_MODE, "value": "chargego"}])
+		
+    def locate(self, **kwargs: Any) -> None:
+        """Return device to Dock"""
+        _LOGGER.debug(f"Locate the device {self.name}")
+        self._send_command([{"code": DPCODE_LOCATE, "value": True}])

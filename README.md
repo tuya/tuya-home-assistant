@@ -31,8 +31,19 @@ Six primary categories, 31 secondary categories are supported now!
 
  :tada: :tada: :tada: [Vote for Tuya v2 Integration New Device Driver Support!](https://github.com/tuya/tuya-home-assistant/discussions/86) :tada::tada::tada:
 
+## Verified PBT Products List
+
+If you have tested and confirmed any Tuya v2 compatible PBT (Powered by Tuya) device, please help to contribute to [Mark Watt Tech's page](https://github.com/MarkWattTech/Tuya-v2-Supported-Devices)
+
+It's a collection of known working PBT Products that are compatible with Home Assistant and the Tuya-v2 integration.
+
+We appreciate your contribution!
+
+#### DISCLAIMER
+[Mark Watt](https://www.youtube.com/channel/UCQRm_z7seHnGsBiWDNEWr6A) is not associated with Home Assistant or Tuya. He is a Smart Home and Home Assistant Enthusiast, and would like to help make the Tuya v2 integration the best it can be.
 
 ## Follow us
+
 - <img src="https://img.icons8.com/color/48/000000/twitter--v1.png"/>  [Twitter](https://twitter.com/developwithtuya)
 - <img src="https://img.icons8.com/material-two-tone/48/000000/youtube.png"/>  [YouTube](https://www.youtube.com/channel/UC25KgSG1nXMZmR8ehs3tleA)
 - <img src="https://img.icons8.com/fluent/48/000000/facebook-new.png"/>  [Facebook](https://www.facebook.com/Develop-With-Tuya-104216298552203)
@@ -64,6 +75,12 @@ Please refer to the [Contributing.md](./contributing.md) for contributing guide.
 ## Issue feedback
 
 You can give feedback on issues you encounter via **GitHub Issue**.
+
+## Related Projects
+
+- [Tuya IoT Python SDK](https://github.com/tuya/tuya-iot-python-sdk)
+
+- [Tuya Connector Python](https://github.com/tuya/tuya-connector-python)
 
 ## LICENSE
 
