@@ -13,14 +13,14 @@ from .aes_cbc import (
 from typing import Any
 
 from tuya_iot import (
-    ProjectType,
+    DevelopMethod,
     TuyaDevice,
     TuyaDeviceListener,
     TuyaDeviceManager,
     TuyaHomeManager,
     TuyaOpenAPI,
     TuyaOpenMQ,
-    tuya_logger,
+    TUYA_LOGGER,
 )
 import voluptuous as vol
 
@@ -117,7 +117,7 @@ async def _init_tuya_sdk(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     init_entry_data = entry.data
     # decrypt or encrypt entry info
     entry_data = entry_decrypt(hass, entry, init_entry_data)
-    project_type = ProjectType(entry_data[CONF_PROJECT_TYPE])
+    project_type = DevelopMethod(entry_data[CONF_PROJECT_TYPE])
     api = TuyaOpenAPI(
         entry_data[CONF_ENDPOINT],
         entry_data[CONF_ACCESS_ID],
@@ -129,11 +129,11 @@ async def _init_tuya_sdk(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     response = (
         await hass.async_add_executor_job(
-            api.login, entry_data[CONF_USERNAME], entry_data[CONF_PASSWORD]
+            api.connect, entry_data[CONF_USERNAME], entry_data[CONF_PASSWORD]
         )
-        if project_type == ProjectType.INDUSTY_SOLUTIONS
+        if project_type == DevelopMethod.CUSTOM
         else await hass.async_add_executor_job(
-            api.login,
+            api.connect,
             entry_data[CONF_USERNAME],
             entry_data[CONF_PASSWORD],
             entry_data[CONF_COUNTRY_CODE],
@@ -141,7 +141,7 @@ async def _init_tuya_sdk(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
     )
     if response.get("success", False) is False:
-        _LOGGER.error(f"Tuya login error response: {response}")
+        _LOGGER.error(f"Tuya connect error response: {response}")
         return False
 
     tuya_mq = TuyaOpenMQ(api)
@@ -244,7 +244,7 @@ def remove_hass_device(hass: HomeAssistant, device_id: str):
 
 async def async_setup(hass, config):
     """Set up the Tuya integration."""
-    tuya_logger.setLevel(_LOGGER.level)
+    TUYA_LOGGER.setLevel(_LOGGER.level)
     conf = config.get(DOMAIN)
 
     _LOGGER.info(f"Tuya async setup conf {conf}")

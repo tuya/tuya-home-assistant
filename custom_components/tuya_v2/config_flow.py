@@ -9,7 +9,7 @@ from .aes_cbc import (
     KEY_KEY,
     AES_ACCOUNT_KEY,
 )
-from tuya_iot import ProjectType, TuyaOpenAPI
+from tuya_iot import DevelopMethod, TuyaOpenAPI
 import voluptuous as vol
 
 from homeassistant import config_entries
@@ -72,16 +72,16 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Init tuya config flow."""
         super().__init__()
         self.conf_project_type = None
-        self.project_type = ProjectType.SMART_HOME
+        self.project_type = DevelopMethod.SMART_HOME
         self.is_import = False
 
     @classmethod
     def _try_login(cls, user_input):
         _LOGGER.info(f"TuyaConfigFlow._try_login start, user_input: {user_input}")
-        project_type = ProjectType(user_input[CONF_PROJECT_TYPE])
+        project_type = DevelopMethod(user_input[CONF_PROJECT_TYPE])
         api = TuyaOpenAPI(
             user_input[CONF_ENDPOINT]
-            if project_type == ProjectType.INDUSTY_SOLUTIONS
+            if project_type == DevelopMethod.CUSTOM
             else "",
             user_input[CONF_ACCESS_ID],
             user_input[CONF_ACCESS_SECRET],
@@ -89,15 +89,15 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
         api.set_dev_channel("hass")
 
-        if project_type == ProjectType.INDUSTY_SOLUTIONS:
-            response = api.login(user_input[CONF_USERNAME], user_input[CONF_PASSWORD])
+        if project_type == DevelopMethod.CUSTOM:
+            response = api.connect(user_input[CONF_USERNAME], user_input[CONF_PASSWORD])
         else:
             if user_input[CONF_COUNTRY_CODE] in COUNTRY_CODE_CHINA:
                 api.endpoint = "https://openapi.tuyacn.com"
             else:
                 api.endpoint = "https://openapi.tuyaus.com"
 
-            response = api.login(
+            response = api.connect(
                 user_input[CONF_USERNAME],
                 user_input[CONF_PASSWORD],
                 user_input[CONF_COUNTRY_CODE],
@@ -118,10 +118,10 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_project_type(self, user_input=None):
         """Step project type."""
         self.conf_project_type = user_input[CONF_PROJECT_TYPE]
-        self.project_type = ProjectType(self.conf_project_type)
+        self.project_type = DevelopMethod(self.conf_project_type)
         return (
             self.async_show_form(step_id="user", data_schema=DATA_SCHEMA_SMART_HOME)
-            if self.project_type == ProjectType.SMART_HOME
+            if self.project_type == DevelopMethod.SMART_HOME
             else self.async_show_form(
                 step_id="user", data_schema=DATA_SCHEMA_INDUSTRY_SOLUTIONS
             )
@@ -173,7 +173,7 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 self.async_show_form(
                     step_id="user", data_schema=DATA_SCHEMA_SMART_HOME, errors=errors
                 )
-                if self.project_type == ProjectType.SMART_HOME
+                if self.project_type == DevelopMethod.SMART_HOME
                 else self.async_show_form(
                     step_id="user",
                     data_schema=DATA_SCHEMA_INDUSTRY_SOLUTIONS,
