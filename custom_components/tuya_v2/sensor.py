@@ -22,6 +22,7 @@ from homeassistant.const import (
     TEMP_CELSIUS,
     TIME_DAYS,
     TIME_MINUTES,
+    TIME_SECONDS,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
@@ -60,6 +61,7 @@ TUYA_SUPPORT_TYPE = [
     "xxj",  # Diffuser
     "zndb",  # Smart Electricity Meter
     "wnykq", # Smart IR
+    "sfkzq", # Smart Water Timer
 ]
 
 # Smoke Detector
@@ -113,6 +115,11 @@ JSON_CODE_VOLTAGE = "voltage"
 
 # Door Window Sensor (mcs)
 DPCODE_BATTERY_VALUE = "battery_value"
+
+# Smart Water Timer
+#DPCODE_BATTERY_PERCENTAGE = "battery_percentage"
+DPCODE_WORK_STATE = "work_state"
+DPCODE_USE_TIME_ONE = "use_time_one"
 
 async def async_setup_entry(
     hass: HomeAssistant, _entry: ConfigEntry, async_add_entities: AddEntitiesCallback
@@ -454,6 +461,27 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                                 "V",
                             )
                         )
+            if DPCODE_WORK_STATE in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        "Work state",
+                        DPCODE_WORK_STATE,
+                        "",
+                    )
+                )
+            if DPCODE_USE_TIME_ONE in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        "use_time_one",
+                        DPCODE_USE_TIME_ONE,
+                        TIME_SECONDS,
+                    )
+                )
+
     return entities
 
 

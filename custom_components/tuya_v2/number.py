@@ -26,6 +26,7 @@ _LOGGER = logging.getLogger(__name__)
 TUYA_SUPPORT_TYPE = {
     "hps",  # Human Presence Sensor
     "kfj",  # Coffee Maker
+    "sfkzq", # Smart Water Timer
 }
 
 # Switch(kg), Socket(cz), Power Strip(pc)
@@ -40,6 +41,9 @@ DPCODE_WATERSET = "water_set"
 DPCODE_POWDERSET = "powder_set"
 DPCODE_CLOUDRECIPE = "cloud_recipe_number"
 
+# Smart Water Timer
+DPCODE_TIME_USE = "time_use"
+DPCODE_COUNTDOWN = "countdown"
 
 async def async_setup_entry(
     hass: HomeAssistant, _entry: ConfigEntry, async_add_entities: AddEntitiesCallback
@@ -96,6 +100,12 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
 
         if DPCODE_CLOUDRECIPE in device.status:
             entities.append(TuyaHaNumber(device, device_manager, DPCODE_CLOUDRECIPE))
+
+        if DPCODE_TIME_USE in device.status:
+            entities.append(TuyaHaNumber(device, device_manager, DPCODE_TIME_USE))
+
+        if DPCODE_COUNTDOWN in device.status:
+            entities.append(TuyaHaNumber(device, device_manager, DPCODE_COUNTDOWN))
 
     return entities
 

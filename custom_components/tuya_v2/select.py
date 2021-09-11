@@ -26,6 +26,7 @@ TUYA_SUPPORT_TYPE = {
     "xxj", # Diffuser
     "kfj", # Coffee Maker
     "sd",  # Vacuum Robot
+    "sfkzq", # Smart Water Timer
 }
 
 DPCODE_MODE = "mode"
@@ -39,6 +40,9 @@ DPCODE_MATERIAL = "material"
 DPCODE_CONCENTRATIONSET = "concentration_set"
 DPCODE_CUPNUMBER = "cup_number"
 
+# Smart Water Timer
+DPCODE_SMART_WATER = "smart_weather"
+DPCODE_WEATHER_DELAY = "weather_delay"
 
 AUTO_GENERATE_DP_LIST = [
     DPCODE_MODE,
@@ -95,8 +99,12 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
         if device is None:
             continue
 
-        for data_point in get_auto_generate_data_points(device.status):
-            entities.append(TuyaHaSelect(device, device_manager, data_point))
+        if device.category == "sfkzq":
+            entities.append(TuyaHaSelect(device, device_manager, DPCODE_SMART_WATER))
+            entities.append(TuyaHaSelect(device, device_manager, DPCODE_WEATHER_DELAY))
+        else:
+            for data_point in get_auto_generate_data_points(device.status):
+                entities.append(TuyaHaSelect(device, device_manager, data_point))
 
     return entities
 
