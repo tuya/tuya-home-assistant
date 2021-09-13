@@ -88,6 +88,7 @@ DPCODE_CURRENT = "cur_current"
 DPCODE_POWER = "cur_power"
 DPCODE_VOLTAGE = "cur_voltage"
 DPCODE_TOTAL_FORWARD_ENERGY = "total_forward_energy"
+DPCODE_ADD_ELE = "add_ele"
 
 DPCODE_BRIGHT_VALUE = "bright_value"
 
@@ -210,7 +211,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         "TVOC",
                         DPCODE_AP_TVOC,
                         CONCENTRATION_PARTS_PER_MILLION,
-                        STATE_CLASS_MEASUREMENT,
+                        STATE_CLASS_TOTAL_INCREASING,
                     )
                 )
             elif DPCODE_AP_ECO2 in device.status:
@@ -438,6 +439,17 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         device_manager,
                         DEVICE_CLASS_ENERGY,
                         DPCODE_TOTAL_FORWARD_ENERGY,
+                        ENERGY_KILO_WATT_HOUR,
+                        STATE_CLASS_TOTAL_INCREASING,
+                    )
+                )
+            if DPCODE_ADD_ELE in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DEVICE_CLASS_ENERGY,
+                        DPCODE_ADD_ELE,
                         ENERGY_KILO_WATT_HOUR,
                         STATE_CLASS_TOTAL_INCREASING,
                     )
