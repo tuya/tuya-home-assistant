@@ -18,6 +18,8 @@ TUYA_MQTT_LISTENER = "tuya_mqtt_listener"
 TUYA_HA_TUYA_MAP = "tuya_ha_tuya_map"
 TUYA_HA_DEVICES = "tuya_ha_devices"
 
+TUYA_HA_SIGNAL_UPDATE_ENTITY = "tuya_entry_update"
+
 TUYA_ENDPOINT = {
     "https://openapi.tuyaus.com": "America",
     "https://openapi.tuyacn.com": "China",
@@ -32,16 +34,21 @@ TUYA_PROJECT_TYPE = {1: "Custom Development", 0: "Smart Home PaaS"}
 TUYA_APP_TYPE = {"tuyaSmart": "TuyaSmart", "smartlife": "Smart Life"}
 
 PLATFORMS = [
-    "binary_sensor",
-    "climate",
-    "cover",
-    "fan",
-    "humidifier",
-    "light",
-    "number",
-    "scene",
-    "select",
-    "sensor",
     "switch",
-    "vacuum",
+    "light"
 ]
+
+# PLATFORMS = [
+#     "binary_sensor",
+#     "climate",
+#     "cover",
+#     "fan",
+#     "humidifier",
+#     "light",
+#     "number",
+#     "scene",
+#     "select",
+#     "sensor",
+#     "switch",
+#     "vacuum",
+# ]

@@ -22,7 +22,7 @@ from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from tuya_iot import TuyaDevice, TuyaDeviceManager
 
-from .base import TuyaHaDevice
+from .base import TuyaHaEntity
 from .const import (
     DOMAIN,
     TUYA_DEVICE_MANAGER,
@@ -80,27 +80,28 @@ DEFAULT_HSV_V2 = {
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ):
     """Set up tuya light dynamically through tuya discovery."""
     _LOGGER.info("light init")
 
-    hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update({DEVICE_DOMAIN: TUYA_SUPPORT_TYPE})
+    hass.data[DOMAIN][entry.entry_id][TUYA_HA_TUYA_MAP][
+        DEVICE_DOMAIN
+    ] = TUYA_SUPPORT_TYPE
 
     async def async_discover_device(dev_ids):
         """Discover and add a discovered tuya light."""
         _LOGGER.info(f"light add-> {dev_ids}")
         if not dev_ids:
             return
-        entities = await hass.async_add_executor_job(_setup_entities, hass, dev_ids)
-        hass.data[DOMAIN][TUYA_HA_DEVICES].extend(entities)
+        entities = _setup_entities(hass, dev_ids)
         async_add_entities(entities)
 
     async_dispatcher_connect(
         hass, TUYA_DISCOVERY_NEW.format(DEVICE_DOMAIN), async_discover_device
     )
 
-    device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
+    device_manager = hass.data[DOMAIN][entry.entry_id][TUYA_DEVICE_MANAGER]
     device_ids = []
     for (device_id, device) in device_manager.device_map.items():
         if device.category in TUYA_SUPPORT_TYPE:
@@ -108,19 +109,25 @@ async def async_setup_entry(
     await async_discover_device(device_ids)
 
 
-def _setup_entities(hass: HomeAssistant, device_ids: list):
+def _setup_entities(hass, entry: ConfigEntry, device_ids: list[str]) -> list[Entity]:
     """Set up Tuya Light device."""
-    device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
+    device_manager = hass.data[DOMAIN][entry.entry_id][TUYA_DEVICE_MANAGER]
     entities = []
     for device_id in device_ids:
         device = device_manager.device_map[device_id]
         if device is None:
             continue
-        entities.append(TuyaHaLight(device, device_manager))
+
+        tuya_ha_light = TuyaHaLight(device, device_manager)
+        entities.append(tuya_ha_light)
+        hass.data[DOMAIN][entry.entry_id][TUYA_HA_DEVICES].add(
+            tuya_ha_light.tuya_device.id
+        )
+
     return entities
 
 
-class TuyaHaLight(TuyaHaDevice, LightEntity):
+class TuyaHaLight(TuyaHaEntity, LightEntity):
     """Tuya light device."""
 
     def __init__(self, device: TuyaDevice, device_manager: TuyaDeviceManager) -> None:
