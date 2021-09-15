@@ -35,7 +35,8 @@ TUYA_APP_TYPE = {"tuyaSmart": "TuyaSmart", "smartlife": "Smart Life"}
 
 PLATFORMS = [
     "switch",
-    "light"
+    "light",
+    "scene"
 ]
 
 # PLATFORMS = [

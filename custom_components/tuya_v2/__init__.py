@@ -148,7 +148,7 @@ async def _init_tuya_sdk(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # Get device list
     home_manager = TuyaHomeManager(api, tuya_mq, device_manager)
     await hass.async_add_executor_job(home_manager.update_device_cache)
-    hass.data[DOMAIN][TUYA_HOME_MANAGER] = home_manager
+    hass.data[DOMAIN][entry.entry_id][TUYA_HOME_MANAGER] = home_manager
 
     listener = DeviceListener(hass, entry)
     hass.data[DOMAIN][TUYA_MQTT_LISTENER] = listener

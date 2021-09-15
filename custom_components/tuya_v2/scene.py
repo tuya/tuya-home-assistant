@@ -16,14 +16,14 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ):
     """Set up tuya scenes."""
     _LOGGER.info("scenes init")
 
     entities = []
 
-    __home_manager = hass.data[DOMAIN][TUYA_HOME_MANAGER]
+    __home_manager = hass.data[DOMAIN][entry.entry_id][TUYA_HOME_MANAGER]
     scenes = await hass.async_add_executor_job(__home_manager.query_scenes)
     for scene in scenes:
         entities.append(TuyaHAScene(__home_manager, scene))
