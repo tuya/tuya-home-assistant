@@ -37,7 +37,9 @@ TUYA_SUPPORT_TYPE = {
     "zndb",  # Smart Electricity Meter
     "fs",  # Fan
     "sd",  # Vacuum
-    "zndb" "kfj",  # Smart Electricity Meter  # Coffee Maker
+    "zndb", # Smart Electricity Meter
+    "kfj",    # Coffee Maker
+    "ggq",    #irrigator
 }
 
 # Switch(kg), Socket(cz), Power Strip(pc)
