@@ -10,13 +10,13 @@
         },
         "flow_title": "Konfigurasi Tuya",
         "step": {
-            "project_type":{
+            "user":{
                 "title":"Integrasi Tuya",
                 "data":{
                   "tuya_project_type": "Tipe dari Projek Tuya cloud"
                 }
             },
-            "user": {
+            "login": {
                 "data": {
                     "endpoint": "Zona yang Tersedia",
                     "access_id": "Akses ID",

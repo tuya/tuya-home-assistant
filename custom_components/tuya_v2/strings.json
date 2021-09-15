@@ -2,13 +2,13 @@
   "config": {
     "flow_title": "Tuya configuration",
     "step": {
-      "project_type":{
+      "user":{
         "title":"Tuya Integration",
         "data":{
           "tuya_project_type": "Tuya cloud project type"
         }
       },
-      "user": {
+      "login": {
         "title": "Tuya",
         "description": "Enter your Tuya credential",
         "data": {

@@ -151,7 +151,7 @@ async def _init_tuya_sdk(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data[DOMAIN][entry.entry_id][TUYA_HOME_MANAGER] = home_manager
 
     listener = DeviceListener(hass, entry)
-    hass.data[DOMAIN][TUYA_MQTT_LISTENER] = listener
+    hass.data[DOMAIN][entry.entry_id][TUYA_MQTT_LISTENER] = listener
     device_manager.add_device_listener(listener)
     hass.data[DOMAIN][entry.entry_id][TUYA_DEVICE_MANAGER] = device_manager
 

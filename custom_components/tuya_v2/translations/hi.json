@@ -10,13 +10,13 @@
         },
         "flow_title": "Tuya विन्यास",
         "step": {
-            "project_type":{
+            "user":{
                 "title":"Tuya एकीकरण",
                 "data":{
                   "tuya_project_type": "Tuya क्लाउड प्रोजेक्ट टाइप"
                 }
             },
-            "user": {
+            "login": {
                 "data": {
                     "endpoint": "उपलब्धता क्षेत्र",
                     "access_id": "एक्सेस आईडी",

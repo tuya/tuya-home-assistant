@@ -10,13 +10,13 @@
         },
         "flow_title": "Tuya konfiguráció",
         "step": {
-            "project_type":{
+            "user":{
                 "title":"Tuya Integráció",
                 "data":{
                   "tuya_project_type": "A Tuya cloud projekt típusa"
                 }
             },
-            "user": {
+            "login": {
                 "data": {
                     "endpoint": "A rendelkezésre álló zóna",
                     "access_id": "Hozzáférés azonosító",

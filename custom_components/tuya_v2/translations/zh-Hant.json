@@ -10,13 +10,13 @@
         },
         "flow_title": "塗鴉設定",
         "step": {
-            "project_type":{
+            "user":{
                 "title":"Tuya 套件",
                 "data":{
                   "tuya_project_type": "塗鴉雲端專案類型"
                 }
             },
-            "user": {
+            "login": {
                 "data": {
                     "endpoint": "區域",
                     "access_id": "Access ID",

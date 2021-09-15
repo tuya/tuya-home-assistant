@@ -10,13 +10,13 @@
         },
         "flow_title": "Configurazione Tuya",
         "step": {
-            "project_type":{
+            "user":{
                 "title":"Integrazione Tuya",
                 "data":{
                   "tuya_project_type": "Tipo di progetto cloud Tuya"
                 }
             },
-            "user": {
+            "login": {
                 "data": {
                     "endpoint": "Zona di disponibilità",
                     "access_id": "ID di accesso",

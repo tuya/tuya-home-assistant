@@ -10,13 +10,13 @@
         },
         "flow_title": "Tuya ಸಂರಚನೆ",
         "step": {
-            "project_type":{
+            "user":{
                 "title":"Tuya ಏಕೀಕರಣ",
                 "data":{
                   "tuya_project_type": "Tuya ಕ್ಲೌಡ್ ಯೋಜನೆಯ ಪ್ರಕಾರ"
                 }
             },
-            "user": {
+            "login": {
                 "data": {
                     "endpoint": "ಲಭ್ಯತೆ ವಲಯ",
                     "access_id": "ಆಕ್ಸೇಸ್ ಐಡಿ",

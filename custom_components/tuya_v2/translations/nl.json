@@ -10,13 +10,13 @@
         },
         "flow_title": "Tuya Configuratie",
         "step": {
-            "project_type":{
+            "user":{
                 "title":"Tuya Integratie",
                 "data":{
                   "tuya_project_type": "Tuya cloud projecttype"
                 }
             },
-            "user": {
+            "login": {
                 "data": {
                     "endpoint": "Availability Zone",
                     "access_id": "Access ID",
