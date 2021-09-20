@@ -1,16 +1,18 @@
+#!/usr/bin/env python3
 """Support for Tuya Climate."""
 
 import json
 import logging
+from typing import List
 
-from homeassistant.components.climate import DOMAIN as DEVICE_DOMAIN
-from homeassistant.components.climate import ClimateEntity
+from homeassistant.components.climate import DOMAIN as DEVICE_DOMAIN, ClimateEntity
 from homeassistant.components.climate.const import (
     CURRENT_HVAC_COOL,
     CURRENT_HVAC_FAN,
     CURRENT_HVAC_HEAT,
     CURRENT_HVAC_IDLE,
     CURRENT_HVAC_OFF,
+    HVAC_MODE_HEAT_COOL,
     HVAC_MODE_AUTO,
     HVAC_MODE_COOL,
     HVAC_MODE_DRY,
@@ -26,7 +28,6 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import TEMP_CELSIUS, TEMP_FAHRENHEIT
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from tuya_iot import TuyaDevice, TuyaDeviceManager
 
 from .base import TuyaHaDevice
@@ -90,14 +91,19 @@ TUYA_SUPPORT_TYPE = {
     "wk",  # Thermostat
 }
 
+# A list of device categories that can be classified as purely heaters - allows for future expansion
+TUYA_HEATER_TYPE = {
+    "qn",  # Heater
+}
 
 async def async_setup_entry(
-    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities
 ):
     """Set up tuya climate dynamically through tuya discovery."""
     _LOGGER.info("climate init")
 
-    hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update({DEVICE_DOMAIN: TUYA_SUPPORT_TYPE})
+    hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update(
+        {DEVICE_DOMAIN: TUYA_SUPPORT_TYPE})
 
     async def async_discover_device(dev_ids):
         """Discover and add a discovered tuya climate."""
@@ -120,7 +126,7 @@ async def async_setup_entry(
     await async_discover_device(device_ids)
 
 
-def _setup_entities(hass: HomeAssistant, device_ids: list):
+def _setup_entities(hass, device_ids: List):
     """Set up Tuya Climate."""
     device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
     entities = []
@@ -171,19 +177,23 @@ class TuyaHaClimate(TuyaHaDevice, ClimateEntity):
         else:
             commands.append({"code": DPCODE_SWITCH, "value": True})
 
-        for tuya_mode, ha_mode in TUYA_HVAC_TO_HA.items():
-            if ha_mode == hvac_mode:
-                commands.append({"code": DPCODE_MODE, "value": tuya_mode})
+        # Only pass the DPCODE_MODE command if the device supports it
+        if DPCODE_MODE in self.tuya_device.function:
+            for tuya_mode, ha_mode in TUYA_HVAC_TO_HA.items():
+                if ha_mode == hvac_mode:
+                    commands.append({"code": DPCODE_MODE, "value": tuya_mode})
 
         self._send_command(commands)
 
     def set_fan_mode(self, fan_mode):
         """Set new target fan mode."""
-        self._send_command([{"code": DPCODE_FAN_SPEED_ENUM, "value": fan_mode}])
+        self._send_command(
+            [{"code": DPCODE_FAN_SPEED_ENUM, "value": fan_mode}])
 
     def set_humidity(self, humidity):
         """Set new target humidity."""
-        self._send_command([{"code": DPCODE_HUMIDITY_SET, "value": int(humidity)}])
+        self._send_command(
+            [{"code": DPCODE_HUMIDITY_SET, "value": int(humidity)}])
 
     def set_swing_mode(self, swing_mode):
         """Set new target swing operation."""
@@ -220,22 +230,17 @@ class TuyaHaClimate(TuyaHaDevice, ClimateEntity):
                 {
                     "code": code,
                     "value": int(
-                        kwargs["temperature"] * (10 ** self.get_temp_set_scale())
+                        kwargs["temperature"] *
+                        (10 ** self.get_temp_set_scale())
                     ),
                 }
             ]
         )
 
     def __is_celsius(self) -> bool:
-        if (
-            self.dp_temp_unit in self.tuya_device.status
-            and self.tuya_device.status.get(self.dp_temp_unit).lower() == "c"
-        ):
+        if self.dp_temp_unit in self.tuya_device.status and self.tuya_device.status.get(self.dp_temp_unit).lower() == "c":
             return True
-        elif (
-            DPCODE_TEMP_SET in self.tuya_device.status
-            or DPCODE_TEMP_CURRENT in self.tuya_device.status
-        ):
+        elif DPCODE_TEMP_SET in self.tuya_device.status or DPCODE_TEMP_CURRENT in self.tuya_device.status:
             return True
         return False
 
@@ -318,7 +323,8 @@ class TuyaHaClimate(TuyaHaDevice, ClimateEntity):
                 self.tuya_device.function.get(DPCODE_TEMP_SET, {}).values
             )
             low_value = (
-                temp_value.get("min", 0) * 1.0 / (10 ** self.get_temp_set_scale())
+                temp_value.get("min", 0) * 1.0 /
+                (10 ** self.get_temp_set_scale())
             )
             return low_value
         if DPCODE_TEMP_SET_F not in self.tuya_device.function:
@@ -357,15 +363,22 @@ class TuyaHaClimate(TuyaHaDevice, ClimateEntity):
         """Return hvac mode."""
         if not self.tuya_device.status.get(DPCODE_SWITCH, False):
             return HVAC_MODE_OFF
+        # If the switch is NOT off and the device does not offer any HVAC modes, assume it's HEAT if it's a heater or HEAT/COOL otherwise
         if DPCODE_MODE not in self.tuya_device.status:
-            return HVAC_MODE_OFF
+            _LOGGER.debug(f"Device has switch turned on but supports no modes so just returning default mode")
+            if self.tuya_device.category in TUYA_HEATER_TYPE:
+                return HVAC_MODE_HEAT
+            return HVAC_MODE_HEAT_COOL
         return TUYA_HVAC_TO_HA[self.tuya_device.status.get(DPCODE_MODE)]
 
     @property
-    def hvac_modes(self) -> list:
+    def hvac_modes(self) -> List:
         """Return hvac modes for select."""
         if DPCODE_MODE not in self.tuya_device.function:
-            return []
+            # If the device doesn't support any modes, but does support switch, just return the OFF and HEAT modes if it's a heater or OFF and HEAT/COOL otherwise to allow the UI to function
+            if self.tuya_device.category in TUYA_HEATER_TYPE:
+                return [] if DPCODE_SWITCH not in self.tuya_device.function else [HVAC_MODE_OFF, HVAC_MODE_HEAT]
+            return [] if DPCODE_SWITCH not in self.tuya_device.function else [HVAC_MODE_OFF, HVAC_MODE_HEAT_COOL]
         modes = json.loads(self.tuya_device.function.get(DPCODE_MODE, {}).values).get(
             "range"
         )
@@ -395,7 +408,7 @@ class TuyaHaClimate(TuyaHaDevice, ClimateEntity):
         return self.tuya_device.status.get(DPCODE_FAN_SPEED_ENUM)
 
     @property
-    def fan_modes(self) -> list[str]:
+    def fan_modes(self) -> List[str]:
         """Return fan modes for select."""
         data = json.loads(
             self.tuya_device.function.get(DPCODE_FAN_SPEED_ENUM, {}).values
@@ -426,7 +439,7 @@ class TuyaHaClimate(TuyaHaDevice, ClimateEntity):
         return SWING_OFF
 
     @property
-    def swing_modes(self) -> list:
+    def swing_modes(self) -> List:
         """Return swing mode for select."""
         return [SWING_OFF, SWING_HORIZONTAL, SWING_VERTICAL, SWING_BOTH]
 
