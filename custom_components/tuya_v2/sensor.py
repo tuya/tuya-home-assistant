@@ -3,8 +3,12 @@
 import json
 import logging
 
-from homeassistant.components.sensor import DOMAIN as DEVICE_DOMAIN
-from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.sensor import (
+    DOMAIN as DEVICE_DOMAIN,
+    SensorEntity,
+    STATE_CLASS_MEASUREMENT,
+    STATE_CLASS_TOTAL_INCREASING,
+)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     CONCENTRATION_PARTS_PER_MILLION,
@@ -17,6 +21,7 @@ from homeassistant.const import (
     DEVICE_CLASS_POWER,
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_VOLTAGE,
+    ENERGY_KILO_WATT_HOUR,
     MASS_MILLIGRAMS,
     PERCENTAGE,
     TEMP_CELSIUS,
@@ -83,6 +88,7 @@ DPCODE_CURRENT = "cur_current"
 DPCODE_POWER = "cur_power"
 DPCODE_VOLTAGE = "cur_voltage"
 DPCODE_TOTAL_FORWARD_ENERGY = "total_forward_energy"
+DPCODE_ADD_ELE = "add_ele"
 
 DPCODE_BRIGHT_VALUE = "bright_value"
 
@@ -155,12 +161,24 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
         if device.category == "kj":
             if DPCODE_AP_PM25 in device.status:
                 entities.append(
-                    TuyaHaSensor(device, device_manager, "PM25", DPCODE_AP_PM25, "")
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        "PM25",
+                        DPCODE_AP_PM25,
+                        "",
+                        STATE_CLASS_MEASUREMENT,
+                    )
                 )
             elif DPCODE_AP_FILTER in device.status:
                 entities.append(
                     TuyaHaSensor(
-                        device, device_manager, "Filter", DPCODE_AP_FILTER, PERCENTAGE
+                        device,
+                        device_manager,
+                        "Filter",
+                        DPCODE_AP_FILTER,
+                        PERCENTAGE,
+                        STATE_CLASS_MEASUREMENT,
                     )
                 )
             elif DPCODE_AP_TEMP in device.status:
@@ -171,6 +189,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         DEVICE_CLASS_TEMPERATURE,
                         DPCODE_AP_TEMP,
                         TEMP_CELSIUS,
+                        STATE_CLASS_MEASUREMENT,
                     )
                 )
             elif DPCODE_AP_HUMIDITY in device.status:
@@ -181,6 +200,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         DEVICE_CLASS_HUMIDITY,
                         DPCODE_AP_HUMIDITY,
                         PERCENTAGE,
+                        STATE_CLASS_MEASUREMENT,
                     )
                 )
             elif DPCODE_AP_TVOC in device.status:
@@ -191,6 +211,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         "TVOC",
                         DPCODE_AP_TVOC,
                         CONCENTRATION_PARTS_PER_MILLION,
+                        STATE_CLASS_TOTAL_INCREASING,
                     )
                 )
             elif DPCODE_AP_ECO2 in device.status:
@@ -201,12 +222,18 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         DEVICE_CLASS_CO2,
                         DPCODE_AP_ECO2,
                         CONCENTRATION_PARTS_PER_MILLION,
+                        STATE_CLASS_MEASUREMENT,
                     )
                 )
             elif DPCODE_AP_FDAYS in device.status:
                 entities.append(
                     TuyaHaSensor(
-                        device, device_manager, "FilterDays", DPCODE_AP_FDAYS, TIME_DAYS
+                        device,
+                        device_manager,
+                        "FilterDays",
+                        DPCODE_AP_FDAYS,
+                        TIME_DAYS,
+                        None,
                     )
                 )
             elif DPCODE_AP_TTIME in device.status:
@@ -217,6 +244,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         "TotalTime",
                         DPCODE_AP_TTIME,
                         TIME_MINUTES,
+                        STATE_CLASS_TOTAL_INCREASING,
                     )
                 )
             elif DPCODE_AP_TPM in device.status:
@@ -227,6 +255,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         "TotalPM",
                         DPCODE_AP_TPM,
                         MASS_MILLIGRAMS,
+                        STATE_CLASS_TOTAL_INCREASING,
                     )
                 )
             elif DPCODE_AP_COUNTDOWN in device.status:
@@ -237,6 +266,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         "Countdown",
                         DPCODE_AP_COUNTDOWN,
                         TIME_MINUTES,
+                        None,
                     )
                 )
         else:
@@ -248,6 +278,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         DEVICE_CLASS_BATTERY,
                         DPCODE_BATTERY_ZIGBEELOCK,
                         PERCENTAGE,
+                        STATE_CLASS_MEASUREMENT,
                     )
                 )
             if DPCODE_BATTERY in device.status:
@@ -258,6 +289,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         DEVICE_CLASS_BATTERY,
                         DPCODE_BATTERY,
                         PERCENTAGE,
+                        STATE_CLASS_MEASUREMENT,
                     )
                 )
             if DPCODE_BATTERY_PERCENTAGE in device.status:
@@ -268,6 +300,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         DEVICE_CLASS_BATTERY,
                         DPCODE_BATTERY_PERCENTAGE,
                         PERCENTAGE,
+                        STATE_CLASS_MEASUREMENT,
                     )
                 )
             if DPCODE_BATTERY_VALUE in device.status:
@@ -278,6 +311,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         DEVICE_CLASS_BATTERY,
                         DPCODE_BATTERY_VALUE,
                         PERCENTAGE,
+                        STATE_CLASS_MEASUREMENT,
                     )
                 )
             if DPCODE_BATTERY_CODE in device.status:
@@ -288,6 +322,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         DEVICE_CLASS_BATTERY,
                         DPCODE_BATTERY_CODE,
                         PERCENTAGE,
+                        STATE_CLASS_MEASUREMENT,
                     )
                 )
 
@@ -299,6 +334,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         DEVICE_CLASS_TEMPERATURE,
                         DPCODE_TEMPERATURE,
                         TEMP_CELSIUS,
+                        STATE_CLASS_MEASUREMENT,
                     )
                 )
             if DPCODE_TEMP_CURRENT in device.status:
@@ -309,6 +345,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         DEVICE_CLASS_TEMPERATURE,
                         DPCODE_TEMP_CURRENT,
                         TEMP_CELSIUS,
+                        STATE_CLASS_MEASUREMENT,
                     )
                 )
 
@@ -320,6 +357,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         DEVICE_CLASS_HUMIDITY,
                         DPCODE_HUMIDITY,
                         PERCENTAGE,
+                        STATE_CLASS_MEASUREMENT,
                     )
                 )
             if DPCODE_HUMIDITY_VALUE in device.status:
@@ -330,25 +368,41 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         DEVICE_CLASS_HUMIDITY,
                         DPCODE_HUMIDITY_VALUE,
                         PERCENTAGE,
+                        STATE_CLASS_MEASUREMENT,
                     )
                 )
 
             if DPCODE_PM100_VALUE in device.status:
                 entities.append(
                     TuyaHaSensor(
-                        device, device_manager, "PM10", DPCODE_PM100_VALUE, "ug/m³"
+                        device,
+                        device_manager,
+                        "PM10",
+                        DPCODE_PM100_VALUE,
+                        "ug/m³",
+                        STATE_CLASS_MEASUREMENT,
                     )
                 )
             if DPCODE_PM25_VALUE in device.status:
                 entities.append(
                     TuyaHaSensor(
-                        device, device_manager, "PM2.5", DPCODE_PM25_VALUE, "ug/m³"
+                        device,
+                        device_manager,
+                        "PM2.5",
+                        DPCODE_PM25_VALUE,
+                        "ug/m³",
+                        STATE_CLASS_MEASUREMENT,
                     )
                 )
             if DPCODE_PM10_VALUE in device.status:
                 entities.append(
                     TuyaHaSensor(
-                        device, device_manager, "PM1.0", DPCODE_PM10_VALUE, "ug/m³"
+                        device,
+                        device_manager,
+                        "PM1.0",
+                        DPCODE_PM10_VALUE,
+                        "ug/m³",
+                        STATE_CLASS_MEASUREMENT,
                     )
                 )
 
@@ -362,6 +416,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         json.loads(device.status_range.get(DPCODE_CURRENT).values).get(
                             "unit", 0
                         ),
+                        STATE_CLASS_MEASUREMENT,
                     )
                 )
             if DPCODE_POWER in device.status:
@@ -374,6 +429,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         json.loads(device.status_range.get(DPCODE_POWER).values).get(
                             "unit", 0
                         ),
+                        STATE_CLASS_MEASUREMENT,
                     )
                 )
             if DPCODE_TOTAL_FORWARD_ENERGY in device.status:
@@ -383,9 +439,19 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         device_manager,
                         DEVICE_CLASS_ENERGY,
                         DPCODE_TOTAL_FORWARD_ENERGY,
-                        json.loads(
-                            device.status_range.get(DPCODE_TOTAL_FORWARD_ENERGY).values
-                        ).get("unit", 0),
+                        ENERGY_KILO_WATT_HOUR,
+                        STATE_CLASS_TOTAL_INCREASING,
+                    )
+                )
+            if DPCODE_ADD_ELE in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DEVICE_CLASS_ENERGY,
+                        DPCODE_ADD_ELE,
+                        ENERGY_KILO_WATT_HOUR,
+                        STATE_CLASS_TOTAL_INCREASING,
                     )
                 )
             if DPCODE_VOLTAGE in device.status:
@@ -398,6 +464,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         json.loads(device.status_range.get(DPCODE_VOLTAGE).values).get(
                             "unit", 0
                         ),
+                        STATE_CLASS_MEASUREMENT,
                     )
                 )
             if DPCODE_BRIGHT_VALUE in device.status and device.category != "dj":
@@ -410,6 +477,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         json.loads(
                             device.status_range.get(DPCODE_BRIGHT_VALUE).values
                         ).get("unit", 0),
+                        STATE_CLASS_MEASUREMENT,
                     )
                 )
             if DPCODE_FORWARD_ENERGY_TOTAL in device.status:
@@ -419,9 +487,8 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         device_manager,
                         DEVICE_CLASS_ENERGY,
                         DPCODE_FORWARD_ENERGY_TOTAL,
-                        json.loads(
-                            device.status_range.get(DPCODE_FORWARD_ENERGY_TOTAL).values
-                        ).get("unit", 0),
+                        ENERGY_KILO_WATT_HOUR,
+                        STATE_CLASS_TOTAL_INCREASING,
                     )
                 )
             if device.category == "zndb":
@@ -434,6 +501,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                                 DEVICE_CLASS_CURRENT,
                                 phase + "_" + JSON_CODE_CURRENT,
                                 "A",
+                                STATE_CLASS_MEASUREMENT,
                             )
                         )
                         entities.append(
@@ -443,6 +511,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                                 DEVICE_CLASS_POWER,
                                 phase + "_" + JSON_CODE_POWER,
                                 "kW",
+                                STATE_CLASS_MEASUREMENT,
                             )
                         )
                         entities.append(
@@ -452,6 +521,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                                 DEVICE_CLASS_VOLTAGE,
                                 phase + "_" + JSON_CODE_VOLTAGE,
                                 "V",
+                                STATE_CLASS_MEASUREMENT,
                             )
                         )
     return entities
@@ -467,6 +537,7 @@ class TuyaHaSensor(TuyaHaDevice, SensorEntity):
         sensor_type: str,
         sensor_code: str,
         sensor_unit: str,
+        sensor_state_class: str,
     ) -> None:
         """Init TuyaHaSensor."""
         self._code = sensor_code
@@ -474,6 +545,7 @@ class TuyaHaSensor(TuyaHaDevice, SensorEntity):
         self._attr_name = self.tuya_device.name + "_" + self._attr_device_class
         self._attr_unique_id = f"{super().unique_id}{self._code}"
         self._attr_unit_of_measurement = sensor_unit
+        self._attr_state_class = sensor_state_class
         self._attr_available = True
         super().__init__(device, device_manager)
 
