@@ -39,10 +39,11 @@ _LOGGER = logging.getLogger(__name__)
 # Fan
 # https://developer.tuya.com/en/docs/iot/f?id=K9gf45vs7vkge
 DPCODE_SWITCH = "switch"
-DPCODE_FAN_SPEED = "fan_speed_percent"
 DPCODE_MODE = "mode"
+DPCODE_FAN_SPEED_PERCENT = "fan_speed_percent"
 DPCODE_SWITCH_HORIZONTAL = "switch_horizontal"
 DPCODE_FAN_DIRECTION = "fan_direction"
+DPCODE_FAN_SPEED = "fan_speed"
 
 # Air Purifier
 # https://developer.tuya.com/en/docs/iot/s?id=K9gf48r41mn81
@@ -109,6 +110,8 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
         #   Range is used for e.g. Concept CA3000
         self.air_purifier_speed_range_len = 0
         self.air_purifier_speed_range_enum = []
+        self.fan_speed_range_len = 0
+        self.fan_speed_range_enum = []
         if self.tuya_device.category == "kj":
             try:
                 if (
@@ -131,6 +134,22 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
                         self.air_purifier_speed_range_enum = data
             except Exception:
                 _LOGGER.error("Cannot parse the air-purifier speed range")
+        else: # "fs" category
+            try:
+                if (
+                    DPCODE_FAN_SPEED_PERCENT not in self.tuya_device.status
+                    and DPCODE_FAN_SPEED in self.tuya_device.status
+                ):
+                    data = json.loads(
+                        self.tuya_device.function.get(
+                            DPCODE_FAN_SPEED, {}
+                        ).values
+                    ).get("range")
+                    if data:
+                        self.fan_speed_range_len = len(data)
+                        self.fan_speed_range_enum = data
+            except Exception:
+                _LOGGER.error("Cannot parse the fan speed range")
 
     def set_preset_mode(self, preset_mode: str) -> None:
         """Set the preset mode of the fan."""
@@ -154,8 +173,15 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
                     }
                 ]
             )
+        elif self.fan_speed_range_len > 0:
+            if (percentage == 0):
+                return TuyaHaFan.turn_off(self)
+            value_in_range = percentage_to_ordered_list_item(
+                self.fan_speed_range_enum, percentage
+            )
+            self._send_command([{"code": DPCODE_FAN_SPEED, "value": value_in_range}])
         else:
-            self._send_command([{"code": DPCODE_FAN_SPEED, "value": percentage}])
+            self._send_command([{"code": DPCODE_FAN_SPEED_PERCENT, "value": percentage}])
 
     def turn_off(self, **kwargs: Any) -> None:
         """Turn the fan off."""
@@ -229,7 +255,13 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
                         self.tuya_device.status.get(DPCODE_AP_FAN_SPEED_ENUM, 0),
                     )
 
-        return self.tuya_device.status.get(DPCODE_FAN_SPEED, 0)
+        if self.fan_speed_range_len > 0:
+            return ordered_list_item_to_percentage(
+                        self.fan_speed_range_enum,
+                        self.tuya_device.status.get(DPCODE_FAN_SPEED, 0),
+                    )
+
+        return self.tuya_device.status.get(DPCODE_FAN_SPEED_PERCENT, 0)
 
     @property
     def speed_count(self) -> int:
@@ -244,7 +276,10 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
         supports = 0
         if DPCODE_MODE in self.tuya_device.status:
             supports = supports | SUPPORT_PRESET_MODE
-        if DPCODE_FAN_SPEED in self.tuya_device.status:
+        if (
+            DPCODE_FAN_SPEED_PERCENT in self.tuya_device.status
+            or DPCODE_FAN_SPEED in self.tuya_device.status
+        ):
             supports = supports | SUPPORT_SET_SPEED
         if DPCODE_SWITCH_HORIZONTAL in self.tuya_device.status:
             supports = supports | SUPPORT_OSCILLATE
