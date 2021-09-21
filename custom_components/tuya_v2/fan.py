@@ -51,6 +51,7 @@ DPCODE_AP_FAN_SPEED_ENUM = "fan_speed_enum"
 
 TUYA_SUPPORT_TYPE = {
     "fs",  # Fan
+    "fsd", # Fan with light
     "kj",  # Air Purifier
 }
 

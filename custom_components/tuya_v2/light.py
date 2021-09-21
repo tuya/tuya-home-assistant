@@ -64,6 +64,12 @@ TUYA_SUPPORT_TYPE = {
     "xdd",  # Ceiling Light
     "xxj",  # Diffuser's light
     "fs",  # Fan
+    "fsd",  # Fan with light
+}
+
+# A list of device categories that use the "light" DPCODE to control the light on/off instead of the "switch_led" DPCODE
+TUYA_LIGHT_AS_SWITCH_TYPE = {
+    "fsd",  # Fan with light
 }
 
 DEFAULT_HSV = {
@@ -142,7 +148,10 @@ class TuyaHaLight(TuyaHaDevice, LightEntity):
     @property
     def is_on(self) -> bool:
         """Return true if light is on."""
-        return self.tuya_device.status.get(DPCODE_SWITCH, False)
+        if self.tuya_device.category in TUYA_LIGHT_AS_SWITCH_TYPE:
+            return self.tuya_device.status.get(DPCODE_LIGHT, False)
+        else:
+            return self.tuya_device.status.get(DPCODE_SWITCH, False)
 
     def turn_on(self, **kwargs: Any) -> None:
         """Turn on or control the light."""
@@ -153,13 +162,17 @@ class TuyaHaLight(TuyaHaDevice, LightEntity):
         #     and ATTR_HS_COLOR not in kwargs
         #     and ATTR_COLOR_TEMP not in kwargs
         # ):
-        if (
-            DPCODE_LIGHT in self.tuya_device.status
-            and DPCODE_SWITCH not in self.tuya_device.status
-        ):
+        if self.tuya_device.category in TUYA_LIGHT_AS_SWITCH_TYPE:
             commands += [{"code": DPCODE_LIGHT, "value": True}]
         else:
-            commands += [{"code": DPCODE_SWITCH, "value": True}]
+            # Leave this code for backward compatibility.  Devices that use this should really be added to the TUYA_LIGHT_AS_SWITCH_TYPE
+            if (
+                DPCODE_LIGHT in self.tuya_device.status
+                and DPCODE_SWITCH not in self.tuya_device.status
+            ):
+                commands += [{"code": DPCODE_LIGHT, "value": True}]
+            else:
+                commands += [{"code": DPCODE_SWITCH, "value": True}]
 
         if ATTR_BRIGHTNESS in kwargs:
             if self._work_mode().startswith(WORK_MODE_COLOUR):
@@ -236,13 +249,17 @@ class TuyaHaLight(TuyaHaDevice, LightEntity):
 
     def turn_off(self, **kwargs: Any) -> None:
         """Instruct the light to turn off."""
-        if (
-            DPCODE_LIGHT in self.tuya_device.status
-            and DPCODE_SWITCH not in self.tuya_device.status
-        ):
+        if self.tuya_device.category in TUYA_LIGHT_AS_SWITCH_TYPE:
             commands = [{"code": DPCODE_LIGHT, "value": False}]
         else:
-            commands = [{"code": DPCODE_SWITCH, "value": False}]
+            # Leave this code for backward compatibility.  Devices that use this should really be added to the TUYA_LIGHT_AS_SWITCH_TYPE
+            if (
+                DPCODE_LIGHT in self.tuya_device.status
+                and DPCODE_SWITCH not in self.tuya_device.status
+            ):
+                commands = [{"code": DPCODE_LIGHT, "value": False}]
+            else:
+                commands = [{"code": DPCODE_SWITCH, "value": False}]
         self._send_command(commands)
 
     @property
