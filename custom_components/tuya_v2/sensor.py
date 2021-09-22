@@ -27,6 +27,7 @@ from homeassistant.const import (
     TEMP_CELSIUS,
     TIME_DAYS,
     TIME_MINUTES,
+    CONCENTRATION_MILLIGRAMS_PER_CUBIC_METER
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
@@ -65,6 +66,7 @@ TUYA_SUPPORT_TYPE = [
     "xxj",  # Diffuser
     "zndb",  # Smart Electricity Meter
     "wnykq", # Smart IR
+    "jqbj",  # Air Detector
 ]
 
 # Smoke Detector
@@ -120,6 +122,10 @@ JSON_CODE_VOLTAGE = "voltage"
 # Door Window Sensor (mcs)
 DPCODE_BATTERY_VALUE = "battery_value"
 
+# Air Detector (jqbj)
+DPCODE_AD_CH2O = "ch2o_value"
+DPCODE_AD_VOC = "voc_value"
+DPCODE_AD_CO2 = "co2_value"
 async def async_setup_entry(
     hass: HomeAssistant, _entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
@@ -489,6 +495,39 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         DPCODE_FORWARD_ENERGY_TOTAL,
                         ENERGY_KILO_WATT_HOUR,
                         STATE_CLASS_TOTAL_INCREASING,
+                    )
+                )
+            if DPCODE_AD_CH2O in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        "CH20",
+                        DPCODE_AD_CH2O,
+                        CONCENTRATION_MILLIGRAMS_PER_CUBIC_METER,
+                        STATE_CLASS_MEASUREMENT,
+                    )
+                )
+            if DPCODE_AD_VOC in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        "TVOC",
+                        DPCODE_AD_VOC,
+                        CONCENTRATION_PARTS_PER_MILLION,
+                        STATE_CLASS_MEASUREMENT,
+                    )
+                )
+            if DPCODE_AD_CO2 in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DEVICE_CLASS_CO2,
+                        DPCODE_AD_CO2,
+                        CONCENTRATION_PARTS_PER_MILLION,
+                        STATE_CLASS_MEASUREMENT,
                     )
                 )
             if device.category == "zndb":
