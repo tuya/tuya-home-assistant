@@ -344,6 +344,12 @@ class TuyaHaLight(TuyaHaDevice, LightEntity):
         return self.tuya_device.status.get(DPCODE_WORK_MODE, "")
 
     def _get_hsv(self) -> dict[str, int]:
+        if (
+            self.dp_code_colour not in self.tuya_device.status
+            or len(self.tuya_device.status[self.dp_code_colour]) == 0
+        ):
+            return {"h": 0, "s": 0, "v": 0}
+
         return json.loads(self.tuya_device.status[self.dp_code_colour])
 
     @property
