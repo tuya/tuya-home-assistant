@@ -147,7 +147,8 @@ class TuyaHaLight(TuyaHaDevice, LightEntity):
     def turn_on(self, **kwargs: Any) -> None:
         """Turn on or control the light."""
         commands = []
-        _LOGGER.debug(f"light kwargs-> {kwargs}")
+        work_mode = self._work_mode()
+        _LOGGER.debug(f"light kwargs-> {kwargs}; work_mode {work_mode}")
         # if (
         #     ATTR_BRIGHTNESS not in kwargs
         #     and ATTR_HS_COLOR not in kwargs
@@ -161,29 +162,10 @@ class TuyaHaLight(TuyaHaDevice, LightEntity):
         else:
             commands += [{"code": DPCODE_SWITCH, "value": True}]
 
-        if ATTR_BRIGHTNESS in kwargs:
-            if self._work_mode().startswith(WORK_MODE_COLOUR):
-                colour_data = self._get_hsv()
-                v_range = self._tuya_hsv_v_range()
-                # hsv_v = colour_data.get('v', 0)
-                colour_data["v"] = int(
-                    self.remap(kwargs[ATTR_BRIGHTNESS], 0, 255, v_range[0], v_range[1])
-                )
-                commands += [
-                    {"code": self.dp_code_colour, "value": json.dumps(colour_data)}
-                ]
-            else:
-                new_range = self._tuya_brightness_range()
-                tuya_brightness = int(
-                    self.remap(
-                        kwargs[ATTR_BRIGHTNESS], 0, 255, new_range[0], new_range[1]
-                    )
-                )
-                commands += [{"code": self.dp_code_bright, "value": tuya_brightness}]
-                # commands += [{'code': DPCODE_WORK_MODE, 'value': self._work_mode()}]
-
+        colour_data = self._get_hsv()
+        v_range = self._tuya_hsv_v_range()
+        send_colour_data = False
         if ATTR_HS_COLOR in kwargs:
-            colour_data = self._get_hsv()
             # hsv h
             colour_data["h"] = int(kwargs[ATTR_HS_COLOR][0])
             # hsv s
@@ -200,17 +182,14 @@ class TuyaHaLight(TuyaHaDevice, LightEntity):
             )
             # hsv v
             ha_v = self.brightness
-            v_range = self._tuya_hsv_v_range()
             colour_data["v"] = int(self.remap(ha_v, 0, 255, v_range[0], v_range[1]))
 
-            commands += [
-                {"code": self.dp_code_colour, "value": json.dumps(colour_data)}
-            ]
-            if self.tuya_device.status[DPCODE_WORK_MODE] != "colour":
-                commands += [{"code": DPCODE_WORK_MODE, "value": "colour"}]
+            send_colour_data = True
+            if work_mode != WORK_MODE_COLOUR:
+                work_mode = WORK_MODE_COLOUR
+                commands += [{"code": DPCODE_WORK_MODE, "value": work_mode}]
 
-        if ATTR_COLOR_TEMP in kwargs:
-            # temp color
+        elif ATTR_COLOR_TEMP in kwargs:
             new_range = self._tuya_temp_range()
             color_temp = self.remap(
                 self.max_mireds - kwargs[ATTR_COLOR_TEMP] + self.min_mireds,
@@ -221,16 +200,30 @@ class TuyaHaLight(TuyaHaDevice, LightEntity):
             )
             commands += [{"code": self.dp_code_temp, "value": int(color_temp)}]
 
-            # brightness
-            ha_brightness = self.brightness
-            new_range = self._tuya_brightness_range()
-            tuya_brightness = self.remap(
-                ha_brightness, 0, 255, new_range[0], new_range[1]
-            )
-            commands += [{"code": self.dp_code_bright, "value": int(tuya_brightness)}]
+            if work_mode != WORK_MODE_WHITE:
+                work_mode = WORK_MODE_WHITE
+                commands += [{"code": DPCODE_WORK_MODE, "value": work_mode}]
 
-            if self.tuya_device.status[DPCODE_WORK_MODE] != "white":
-                commands += [{"code": DPCODE_WORK_MODE, "value": "white"}]
+        if ATTR_BRIGHTNESS in kwargs:
+            if work_mode == WORK_MODE_COLOUR:
+                colour_data["v"] = int(
+                    self.remap(kwargs[ATTR_BRIGHTNESS], 0, 255, v_range[0], v_range[1])
+                )
+                send_colour_data = True
+            elif work_mode == WORK_MODE_WHITE:
+                new_range = self._tuya_brightness_range()
+                tuya_brightness = int(
+                    self.remap(
+                        kwargs[ATTR_BRIGHTNESS], 0, 255, new_range[0], new_range[1]
+                    )
+                )
+                commands += [{"code": self.dp_code_bright, "value": tuya_brightness}]
+
+
+        if send_colour_data:
+            commands += [
+                {"code": self.dp_code_colour, "value": json.dumps(colour_data)}
+            ]
 
         self._send_command(commands)
 
