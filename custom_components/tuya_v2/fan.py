@@ -19,8 +19,11 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.util.percentage import (
+    int_states_in_range,
     ordered_list_item_to_percentage,
     percentage_to_ordered_list_item,
+    percentage_to_ranged_value,
+    ranged_value_to_percentage,
 )
 from tuya_iot import TuyaDevice, TuyaDeviceManager
 
@@ -39,10 +42,11 @@ _LOGGER = logging.getLogger(__name__)
 # Fan
 # https://developer.tuya.com/en/docs/iot/f?id=K9gf45vs7vkge
 DPCODE_SWITCH = "switch"
-DPCODE_FAN_SPEED = "fan_speed_percent"
-DPCODE_FAN_SPEED_LEGACY = "fan_speed"
+DPCODE_FAN_SPEED_PERCENT = "fan_speed_percent"
+DPCODE_FAN_SPEED = "fan_speed"
 DPCODE_MODE = "mode"
 DPCODE_SWITCH_HORIZONTAL = "switch_horizontal"
+DPCODE_FAN_DIRECTION = "fan_direction"
 DPCODE_FAN_DIRECTION = "fan_direction"
 
 # Air Purifier
@@ -109,24 +113,55 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
         # We will always prefer the enumeration if available
         #   Enum is used for e.g. MEES SmartHIMOX-H06
         #   Range is used for e.g. Concept CA3000
-        self.speed_range_len = 0
-        self.speed_range_enum = []
+        # Examples of some seen fan speed functions
+        # Enum style 
+        # "values": {“range”:[“1”,“2”,“3”,“4”]}
+        # Range style 
+        # "values": "{"unit":"","min":1,"max":6,"scale":0,"step":1}"
+        # "values": "{"unit":"","min":1,"max":100,"scale":0,"step":1}"
+        # Default will be to use a range from 1 - 100
+        self.speed_style_enum = False
+        # Number of speeds the fan supports
+        self.speed_count = 0
+        # A set list of fan speeds
+        self.speed_enum = []
+        self.speed_min = 1
+        self.speed_max = 100
 
-        # Add legacy fan speeds if the device supports it
-        if DPCODE_FAN_SPEED_LEGACY in self.tuya_device.function:
+        # Add fan speed if the device supports it
+        if (
+            DPCODE_FAN_SPEED in self.tuya_device.status
+            or DPCODE_FAN_SPEED_PERCENT in self.tuya_device.status
+        ):
             try:
-                self.dp_code_speed_enum = DPCODE_AP_FAN_SPEED_LEGACY
+                # Get the appropriate "function" to set the speed, if the device has both, we'll use percentage 
+                self.dp_code_speed_function = (
+                    DPCODE_FAN_SPEED_PERCENT
+                    if DPCODE_FAN_SPEED_PERCENT in self.tuya_device.status
+                    else DPCODE_FAN_SPEED
+                )
+                # Determine if speed control uses an enum list or values
                 data = json.loads(
                     self.tuya_device.function.get(
-                        self.dp_code_speed_enum, {}
+                        self.dp_code_speed_function, {}
                     ).values
                 ).get("range")
                 if data:
-                    self.speed_range_len = len(data)
-                    self.speed_range_enum = data
+                    # We found an enum
+                    self.speed_style_enum = True
+                    self.speed_count = len(data)
+                    self.speed_enum = data
+                else:
+                    # No enum, use values
+                    self.speed_style_enum = False
+                    dp_range = json.loads(self.tuya_device.function.get(self.dp_code_speed_function).values)
+                    self.speed_min = dp_range.get("min", 1)
+                    self.speed_max = dp_range.get("max", 100)
+                    self.speed_count = int_states_in_range(self.speed_min, self.speed_max)
             except Exception:
                 _LOGGER.error("Cannot parse the legacy speed range")
 
+        # Special handling for "kj" device (air purifier) - can probably be merged into above code but left here for now
         if self.tuya_device.category == "kj":
             try:
                 if (
@@ -134,19 +169,27 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
                     or DPCODE_AP_FAN_SPEED in self.tuya_device.status
                 ):
 
-                    self.dp_code_speed_enum = (
+                    self.dp_code_speed_function = (
                         DPCODE_AP_FAN_SPEED_ENUM
                         if DPCODE_AP_FAN_SPEED_ENUM in self.tuya_device.status
                         else DPCODE_AP_FAN_SPEED
                     )
                     data = json.loads(
                         self.tuya_device.function.get(
-                            self.dp_code_speed_enum, {}
+                            self.dp_code_speed_function, {}
                         ).values
                     ).get("range")
                     if data:
-                        self.speed_range_len = len(data)
-                        self.speed_range_enum = data
+                        self.speed_style_enum = True
+                        self.speed_count = len(data)
+                        self.speed_enum = data
+                    else:
+                        # No enum, use values
+                        self.speed_style_enum = False
+                        dp_range = json.loads(self.tuya_device.function.get(self.dp_code_speed_function).values)
+                        self.speed_min = dp_range.get("min", 1)
+                        self.speed_max = dp_range.get("max", 100)
+                        self.speed_count = int_states_in_range(self.speed_min, self.speed_max)
             except Exception:
                 _LOGGER.error("Cannot parse the air-purifier speed range")
 
@@ -160,23 +203,23 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
 
     def set_percentage(self, percentage: int) -> None:
         """Set the speed of the fan, as a percentage."""
-        if (
-            self.tuya_device.category == "kj"
-            or DPCODE_FAN_SPEED_LEGACY in self.tuya_device.function
-        ):
+        if self.speed_style_enum == True:
+            # For a given percentage, find the appropriate enum value
             value_in_range = percentage_to_ordered_list_item(
-                self.speed_range_enum, percentage
+                self.speed_enum, percentage
             )
             self._send_command(
                 [
                     {
-                        "code": self.dp_code_speed_enum,
+                        "code": self.dp_code_speed_function,
                         "value": value_in_range,
                     }
                 ]
             )
         else:
-            self._send_command([{"code": DPCODE_FAN_SPEED, "value": percentage}])
+            # For a given percentage, find the appropriate value from the list of values
+            value_in_range = math.ceil(percentage_to_ranged_value((self.speed_min, self.speed_max), percentage))
+            self._send_command([{"code": self.dp_code_speed_function, "value": value_in_range}])
 
     def turn_off(self, **kwargs: Any) -> None:
         """Turn the fan off."""
@@ -241,32 +284,31 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
         if not self.is_on:
             return 0
 
+        # Special handling for "kj" category - can probably be removed but left in for now
         if self.tuya_device.category == "kj":
-            if self.speed_range_len > 1:
-                if not self.speed_range_enum:
+            if self.speed_count > 1:
+                if not self.speed_enum:
                     # if air-purifier speed enumeration is supported we will prefer it.
                     return ordered_list_item_to_percentage(
-                        self.speed_range_enum,
+                        self.speed_enum,
                         self.tuya_device.status.get(DPCODE_AP_FAN_SPEED_ENUM, 0),
                     )
 
-        if DPCODE_FAN_SPEED_LEGACY in self.tuya_device.function:
-            if self.speed_range_len > 1:
+        current_speed = self.tuya_device.status.get(self.dp_code_speed_function, 0)
+        if self.speed_style_enum == True:
+            if self.speed_count > 1:
+                # Enum style, return percentage based on location of current speed in the list
                 return ordered_list_item_to_percentage(
-                    self.speed_range_enum,
-                    self.tuya_device.status.get(DPCODE_AP_FAN_SPEED_LEGACY, 0),
+                    self.speed_enum,
+                    current_speed,
                 )
-
-        return self.tuya_device.status.get(DPCODE_FAN_SPEED, 0)
+        # Value style, return percentage based on value within min/max
+        return ranged_value_to_percentage((self.speed_min, self.speed_max), current_speed)
 
     @property
     def speed_count(self) -> int:
         """Return the number of speeds the fan supports."""
-        if self.tuya_device.category == "kj":
-            return self.speed_range_len
-        if self.speed_range_len > 0:
-            return self.speed_range_len
-        return super().speed_count
+        return self.speed_count
 
     @property
     def supported_features(self):
@@ -274,18 +316,18 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
         supports = 0
         if DPCODE_MODE in self.tuya_device.status:
             supports = supports | SUPPORT_PRESET_MODE
-        if DPCODE_FAN_SPEED in self.tuya_device.status:
+        if self.speed_count > 1:
             supports = supports | SUPPORT_SET_SPEED
         if DPCODE_SWITCH_HORIZONTAL in self.tuya_device.status:
             supports = supports | SUPPORT_OSCILLATE
         if DPCODE_FAN_DIRECTION in self.tuya_device.status:
             supports = supports | SUPPORT_DIRECTION
 
+        # Special handling for "kj" device (air purifier) - shouldn't be needed anymore but left here for now
         # Air Purifier specific
         if (
             DPCODE_AP_FAN_SPEED in self.tuya_device.status
             or DPCODE_AP_FAN_SPEED_ENUM in self.tuya_device.status
-            or DPCODE_AP_FAN_SPEED_LEGACY in self.tuya_device.status
         ):
             supports = supports | SUPPORT_SET_SPEED
         return supports
