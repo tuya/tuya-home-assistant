@@ -155,6 +155,7 @@ async def _init_tuya_sdk(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             for ha_device in hass.data[DOMAIN][TUYA_HA_DEVICES]:
                 if ha_device.tuya_device.id == device.id:
                     _LOGGER.debug(f"_update-->{self};->>{ha_device.tuya_device.status}")
+                    ha_device.hass = hass
                     ha_device.schedule_update_ha_state()
 
         def add_device(self, device: TuyaDevice):
