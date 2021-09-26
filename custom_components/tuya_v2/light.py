@@ -8,6 +8,8 @@ from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
     ATTR_COLOR_TEMP,
     ATTR_HS_COLOR,
+    COLOR_MODE_HS,
+    COLOR_MODE_COLOR_TEMP,
 )
 from homeassistant.components.light import DOMAIN as DEVICE_DOMAIN
 from homeassistant.components.light import (
@@ -268,6 +270,14 @@ class TuyaHaLight(TuyaHaDevice, LightEntity):
             self.tuya_device.function.get(self.dp_code_bright, {}).values
         )
         return bright_value.get("min", 0), bright_value.get("max", 255)
+
+    @property
+    def color_mode(self):
+        """Return the color_mode of the light."""
+        work_mode = self._work_mode()
+        if work_mode == WORK_MODE_WHITE:
+            return COLOR_MODE_COLOR_TEMP
+        return COLOR_MODE_HS
 
     @property
     def hs_color(self):
