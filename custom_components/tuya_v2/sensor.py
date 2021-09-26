@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import json
 import logging
+import base64 as b64
+import struct
 
 from homeassistant.components.sensor import (
     DOMAIN as DEVICE_DOMAIN,
@@ -498,7 +500,7 @@ def _setup_entities(
                         STATE_CLASS_TOTAL_INCREASING,
                     )
                 )
-            if device.category == "zndb":
+            if device.category in ("zndb", "dlq"):
                 for phase in DPCODE_PHASE:
                     if phase in device.status:
                         entities.append(
@@ -569,6 +571,15 @@ class TuyaHaSensor(TuyaHaEntity, SensorEntity):
                 self._code[8:]
             )
             return __value
+
+        if self.tuya_device.category == "dlq" and self._code.startswith("phase_"):
+            __raw = b64.b64decode(self.tuya_device.status.get(self._code[:7]))
+            if self._attr_device_class == DEVICE_CLASS_VOLTAGE:
+                return struct.unpack('>H', __raw[0:2])[0] / 10.0
+            if self._attr_device_class == DEVICE_CLASS_CURRENT:
+                return struct.unpack('>L', b'\x00' + __raw[2:5])[0] / 1000.0
+            if self._attr_device_class == DEVICE_CLASS_POWER:
+                return struct.unpack('>L', b'\x00' + __raw[5:8])[0] / 1000.0
 
         __value = self.tuya_device.status.get(self._code)
         if self.tuya_device.status_range.get(self._code).type == "Integer":
