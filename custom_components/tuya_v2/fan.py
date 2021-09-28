@@ -48,7 +48,6 @@ DPCODE_FAN_SPEED = "fan_speed"
 DPCODE_MODE = "mode"
 DPCODE_SWITCH_HORIZONTAL = "switch_horizontal"
 DPCODE_FAN_DIRECTION = "fan_direction"
-DPCODE_FAN_DIRECTION = "fan_direction"
 
 # Air Purifier
 # https://developer.tuya.com/en/docs/iot/s?id=K9gf48r41mn81
@@ -123,7 +122,7 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
         # Default will be to use a range from 1 - 100
         self.speed_style_enum = False
         # Number of speeds the fan supports
-        self.speed_count = 0
+        self.fan_speed_count = 0
         # A set list of fan speeds
         self.speed_enum = []
         self.speed_min = 1
@@ -150,7 +149,7 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
                 if data:
                     # We found an enum
                     self.speed_style_enum = True
-                    self.speed_count = len(data)
+                    self.fan_speed_count = len(data)
                     self.speed_enum = data
                 else:
                     # No enum, use values
@@ -158,7 +157,7 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
                     dp_range = json.loads(self.tuya_device.function.get(self.dp_code_speed_function).values)
                     self.speed_min = dp_range.get("min", 1)
                     self.speed_max = dp_range.get("max", 100)
-                    self.speed_count = int_states_in_range(self.speed_min, self.speed_max)
+                    self.fan_speed_count = int_states_in_range(self.speed_min, self.speed_max)
             except Exception:
                 _LOGGER.error("Cannot parse the legacy speed range")
 
@@ -182,7 +181,7 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
                     ).get("range")
                     if data:
                         self.speed_style_enum = True
-                        self.speed_count = len(data)
+                        self.fan_speed_count = len(data)
                         self.speed_enum = data
                     else:
                         # No enum, use values
@@ -190,7 +189,7 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
                         dp_range = json.loads(self.tuya_device.function.get(self.dp_code_speed_function).values)
                         self.speed_min = dp_range.get("min", 1)
                         self.speed_max = dp_range.get("max", 100)
-                        self.speed_count = int_states_in_range(self.speed_min, self.speed_max)
+                        self.fan_speed_count = int_states_in_range(self.speed_min, self.speed_max)
             except Exception:
                 _LOGGER.error("Cannot parse the air-purifier speed range")
 
@@ -287,7 +286,7 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
 
         # Special handling for "kj" category - can probably be removed but left in for now
         if self.tuya_device.category == "kj":
-            if self.speed_count > 1:
+            if self.fan_speed_count > 1:
                 if not self.speed_enum:
                     # if air-purifier speed enumeration is supported we will prefer it.
                     return ordered_list_item_to_percentage(
@@ -297,7 +296,7 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
 
         current_speed = self.tuya_device.status.get(self.dp_code_speed_function, 0)
         if self.speed_style_enum == True:
-            if self.speed_count > 1:
+            if self.fan_speed_count > 1:
                 # Enum style, return percentage based on location of current speed in the list
                 return ordered_list_item_to_percentage(
                     self.speed_enum,
@@ -309,7 +308,7 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
     @property
     def speed_count(self) -> int:
         """Return the number of speeds the fan supports."""
-        return self.speed_count
+        return self.fan_speed_count
 
     @property
     def supported_features(self):
@@ -317,7 +316,7 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
         supports = 0
         if DPCODE_MODE in self.tuya_device.status:
             supports = supports | SUPPORT_PRESET_MODE
-        if self.speed_count > 1:
+        if self.fan_speed_count > 1:
             supports = supports | SUPPORT_SET_SPEED
         if DPCODE_SWITCH_HORIZONTAL in self.tuya_device.status:
             supports = supports | SUPPORT_OSCILLATE
