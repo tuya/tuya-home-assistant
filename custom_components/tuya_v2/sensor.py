@@ -540,6 +540,7 @@ class TuyaHaSensor(TuyaHaDevice, SensorEntity):
         sensor_state_class: str,
     ) -> None:
         """Init TuyaHaSensor."""
+        super().__init__(device, device_manager)
         self._code = sensor_code
         self._attr_device_class = sensor_type
         self._attr_name = self.tuya_device.name + "_" + self._attr_device_class
@@ -547,7 +548,6 @@ class TuyaHaSensor(TuyaHaDevice, SensorEntity):
         self._attr_unit_of_measurement = sensor_unit
         self._attr_state_class = sensor_state_class
         self._attr_available = True
-        super().__init__(device, device_manager)
 
     @property
     def state(self) -> StateType:
