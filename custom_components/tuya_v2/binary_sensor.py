@@ -253,6 +253,7 @@ class TuyaHaBSensor(TuyaHaDevice, BinarySensorEntity):
         sensor_is_on: Callable[..., bool],
     ) -> None:
         """Init TuyaHaBSensor."""
+        super().__init__(device, device_manager)
         self._type = sensor_type
         self._code = sensor_code
         self._is_on = sensor_is_on
@@ -260,7 +261,7 @@ class TuyaHaBSensor(TuyaHaDevice, BinarySensorEntity):
         self._attr_name = f"{self.tuya_device.name}_{self._code}"
         self._attr_device_class = self._type
         self._attr_available = True
-        super().__init__(device, device_manager)
+
 
     @property
     def is_on(self):
