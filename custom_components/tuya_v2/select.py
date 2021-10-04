@@ -116,7 +116,7 @@ class TuyaHaSelect(TuyaHaDevice, SelectEntity):
     @property
     def name(self) -> str | None:
         """Return Tuya device name."""
-        return self.tuya_device.name + self._code
+        return self.tuya_device.name + " " + self._code.replace("_", " ").capitalize()
 
     @property
     def current_option(self) -> str:

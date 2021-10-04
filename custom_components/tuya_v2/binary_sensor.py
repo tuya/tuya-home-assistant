@@ -2,8 +2,8 @@
 
 import json
 import logging
+from typing import Callable, List, Optional
 from threading import Timer
-from typing import Callable
 
 from homeassistant.components.binary_sensor import (
     DEVICE_CLASS_BATTERY,
@@ -251,21 +251,37 @@ class TuyaHaBSensor(TuyaHaDevice, BinarySensorEntity):
         sensor_type: str,
         sensor_code: str,
         sensor_is_on: Callable[..., bool],
-    ) -> None:
+    ):
         """Init TuyaHaBSensor."""
         self._type = sensor_type
         self._code = sensor_code
         self._is_on = sensor_is_on
-        self._attr_unique_id = f"{super().unique_id}{self._code}"
-        self._attr_name = f"{self.tuya_device.name}_{self._code}"
-        self._attr_device_class = self._type
-        self._attr_available = True
         super().__init__(device, device_manager)
+
+    @property
+    def unique_id(self) -> Optional[str]:
+        """Return a unique ID."""
+        return f"{super().unique_id}{self._code}"
+
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return self.tuya_device.name + " " + self._code.replace("_", " ").capitalize()
 
     @property
     def is_on(self):
         """Return true if the binary sensor is on."""
         return self._is_on(self.tuya_device)
+
+    @property
+    def device_class(self):
+        """Device class of this entity."""
+        return self._type
+
+    @property
+    def available(self) -> bool:
+        """Return if the device is available."""
+        return True
 
     def reset_pir(self):
         self.tuya_device.status[DPCODE_PIR] = "none"
