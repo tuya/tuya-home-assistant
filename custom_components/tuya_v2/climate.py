@@ -15,6 +15,7 @@ from homeassistant.components.climate.const import (
     HVAC_MODE_COOL,
     HVAC_MODE_DRY,
     HVAC_MODE_FAN_ONLY,
+    HVAC_MODE_HEAT_COOL,
     HVAC_MODE_HEAT,
     HVAC_MODE_OFF,
     SUPPORT_FAN_MODE,
@@ -70,6 +71,7 @@ SWING_BOTH = "swing_both"
 
 TUYA_HVAC_TO_HA = {
     "hot": HVAC_MODE_HEAT,
+    "manual": HVAC_MODE_HEAT_COOL,
     "cold": HVAC_MODE_COOL,
     "wet": HVAC_MODE_DRY,
     "wind": HVAC_MODE_FAN_ONLY,
