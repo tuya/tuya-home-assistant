@@ -59,7 +59,7 @@ TUYA_SUPPORT_TYPE = {
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
-):
+) -> None:
     """Set up tuya fan dynamically through tuya discovery."""
     _LOGGER.debug("fan init")
 
