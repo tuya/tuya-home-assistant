@@ -22,11 +22,12 @@ from homeassistant.components.vacuum import (
     StateVacuumEntity,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .base import TuyaHaDevice
+from .base import TuyaHaEntity
 from .const import (
     DOMAIN,
     TUYA_DEVICE_MANAGER,
@@ -60,48 +61,54 @@ DPCODE_CLEAN_RECORD = "clean_record"
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
-):
+) -> None:
     """Set up tuya vacuum dynamically through tuya discovery."""
-    _LOGGER.info("vacuum init")
+    _LOGGER.debug("vacuum init")
 
-    hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update({DEVICE_DOMAIN: TUYA_SUPPORT_TYPE})
+    hass.data[DOMAIN][entry.entry_id][TUYA_HA_TUYA_MAP][
+        DEVICE_DOMAIN
+    ] = TUYA_SUPPORT_TYPE
 
-    async def async_discover_device(dev_ids):
+    @callback
+    def async_discover_device(dev_ids):
         """Discover and add a discovered tuya sensor."""
-        _LOGGER.info(f"vacuum add -> {dev_ids}")
+        _LOGGER.debug(f"vacuum add -> {dev_ids}")
         if not dev_ids:
             return
-        entities = await hass.async_add_executor_job(_setup_entities, hass, dev_ids)
-        hass.data[DOMAIN][TUYA_HA_DEVICES].extend(entities)
+        entities = _setup_entities(hass, entry, dev_ids)
         async_add_entities(entities)
 
-    async_dispatcher_connect(
-        hass, TUYA_DISCOVERY_NEW.format(DEVICE_DOMAIN), async_discover_device
+    entry.async_on_unload(
+        async_dispatcher_connect(
+            hass, TUYA_DISCOVERY_NEW.format(DEVICE_DOMAIN), async_discover_device
+        )
     )
 
-    device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
+    device_manager = hass.data[DOMAIN][entry.entry_id][TUYA_DEVICE_MANAGER]
     device_ids = []
     for (device_id, device) in device_manager.device_map.items():
         if device.category in TUYA_SUPPORT_TYPE:
             device_ids.append(device_id)
-    await async_discover_device(device_ids)
+    async_discover_device(device_ids)
 
 
-def _setup_entities(hass: HomeAssistant, device_ids: list):
+def _setup_entities(
+    hass: HomeAssistant, entry: ConfigEntry, device_ids: list[str]
+) -> list[Entity]:
     """Set up Tuya Switch device."""
-    device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
-    entities = []
+    device_manager = hass.data[DOMAIN][entry.entry_id][TUYA_DEVICE_MANAGER]
+    entities: list[Entity] = []
     for device_id in device_ids:
         device = device_manager.device_map[device_id]
         if device is None:
             continue
 
         entities.append(TuyaHaVacuum(device, device_manager))
-
+        hass.data[DOMAIN][entry.entry_id][TUYA_HA_DEVICES].add(device_id)
     return entities
 
 
-class TuyaHaVacuum(TuyaHaDevice, StateVacuumEntity):
+class TuyaHaVacuum(TuyaHaEntity, StateVacuumEntity):
     """Tuya Vacuum Device."""
 
     @property
@@ -169,28 +176,11 @@ class TuyaHaVacuum(TuyaHaDevice, StateVacuumEntity):
             supports = supports | SUPPORT_BATTERY
         return supports
 
-    # def turn_on(self, **kwargs: Any) -> None:
-    #     """Turn the device on."""
-    #     _LOGGER.debug(f"Turning on {self.name}")
-
-    #     self.tuya_device_manager.sendCommands(
-    #         self.tuya_device.id, [{"code": DPCODE_POWER, "value": True}]
-    #     )
-
     def start(self, **kwargs: Any) -> None:
         """Turn the device on."""
         _LOGGER.debug(f"Starting {self.name}")
 
         self._send_command([{"code": DPCODE_POWER_GO, "value": True}])
-
-    # Turn off/pause/stop all do the same thing
-
-    # def turn_off(self, **kwargs: Any) -> None:
-    #     """Turn the device off."""
-    #     _LOGGER.debug(f"Turning off {self.name}")
-    #     self.tuya_device_manager.sendCommands(
-    #         self.tuya_device.id, [{"code": DPCODE_POWER, "value": False}]
-    #     )
 
     def stop(self, **kwargs: Any) -> None:
         """Turn the device off."""
@@ -201,15 +191,6 @@ class TuyaHaVacuum(TuyaHaDevice, StateVacuumEntity):
         """Pause the device."""
         _LOGGER.debug(f"Pausing {self.name}")
         self._send_command([{"code": DPCODE_PAUSE, "value": True}])
-
-    # def start_pause(self, **kwargs: Any) -> None:
-    #     """Start/Pause the device"""
-    #     _LOGGER.debug(f"Start/Pausing {self.name}")
-    #     status = False
-    #     status = self.tuya_device.status.get(DPCODE_PAUSE)
-    #     self.tuya_device_manager.sendCommands(
-    #         self.tuya_device.id, [{"code": DPCODE_PAUSE, "value": not status}]
-    #     )
 
     def return_to_base(self, **kwargs: Any) -> None:
         """Return device to Dock"""

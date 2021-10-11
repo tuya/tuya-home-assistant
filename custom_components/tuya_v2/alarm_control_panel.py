@@ -10,12 +10,13 @@ from homeassistant.components.alarm_control_panel import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import STATE_ALARM_ARMING, STATE_ALARM_TRIGGERED
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.entity import Entity
 from tuya_iot import TuyaDevice, TuyaDeviceManager
 
-from .base import TuyaHaDevice
+from .base import TuyaHaEntity
 from .const import (
     DOMAIN,
     TUYA_DEVICE_MANAGER,
@@ -41,38 +42,43 @@ DPCODE_PIR = "pir"
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities: AddEntitiesCallback
-):
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+) -> None:
     """Set up tuya alarm dynamically through tuya discovery."""
-    _LOGGER.info("alarm init")
+    _LOGGER.debug("alarm init")
 
-    hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update({DEVICE_DOMAIN: TUYA_SUPPORT_TYPE})
+    hass.data[DOMAIN][entry.entry_id][TUYA_HA_TUYA_MAP][
+         DEVICE_DOMAIN
+    ] = TUYA_SUPPORT_TYPE
 
-    async def async_discover_device(dev_ids):
+    @callback
+    def async_discover_device(dev_ids):
         """Discover and add a discovered tuya sensor."""
-        _LOGGER.info("alarm add->", dev_ids)
+        _LOGGER.debug("alarm add->", dev_ids)
         if not dev_ids:
             return
-        entities = await hass.async_add_executor_job(_setup_entities, hass, dev_ids)
-        hass.data[DOMAIN][TUYA_HA_DEVICES].extend(entities)
+        entities = entities = _setup_entities(hass, entry, dev_ids)
         async_add_entities(entities)
-
-    async_dispatcher_connect(
-        hass, TUYA_DISCOVERY_NEW.format(DEVICE_DOMAIN), async_discover_device
+    entry.async_on_unload(
+        async_dispatcher_connect(
+            hass, TUYA_DISCOVERY_NEW.format(DEVICE_DOMAIN), async_discover_device
+        )
     )
 
-    device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
+    device_manager = hass.data[DOMAIN][entry.entry_id][TUYA_DEVICE_MANAGER]
     device_ids = []
     for (device_id, device) in device_manager.device_map.items():
         if device.category in TUYA_SUPPORT_TYPE:
             device_ids.append(device_id)
-    await async_discover_device(device_ids)
+    async_discover_device(device_ids)
 
 
-def _setup_entities(hass: HomeAssistant, device_ids: list):
+def _setup_entities(
+    hass: HomeAssistant, entry: ConfigEntry, device_ids: list[str]
+) -> list[Entity]:
     """Set up Tuya Switch device."""
-    device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
-    entities = []
+    device_manager = hass.data[DOMAIN][entry.entry_id][TUYA_DEVICE_MANAGER]
+    entities: list[Entity] = []
     for device_id in device_ids:
         device = device_manager.device_map[device_id]
         if device is None:
@@ -90,6 +96,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                     ),
                 )
             )
+            hass.data[DOMAIN][entry.entry_id][TUYA_HA_DEVICES].add(device_id)
         if DPCODE_GAS_SENSOR_STATE in device.status:
             entities.append(
                 TuyaHaAlarm(
@@ -102,6 +109,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                     ),
                 )
             )
+            hass.data[DOMAIN][entry.entry_id][TUYA_HA_DEVICES].add(device_id)
         if DPCODE_PIR in device.stastus:
             entities.append(
                 TuyaHaAlarm(
@@ -114,19 +122,15 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                     ),
                 )
             )
+            hass.data[DOMAIN][entry.entry_id][TUYA_HA_DEVICES].add(device_id)
 
     return entities
 
 
-class TuyaHaAlarm(TuyaHaDevice, AlarmControlPanelEntity):
+class TuyaHaAlarm(TuyaHaEntity, AlarmControlPanelEntity):
     """Tuya Alarm Device."""
 
-    def __init__(
-        self,
-        device: TuyaDevice,
-        device_manager: TuyaDeviceManager,
-        sensor_is_on: Callable[..., str],
-    ) -> None:
+    def __init__(self, device: TuyaDevice, device_manager: TuyaDeviceManager, sensor_is_on: Callable[..., str]) -> None:
         """Init TuyaHaAlarm."""
         super().__init__(device, device_manager)
         self._is_on = sensor_is_on

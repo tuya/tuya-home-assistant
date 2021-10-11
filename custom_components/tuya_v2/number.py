@@ -7,12 +7,13 @@ import logging
 from homeassistant.components.number import DOMAIN as DEVICE_DOMAIN
 from homeassistant.components.number import NumberEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.entity import Entity
 from tuya_iot import TuyaDevice, TuyaDeviceManager
 
-from .base import TuyaHaDevice
+from .base import TuyaHaEntity
 from .const import (
     DOMAIN,
     TUYA_DEVICE_MANAGER,
@@ -42,38 +43,44 @@ DPCODE_CLOUDRECIPE = "cloud_recipe_number"
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities: AddEntitiesCallback
-):
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+) -> None:
     """Set up tuya number dynamically through tuya discovery."""
-    _LOGGER.info("number init")
+    _LOGGER.debug("number init")
 
-    hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update({DEVICE_DOMAIN: TUYA_SUPPORT_TYPE})
+    hass.data[DOMAIN][entry.entry_id][TUYA_HA_TUYA_MAP][
+        DEVICE_DOMAIN
+    ] = TUYA_SUPPORT_TYPE
 
-    async def async_discover_device(dev_ids):
+    @callback
+    def async_discover_device(dev_ids):
         """Discover and add a discovered tuya number."""
-        _LOGGER.info(f"number add-> {dev_ids}")
+        _LOGGER.debug(f"number add-> {dev_ids}")
         if not dev_ids:
             return
-        entities = await hass.async_add_executor_job(_setup_entities, hass, dev_ids)
-        hass.data[DOMAIN][TUYA_HA_DEVICES].extend(entities)
+        entities = _setup_entities(hass, entry, dev_ids)
         async_add_entities(entities)
 
-    async_dispatcher_connect(
-        hass, TUYA_DISCOVERY_NEW.format(DEVICE_DOMAIN), async_discover_device
+    entry.async_on_unload(
+        async_dispatcher_connect(
+            hass, TUYA_DISCOVERY_NEW.format(DEVICE_DOMAIN), async_discover_device
+        )
     )
 
-    device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
+    device_manager = hass.data[DOMAIN][entry.entry_id][TUYA_DEVICE_MANAGER]
     device_ids = []
     for (device_id, device) in device_manager.device_map.items():
         if device.category in TUYA_SUPPORT_TYPE:
             device_ids.append(device_id)
-    await async_discover_device(device_ids)
+    async_discover_device(device_ids)
 
 
-def _setup_entities(hass: HomeAssistant, device_ids: list):
+def _setup_entities(
+    hass: HomeAssistant, entry: ConfigEntry, device_ids: list[str]
+) -> list[Entity]:
     """Set up Tuya Switch device."""
-    device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
-    entities = []
+    device_manager = hass.data[DOMAIN][entry.entry_id][TUYA_DEVICE_MANAGER]
+    entities: list[Entity] = []
     for device_id in device_ids:
         device = device_manager.device_map[device_id]
         if device is None:
@@ -81,26 +88,32 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
 
         if DPCODE_SENSITIVITY in device.status:
             entities.append(TuyaHaNumber(device, device_manager, DPCODE_SENSITIVITY))
+            hass.data[DOMAIN][entry.entry_id][TUYA_HA_DEVICES].add(device_id)
 
         if DPCODE_TEMPSET in device.status:
             entities.append(TuyaHaNumber(device, device_manager, DPCODE_TEMPSET))
+            hass.data[DOMAIN][entry.entry_id][TUYA_HA_DEVICES].add(device_id)
 
         if DPCODE_WARMTIME in device.status:
             entities.append(TuyaHaNumber(device, device_manager, DPCODE_WARMTIME))
+            hass.data[DOMAIN][entry.entry_id][TUYA_HA_DEVICES].add(device_id)
 
         if DPCODE_WATERSET in device.status:
             entities.append(TuyaHaNumber(device, device_manager, DPCODE_WATERSET))
+            hass.data[DOMAIN][entry.entry_id][TUYA_HA_DEVICES].add(device_id)
 
         if DPCODE_POWDERSET in device.status:
             entities.append(TuyaHaNumber(device, device_manager, DPCODE_POWDERSET))
+            hass.data[DOMAIN][entry.entry_id][TUYA_HA_DEVICES].add(device_id)
 
         if DPCODE_CLOUDRECIPE in device.status:
             entities.append(TuyaHaNumber(device, device_manager, DPCODE_CLOUDRECIPE))
+            hass.data[DOMAIN][entry.entry_id][TUYA_HA_DEVICES].add(device_id)
 
     return entities
 
 
-class TuyaHaNumber(TuyaHaDevice, NumberEntity):
+class TuyaHaNumber(TuyaHaEntity, NumberEntity):
     """Tuya Device Number."""
 
     def __init__(
@@ -122,7 +135,7 @@ class TuyaHaNumber(TuyaHaDevice, NumberEntity):
     @property
     def name(self) -> str | None:
         """Return Tuya device name."""
-        return self.tuya_device.name + self._code
+        return f"{self.tuya_device.name}{self._code}"
 
     @property
     def value(self) -> float:
