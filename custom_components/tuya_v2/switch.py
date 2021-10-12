@@ -31,9 +31,15 @@ TUYA_SUPPORT_TYPE = {
     "pc",  # Power Strip
     "bh",  # Smart Kettle
     "dlq",  # Breaker
+    "tdq", # Breaker
     "cwysj",  # Pet Water Feeder
     "kj",  # Air Purifier
     "xxj",  # Diffuser
+    "ckmkzq",  # Garage Door Opener
+    "zndb",  # Smart Electricity Meter
+    "fs",  # Fan
+    "sd",  # Vacuum
+    "zndb" "kfj",  # Smart Electricity Meter  # Coffee Maker
 }
 
 # Switch(kg), Socket(cz), Power Strip(pc)
@@ -56,6 +62,18 @@ DPCODE_PRESET = "pump_reset"  # Pet Water Feeder - Water pump resetting
 DPCODE_WRESET = "water_reset"  # Pet Water Feeder - Resetting of water usage days
 
 DPCODE_START = "start"
+# Coffee Maker
+# https://developer.tuya.com/en/docs/iot/f?id=K9gf4701ox167
+DPCODE_PAUSE = "pause"
+DPCODE_WARM = "warm"
+DPCODE_CLEANING = "cleaning"
+# Fan
+# https://developer.tuya.com/en/docs/iot/f?id=K9gf45vs7vkge
+DPCODE_FAN_LIGHT = "light"
+
+# Vacuum
+#https://developer.tuya.com/en/docs/iot/fsd?id=K9gf487ck1tlo
+DPCODE_VOICE = "voice_switch"
 
 
 async def async_setup_entry(
@@ -109,6 +127,7 @@ def _setup_entities(hass, entry: ConfigEntry, device_ids: list[str]) -> list[Ent
                     DPCODE_LOCK,
                     DPCODE_UV,
                     DPCODE_WET,
+                    DPCODE_FAN_LIGHT,
                 ]:
                     tuya_ha_switch = TuyaHaSwitch(device, device_manager, function)
                     # Main device switch is handled by the Fan object
@@ -116,13 +135,31 @@ def _setup_entities(hass, entry: ConfigEntry, device_ids: list[str]) -> list[Ent
                 if function in [DPCODE_FRESET, DPCODE_UV, DPCODE_PRESET, DPCODE_WRESET]:
                     tuya_ha_switch = TuyaHaSwitch(device, device_manager, function)
 
-                if function.startswith(DPCODE_SWITCH):
-                    # Main device switch
+                elif function.startswith(DPCODE_SWITCH):
+                    entities.append(TuyaHaSwitch(device, device_manager, function))
                     tuya_ha_switch = TuyaHaSwitch(device, device_manager, function)
+
+            elif device.category == "kfj":
+                if function in [
+                    DPCODE_SWITCH,
+                    DPCODE_START,
+                    DPCODE_PAUSE,
+                    DPCODE_WARM,
+                    DPCODE_CLEANING,
+                ]:
+                    entities.append(TuyaHaSwitch(device, device_manager, function))
+                    tuya_ha_switch = TuyaHaSwitch(device, device_manager, function)
+					
+            elif device.category == "sd":
+                if function in [DPCODE_VOICE ]:
+                    entities.append(TuyaHaSwitch(device, device_manager, function))
+                    tuya_ha_switch = TuyaHaSwitch(device, device_manager, function)
+
+                    # Main device switch
             else:
                 if function.startswith(DPCODE_START):
                     tuya_ha_switch = TuyaHaSwitch(device, device_manager, function)
-                if function.startswith(DPCODE_SWITCH):
+                elif function.startswith(DPCODE_SWITCH):
                     tuya_ha_switch = TuyaHaSwitch(device, device_manager, function)
 
             if tuya_ha_switch is not None:
