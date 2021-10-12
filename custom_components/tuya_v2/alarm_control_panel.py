@@ -58,6 +58,8 @@ async def async_setup_entry(
         if not dev_ids:
             return
         entities = entities = _setup_entities(hass, entry, dev_ids)
+        for entity in entities:
+            hass.data[DOMAIN][entry.entry_id][TUYA_HA_DEVICES].add(entity.unique_id)
         async_add_entities(entities)
     entry.async_on_unload(
         async_dispatcher_connect(
@@ -96,7 +98,6 @@ def _setup_entities(
                     ),
                 )
             )
-            hass.data[DOMAIN][entry.entry_id][TUYA_HA_DEVICES].add(device_id)
         if DPCODE_GAS_SENSOR_STATE in device.status:
             entities.append(
                 TuyaHaAlarm(
@@ -109,7 +110,6 @@ def _setup_entities(
                     ),
                 )
             )
-            hass.data[DOMAIN][entry.entry_id][TUYA_HA_DEVICES].add(device_id)
         if DPCODE_PIR in device.stastus:
             entities.append(
                 TuyaHaAlarm(
@@ -122,7 +122,6 @@ def _setup_entities(
                     ),
                 )
             )
-            hass.data[DOMAIN][entry.entry_id][TUYA_HA_DEVICES].add(device_id)
 
     return entities
 

@@ -37,7 +37,7 @@ class TuyaHaEntity(Entity):
     @property
     def unique_id(self) -> str | None:
         """Return a unique ID."""
-        return f"tuya.{self.tuya_device.id}"
+        return f"ty{self.tuya_device.id}"
 
     @property
     def name(self) -> str | None:
@@ -49,7 +49,7 @@ class TuyaHaEntity(Entity):
         """Return a device description for device registry."""
         _device_info = {
             "identifiers": {(DOMAIN, f"{self.tuya_device.id}")},
-            "manufacturer": "Tuya",
+            "manufacturer": "tuya",
             "name": self.tuya_device.name,
             "model": self.tuya_device.product_name,
         }
