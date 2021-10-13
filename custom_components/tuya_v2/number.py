@@ -59,6 +59,8 @@ async def async_setup_entry(
         if not dev_ids:
             return
         entities = _setup_entities(hass, entry, dev_ids)
+        for entrty in entitier:
+            hass.data[DOMAIN][entry.entry_id][TUYA_HA_DEVICES].add(entrty.unique_id)
         async_add_entities(entities)
 
     entry.async_on_unload(
@@ -88,27 +90,21 @@ def _setup_entities(
 
         if DPCODE_SENSITIVITY in device.status:
             entities.append(TuyaHaNumber(device, device_manager, DPCODE_SENSITIVITY))
-            hass.data[DOMAIN][entry.entry_id][TUYA_HA_DEVICES].add(device_id)
 
         if DPCODE_TEMPSET in device.status:
             entities.append(TuyaHaNumber(device, device_manager, DPCODE_TEMPSET))
-            hass.data[DOMAIN][entry.entry_id][TUYA_HA_DEVICES].add(device_id)
 
         if DPCODE_WARMTIME in device.status:
             entities.append(TuyaHaNumber(device, device_manager, DPCODE_WARMTIME))
-            hass.data[DOMAIN][entry.entry_id][TUYA_HA_DEVICES].add(device_id)
 
         if DPCODE_WATERSET in device.status:
             entities.append(TuyaHaNumber(device, device_manager, DPCODE_WATERSET))
-            hass.data[DOMAIN][entry.entry_id][TUYA_HA_DEVICES].add(device_id)
 
         if DPCODE_POWDERSET in device.status:
             entities.append(TuyaHaNumber(device, device_manager, DPCODE_POWDERSET))
-            hass.data[DOMAIN][entry.entry_id][TUYA_HA_DEVICES].add(device_id)
 
         if DPCODE_CLOUDRECIPE in device.status:
             entities.append(TuyaHaNumber(device, device_manager, DPCODE_CLOUDRECIPE))
-            hass.data[DOMAIN][entry.entry_id][TUYA_HA_DEVICES].add(device_id)
 
     return entities
 

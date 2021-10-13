@@ -1,8 +1,11 @@
 """Support for Tuya Smart devices."""
 
 import itertools
+from typing import Any
 import logging
 import json
+
+import voluptuous as vol
 
 from tuya_iot import (
     ProjectType,
@@ -12,15 +15,18 @@ from tuya_iot import (
     TuyaHomeManager,
     TuyaOpenAPI,
     TuyaOpenMQ,
+    tuya_logger
 )
 
 from .aes_cbc import AES_ACCOUNT_KEY, KEY_KEY, XOR_KEY
 from .aes_cbc import AesCBC as Aes
 
-from homeassistant.config_entries import ConfigEntry
+import homeassistant.helpers.config_validation as cv
+from homeassistant.config_entries import ConfigEntry, SOURCE_IMPORT
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import device_registry
 from homeassistant.helpers.dispatcher import dispatcher_send
+from homeassistant.data_entry_flow import UnknownFlow, UnknownStep
 
 from .const import (
     CONF_ACCESS_ID,
@@ -44,19 +50,26 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
-
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Async setup hass config entry."""
-
-    _LOGGER.debug("tuya.__init__.async_setup_entry-->%s", entry.data)
-
-    hass.data[DOMAIN] = {entry.entry_id: {TUYA_HA_TUYA_MAP: {}, TUYA_HA_DEVICES: set()}}
-
-    success = await _init_tuya_sdk(hass, entry)
-    if not success:
-        return False
-
-    return True
+CONFIG_SCHEMA = vol.Schema(
+    vol.All(
+        cv.deprecated(DOMAIN),
+        {
+            DOMAIN: vol.Schema(
+                {
+                    vol.Required(CONF_PROJECT_TYPE): int,
+                    vol.Required(CONF_ENDPOINT): cv.string,
+                    vol.Required(CONF_ACCESS_ID): cv.string,
+                    vol.Required(CONF_ACCESS_SECRET): cv.string,
+                    CONF_USERNAME: cv.string,
+                    CONF_PASSWORD: cv.string,
+                    CONF_COUNTRY_CODE: cv.string,
+                    CONF_APP_TYPE: cv.string,
+                }
+            )
+        },
+    ),
+    extra=vol.ALLOW_EXTRA,
+)
 
 def entry_decrypt(hass: HomeAssistant, entry: ConfigEntry, init_entry_data):
     """Decript or encrypt entry info."""
@@ -95,10 +108,24 @@ def entry_decrypt(hass: HomeAssistant, entry: ConfigEntry, init_entry_data):
         )
     return entry_data
 
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Async setup hass config entry."""
+
+    _LOGGER.debug("tuya.__init__.async_setup_entry-->%s", entry.data)
+
+    hass.data[DOMAIN] = {entry.entry_id: {TUYA_HA_TUYA_MAP: {}, TUYA_HA_DEVICES: set()}}
+
+    success = await _init_tuya_sdk(hass, entry)
+    if not success:
+        return False
+
+    return True
+
 
 async def _init_tuya_sdk(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     entry_data = entry_decrypt(hass, entry, entry.data)
     project_type = ProjectType(entry_data[CONF_PROJECT_TYPE])
+
     api = TuyaOpenAPI(
         entry_data[CONF_ENDPOINT],
         entry_data[CONF_ACCESS_ID],
@@ -119,6 +146,7 @@ async def _init_tuya_sdk(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             entry_data[CONF_PASSWORD],
             entry_data[CONF_COUNTRY_CODE],
             entry_data[CONF_APP_TYPE],
+
         )
 
     if response.get("success", False) is False:
@@ -186,6 +214,33 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.data.pop(DOMAIN)
 
     return unload
+
+async def async_setup(hass: HomeAssistant, config):
+    """Set up the Tuya integration."""
+    tuya_logger.setLevel(_LOGGER.level)
+    conf = config.get(DOMAIN)
+
+    _LOGGER.debug(f"Tuya async setup conf {conf}")
+    if conf is not None:
+
+        async def flow_init() -> Any:
+            try:
+                result = await hass.config_entries.flow.async_init(
+                    DOMAIN, context={"source": SOURCE_IMPORT}, data=conf
+                )
+            except UnknownFlow as flow:
+                _LOGGER.error(flow.args)
+            except UnknownStep as step:
+                _LOGGER.error(step.args)
+            except ValueError as err:
+                _LOGGER.error(err.args)
+            _LOGGER.info("Tuya async setup flow_init")
+            return result
+
+        hass.async_create_task(flow_init())
+
+    return True
+
 
 
 class DeviceListener(TuyaDeviceListener):

@@ -134,7 +134,7 @@ async def async_setup_entry(
             return
         entities = _setup_entities(hass, entry, dev_ids)
         for entity in entities:
-            hass.data[DOMAIN][entry.entry_id][TUYA_HA_DEVICES].add(entity._attr_unique_id)
+            hass.data[DOMAIN][entry.entry_id][TUYA_HA_DEVICES].add(entity.unique_id)
 
         async_add_entities(entities)
 
