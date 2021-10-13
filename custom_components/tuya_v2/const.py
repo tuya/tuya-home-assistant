@@ -17,22 +17,29 @@ TUYA_HOME_MANAGER = "tuya_home_manager"
 TUYA_MQTT_LISTENER = "tuya_mqtt_listener"
 TUYA_HA_TUYA_MAP = "tuya_ha_tuya_map"
 TUYA_HA_DEVICES = "tuya_ha_devices"
-TUYA_SETUP_PLATFORM = "setup_platform"
 
-TUYA_ENDPOINT = {
-    "https://openapi.tuyaus.com": "America",
-    "https://openapi.tuyacn.com": "China",
-    "https://openapi.tuyaeu.com": "Europe",
-    "https://openapi.tuyain.com": "India",
-    "https://openapi-ueaz.tuyaus.com": "EasternAmerica",
-    "https://openapi-weaz.tuyaeu.com": "WesternEurope",
+TUYA_HA_SIGNAL_UPDATE_ENTITY = "tuya_entry_update"
+
+TUYA_PROJECT_TYPE_INDUSTY_SOLUTIONS = "Custom Development"
+TUYA_PROJECT_TYPE_SMART_HOME = "Smart Home PaaS"
+
+TUYA_PROJECT_TYPES = {
+    TUYA_PROJECT_TYPE_SMART_HOME: 0,
+    TUYA_PROJECT_TYPE_INDUSTY_SOLUTIONS: 1,
 }
 
-TUYA_PROJECT_TYPE = {1: "Custom Development", 0: "Smart Home PaaS"}
+TUYA_ENDPOINTS = {
+    "America": "https://openapi.tuyaus.com",
+    "China": "https://openapi.tuyacn.com",
+    "Europe": "https://openapi.tuyaeu.com",
+    "India": "https://openapi.tuyain.com",
+    "Eastern America": "https://openapi-ueaz.tuyaus.com",
+    "Western Europe": "https://openapi-weaz.tuyaeu.com",
+}
 
-TUYA_APP_TYPE = {"tuyaSmart": "TuyaSmart", "smartlife": "Smart Life"}
+TUYA_APP_TYPES = {"TuyaSmart": "tuyaSmart", "Smart Life": "smartlife"}
 
-TUYA_SUPPORT_HA_TYPE = [
+PLATFORMS = [
     "binary_sensor",
     "climate",
     "cover",
