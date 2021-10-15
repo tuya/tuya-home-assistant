@@ -1,22 +1,16 @@
 {
     "config": {
-        "abort": {
-            "cannot_connect": "Sikertelen kapcsolódás",
-            "invalid_auth": "Érvénytelen hitelesítés",
-            "single_instance_allowed": "Már be van konfigurálva. Csak egyetlen konfiguráció lehetséges."
-        },
-        "error": {
-            "invalid_auth": "Érvénytelen hitelesítés"
-        },
         "flow_title": "Tuya konfiguráció",
         "step": {
-            "project_type":{
+            "user":{
                 "title":"Tuya Integráció",
                 "data":{
                   "tuya_project_type": "A Tuya cloud projekt típusa"
                 }
             },
-            "user": {
+            "login": {
+                "title": "Tuya",
+                "description": "Adja meg a Tuya hitelesítő adatait.",
                 "data": {
                     "endpoint": "A rendelkezésre álló zóna",
                     "access_id": "Hozzáférés azonosító",
@@ -25,10 +19,11 @@
                     "country_code": "Országkód",
                     "username": "Felhasználónév",
                     "password": "Jelszó"
-                },
-                "description": "Adja meg a Tuya hitelesítő adatait.",
-                "title": "Tuya"
+                }
             }
+        },
+        "error": {
+            "invalid_auth": "Érvénytelen hitelesítés"
         }
     }
 }

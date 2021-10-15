@@ -1,4 +1,5 @@
 """Support for Tuya sensors."""
+from __future__ import annotations
 
 import json
 import logging
@@ -28,13 +29,14 @@ from homeassistant.const import (
     TIME_DAYS,
     TIME_MINUTES,
 )
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import StateType
+from homeassistant.helpers.entity import Entity
 from tuya_iot import TuyaDevice, TuyaDeviceManager
 
-from .base import TuyaHaDevice
+from .base import TuyaHaEntity
 from .const import (
     DOMAIN,
     TUYA_DEVICE_MANAGER,
@@ -121,38 +123,47 @@ JSON_CODE_VOLTAGE = "voltage"
 DPCODE_BATTERY_VALUE = "battery_value"
 
 async def async_setup_entry(
-    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     """Set up tuya sensors dynamically through tuya discovery."""
-    _LOGGER.info("sensor init")
+    _LOGGER.debug("sensor init")
 
-    hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update({DEVICE_DOMAIN: TUYA_SUPPORT_TYPE})
+    hass.data[DOMAIN][entry.entry_id][TUYA_HA_TUYA_MAP][
+        DEVICE_DOMAIN
+    ] = TUYA_SUPPORT_TYPE
 
-    async def async_discover_device(dev_ids):
+    @callback
+    def async_discover_device(dev_ids: list[str]):
         """Discover and add a discovered tuya sensor."""
-        _LOGGER.info(f"sensor add-> {dev_ids}")
+        _LOGGER.debug(f"sensor add-> {dev_ids}")
         if not dev_ids:
             return
-        entities = await hass.async_add_executor_job(_setup_entities, hass, dev_ids)
-        hass.data[DOMAIN][TUYA_HA_DEVICES].extend(entities)
+        entities = _setup_entities(hass, entry, dev_ids)
+        for entity in entities:
+            hass.data[DOMAIN][entry.entry_id][TUYA_HA_DEVICES].add(entity.unique_id)
+
         async_add_entities(entities)
 
-    async_dispatcher_connect(
-        hass, TUYA_DISCOVERY_NEW.format(DEVICE_DOMAIN), async_discover_device
+    entry.async_on_unload(
+        async_dispatcher_connect(
+            hass, TUYA_DISCOVERY_NEW.format(DEVICE_DOMAIN), async_discover_device
+        )
     )
 
-    device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
+    device_manager = hass.data[DOMAIN][entry.entry_id][TUYA_DEVICE_MANAGER]
     device_ids = []
     for (device_id, device) in device_manager.device_map.items():
         if device.category in TUYA_SUPPORT_TYPE:
             device_ids.append(device_id)
-    await async_discover_device(device_ids)
+    async_discover_device(device_ids)
 
 
-def _setup_entities(hass: HomeAssistant, device_ids: list):
+def _setup_entities(
+    hass: HomeAssistant, entry: ConfigEntry, device_ids: list[str]
+) -> list[Entity]:
     """Set up Tuya Switch device."""
-    device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
-    entities = []
+    device_manager = hass.data[DOMAIN][entry.entry_id][TUYA_DEVICE_MANAGER]
+    entities: list[Entity] = []
     for device_id in device_ids:
         device = device_manager.device_map[device_id]
         if device is None:
@@ -325,7 +336,6 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         STATE_CLASS_MEASUREMENT,
                     )
                 )
-
             if DPCODE_TEMPERATURE in device.status:
                 entities.append(
                     TuyaHaSensor(
@@ -348,7 +358,6 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         STATE_CLASS_MEASUREMENT,
                     )
                 )
-
             if DPCODE_HUMIDITY in device.status:
                 entities.append(
                     TuyaHaSensor(
@@ -371,7 +380,6 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         STATE_CLASS_MEASUREMENT,
                     )
                 )
-
             if DPCODE_PM100_VALUE in device.status:
                 entities.append(
                     TuyaHaSensor(
@@ -405,7 +413,6 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                         STATE_CLASS_MEASUREMENT,
                     )
                 )
-
             if DPCODE_CURRENT in device.status:
                 entities.append(
                     TuyaHaSensor(
@@ -527,7 +534,7 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
     return entities
 
 
-class TuyaHaSensor(TuyaHaDevice, SensorEntity):
+class TuyaHaSensor(TuyaHaEntity, SensorEntity):
     """Tuya Sensor Device."""
 
     def __init__(
@@ -540,6 +547,7 @@ class TuyaHaSensor(TuyaHaDevice, SensorEntity):
         sensor_state_class: str,
     ) -> None:
         """Init TuyaHaSensor."""
+        super().__init__(device, device_manager)
         self._code = sensor_code
         self._attr_device_class = sensor_type
         self._attr_name = self.tuya_device.name + "_" + self._attr_device_class
@@ -547,7 +555,11 @@ class TuyaHaSensor(TuyaHaDevice, SensorEntity):
         self._attr_unit_of_measurement = sensor_unit
         self._attr_state_class = sensor_state_class
         self._attr_available = True
-        super().__init__(device, device_manager)
+
+    @property
+    def unique_id(self) -> str | None:
+        """Return a unique ID."""
+        return self._attr_unique_id
 
     @property
     def state(self) -> StateType:

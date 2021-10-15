@@ -1,22 +1,16 @@
 {
     "config": {
-        "abort": {
-            "cannot_connect": "ಸಂಪರ್ಕಿಸಲು ವಿಫಲವಾಗಿದೆ",
-            "invalid_auth": "ಅಮಾನ್ಯ ದದೃಢೀಕರಣ",
-            "single_instance_allowed": "ಈಗಾಗಲೇ ಕಾನ್ಫಿಗರ್ ಮಾಡಲಾಗಿದೆ. ಒಂದೇ ಸಂರಚನೆ ಮಾತ್ರ ಸಾಧ್ಯ."
-        },
-        "error": {
-            "invalid_auth": "ಅಮಾನ್ಯ ದದೃಢೀಕರಣ"
-        },
         "flow_title": "Tuya ಸಂರಚನೆ",
         "step": {
-            "project_type":{
+            "user":{
                 "title":"Tuya ಏಕೀಕರಣ",
                 "data":{
                   "tuya_project_type": "Tuya ಕ್ಲೌಡ್ ಯೋಜನೆಯ ಪ್ರಕಾರ"
                 }
             },
-            "user": {
+            "login": {
+                "title": "Tuya",
+                "description": "ನಿಮ್ಮ Tuya ರುಜುವಾತು ನಮೂದಿಸಿ.",
                 "data": {
                     "endpoint": "ಲಭ್ಯತೆ ವಲಯ",
                     "access_id": "ಆಕ್ಸೇಸ್ ಐಡಿ",
@@ -25,10 +19,11 @@
                     "country_code": "ಕಂಟ್ರೀ ಕೋಡ್",
                     "username": "ಅಕೌಂಟ್",
                     "password": "ಪಾಸ್ವರ್ಡ್"
-                },
-                "description": "ನಿಮ್ಮ Tuya ರುಜುವಾತು ನಮೂದಿಸಿ.",
-                "title": "Tuya"
+                }
             }
+        },
+        "error": {
+            "invalid_auth": "ಅಮಾನ್ಯ ದದೃಢೀಕರಣ"
         }
     }
 }
