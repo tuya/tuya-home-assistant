@@ -116,9 +116,9 @@ class TuyaHaSelect(TuyaHaEntity, SelectEntity):
     def __init__(
         self, device: TuyaDevice, device_manager: TuyaDeviceManager, code: str = ""
     ):
+        super().__init__(device, device_manager)
         self._code = code
         self._attr_current_option = None
-        super().__init__(device, device_manager)
 
     @property
     def unique_id(self) -> str | None:

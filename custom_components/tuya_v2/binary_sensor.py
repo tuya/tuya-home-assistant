@@ -267,20 +267,23 @@ class TuyaHaBSensor(TuyaHaEntity, BinarySensorEntity):
         self._type = sensor_type
         self._code = sensor_code
         self._is_on = sensor_is_on
-        self._attr_unique_id = f"{super().unique_id}{self._code}"
-        self._attr_name = f"{self.tuya_device.name}_{self._code}"
         self._attr_device_class = self._type
         self._attr_available = True
+
+    @property
+    def name(self) -> str:
+        """Return Tuya device name."""
+        return f"{self.tuya_device.name}_{self._code}"
+
+    @property
+    def unique_id(self) -> str:
+        """Return a unique ID."""
+        return f"{super().unique_id}_{self._code}"
 
     @property
     def is_on(self):
         """Return true if the binary sensor is on."""
         return self._is_on(self.tuya_device)
-
-    @property
-    def unique_id(self) -> str | None:
-        """Return a unique ID."""
-        return self._attr_unique_id
 
     def reset_pir(self):
         self.tuya_device.status[DPCODE_PIR] = "none"

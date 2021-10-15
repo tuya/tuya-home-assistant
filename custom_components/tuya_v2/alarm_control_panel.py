@@ -91,6 +91,7 @@ def _setup_entities(
                 TuyaHaAlarm(
                     device,
                     device_manager,
+                    DPCODE_SMOKE_SENSOR_STATE,
                     (
                         lambda d: STATE_ALARM_TRIGGERED
                         if d.status.get(DPCODE_SMOKE_SENSOR_STATE, 1) == "1"
@@ -103,6 +104,7 @@ def _setup_entities(
                 TuyaHaAlarm(
                     device,
                     device_manager,
+                    DPCODE_GAS_SENSOR_STATE,
                     (
                         lambda d: STATE_ALARM_TRIGGERED
                         if d.status.get(DPCODE_GAS_SENSOR_STATE, 1) == "1"
@@ -110,11 +112,12 @@ def _setup_entities(
                     ),
                 )
             )
-        if DPCODE_PIR in device.stastus:
+        if DPCODE_PIR in device.status:
             entities.append(
                 TuyaHaAlarm(
                     device,
                     device_manager,
+                    DPCODE_PIR,
                     (
                         lambda d: STATE_ALARM_TRIGGERED
                         if d.status.get(DPCODE_GAS_SENSOR_STATE, "none") == "pir"
@@ -129,10 +132,27 @@ def _setup_entities(
 class TuyaHaAlarm(TuyaHaEntity, AlarmControlPanelEntity):
     """Tuya Alarm Device."""
 
-    def __init__(self, device: TuyaDevice, device_manager: TuyaDeviceManager, sensor_is_on: Callable[..., str]) -> None:
+    def __init__(
+        self,
+        device: TuyaDevice,
+        device_manager: TuyaDeviceManager,
+        sensor_code: str,
+        sensor_is_on: Callable[..., str],
+    ) -> None:
         """Init TuyaHaAlarm."""
         super().__init__(device, device_manager)
         self._is_on = sensor_is_on
+        self._code = sensor_code
+
+    @property
+    def name(self) -> str:
+        """Return Tuya device name."""
+        return f"{self.tuya_device.name}_{self._code}"
+
+    @property
+    def unique_id(self) -> str:
+        """Return a unique ID."""
+        return f"{super().unique_id}{self._code}"
 
     @property
     def state(self):
