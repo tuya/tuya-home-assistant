@@ -51,7 +51,6 @@ DPCODE_AP_FAN_SPEED_ENUM = "fan_speed_enum"
 
 # fsd
 DPCODE_FSD_SWITCH = "fan_switch"
-DPCODE_FSD_FAN_SPEED = "fan_speed"
   
 TUYA_SUPPORT_TYPE = {
     "fs",  # Fan
@@ -158,8 +157,6 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
                     }
                 ]
             )
-        elif self.tuya_device.category == "fsd":
-            self._send_command([{"code": DPCODE_FSD_FAN_SPEED, "value": percentage}])
         else:
             self._send_command([{"code": DPCODE_FAN_SPEED, "value": percentage}])
 
@@ -243,8 +240,6 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
                         self.air_purifier_speed_range_enum,
                         self.tuya_device.status.get(DPCODE_AP_FAN_SPEED_ENUM, 0),
                     )
-        elif self.tuya_device.category == "fsd":
-            return self.tuya_device.status.get(DPCODE_FSD_FAN_SPEED, 0)
         else:
             return self.tuya_device.status.get(DPCODE_FAN_SPEED, 0)
 
@@ -262,8 +257,6 @@ class TuyaHaFan(TuyaHaDevice, FanEntity):
         if DPCODE_MODE in self.tuya_device.status:
             supports = supports | SUPPORT_PRESET_MODE
         if DPCODE_FAN_SPEED in self.tuya_device.status:
-            supports = supports | SUPPORT_SET_SPEED
-        if DPCODE_FSD_FAN_SPEED in self.tuya_device.status:
             supports = supports | SUPPORT_SET_SPEED
         if DPCODE_SWITCH_HORIZONTAL in self.tuya_device.status:
             supports = supports | SUPPORT_OSCILLATE
