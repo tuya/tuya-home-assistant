@@ -1,22 +1,16 @@
 {
     "config": {
-        "abort": {
-            "cannot_connect": "連線失敗",
-            "invalid_auth": "帳號資訊有誤",
-            "single_instance_allowed": "已設定，且無法重複設定"
-        },
-        "error": {
-            "invalid_auth": "帳號資訊有誤"
-        },
         "flow_title": "塗鴉設定",
         "step": {
-            "project_type":{
+            "user":{
                 "title":"Tuya 套件",
                 "data":{
                   "tuya_project_type": "塗鴉雲端專案類型"
                 }
             },
-            "user": {
+            "login": {
+                "title": "塗鴉",
+                "description": "請輸入塗鴉帳號資訊。",
                 "data": {
                     "endpoint": "區域",
                     "access_id": "Access ID",
@@ -25,10 +19,11 @@
                     "country_code": "國家代碼",
                     "username": "帳號",
                     "password": "密碼"
-                },
-                "description": "請輸入塗鴉帳號資訊。",
-                "title": "塗鴉"
+                }
             }
+        },
+        "error": {
+            "invalid_auth": "帳號資訊有誤"
         }
     }
 }

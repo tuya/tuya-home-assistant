@@ -5,14 +5,16 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from homeassistant.components.switch import DOMAIN as DEVICE_DOMAIN
-from homeassistant.components.switch import SwitchEntity
+from tuya_iot import TuyaDevice, TuyaDeviceManager
+
+from homeassistant.components.switch import DOMAIN as DEVICE_DOMAIN, SwitchEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-from tuya_iot import TuyaDevice, TuyaDeviceManager
+from homeassistant.helpers.entity import Entity
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .base import TuyaHaDevice
+from .base import TuyaHaEntity
 from .const import (
     DOMAIN,
     TUYA_DEVICE_MANAGER,
@@ -29,12 +31,14 @@ TUYA_SUPPORT_TYPE = {
     "pc",  # Power Strip
     "bh",  # Smart Kettle
     "dlq",  # Breaker
+    "tdq", # Breaker
     "cwysj",  # Pet Water Feeder
     "kj",  # Air Purifier
     "xxj",  # Diffuser
     "ckmkzq",  # Garage Door Opener
     "zndb",  # Smart Electricity Meter
     "fs",  # Fan
+    "sd",  # Vacuum
     "zndb" "kfj",  # Smart Electricity Meter  # Coffee Maker
 }
 
@@ -67,46 +71,54 @@ DPCODE_CLEANING = "cleaning"
 # https://developer.tuya.com/en/docs/iot/f?id=K9gf45vs7vkge
 DPCODE_FAN_LIGHT = "light"
 
+# Vacuum
+#https://developer.tuya.com/en/docs/iot/fsd?id=K9gf487ck1tlo
+DPCODE_VOICE = "voice_switch"
+
 
 async def async_setup_entry(
-    hass: HomeAssistant, _entry: ConfigEntry, async_add_entities
-):
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+) -> None:
     """Set up tuya sensors dynamically through tuya discovery."""
-    _LOGGER.info("switch init")
+    _LOGGER.debug("switch init")
 
-    hass.data[DOMAIN][TUYA_HA_TUYA_MAP].update({DEVICE_DOMAIN: TUYA_SUPPORT_TYPE})
+    hass.data[DOMAIN][entry.entry_id][TUYA_HA_TUYA_MAP][
+        DEVICE_DOMAIN
+    ] = TUYA_SUPPORT_TYPE
 
-    async def async_discover_device(dev_ids):
+    def async_discover_device(dev_ids):
         """Discover and add a discovered tuya sensor."""
-        _LOGGER.info(f"switch add-> {dev_ids}")
+        _LOGGER.debug("switch add-> %s", dev_ids)
         if not dev_ids:
             return
-        entities = await hass.async_add_executor_job(_setup_entities, hass, dev_ids)
-        hass.data[DOMAIN][TUYA_HA_DEVICES].extend(entities)
+        entities = _setup_entities(hass, entry, dev_ids)
         async_add_entities(entities)
 
-    async_dispatcher_connect(
-        hass, TUYA_DISCOVERY_NEW.format(DEVICE_DOMAIN), async_discover_device
+    entry.async_on_unload(
+        async_dispatcher_connect(
+            hass, TUYA_DISCOVERY_NEW.format(DEVICE_DOMAIN), async_discover_device
+        )
     )
 
-    device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
+    device_manager = hass.data[DOMAIN][entry.entry_id][TUYA_DEVICE_MANAGER]
     device_ids = []
     for (device_id, device) in device_manager.device_map.items():
         if device.category in TUYA_SUPPORT_TYPE:
             device_ids.append(device_id)
-    await async_discover_device(device_ids)
+    async_discover_device(device_ids)
 
 
-def _setup_entities(hass: HomeAssistant, device_ids: list):
+def _setup_entities(hass, entry: ConfigEntry, device_ids: list[str]) -> list[Entity]:
     """Set up Tuya Switch device."""
-    device_manager = hass.data[DOMAIN][TUYA_DEVICE_MANAGER]
-    entities = []
+    device_manager = hass.data[DOMAIN][entry.entry_id][TUYA_DEVICE_MANAGER]
+    entities: list[Entity] = []
     for device_id in device_ids:
         device = device_manager.device_map[device_id]
         if device is None:
             continue
 
         for function in device.function:
+            tuya_ha_switch = None
             if device.category == "kj":
                 if function in [
                     DPCODE_ANION,
@@ -117,16 +129,15 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                     DPCODE_WET,
                     DPCODE_FAN_LIGHT,
                 ]:
-                    entities.append(TuyaHaSwitch(device, device_manager, function))
+                    tuya_ha_switch = TuyaHaSwitch(device, device_manager, function)
                     # Main device switch is handled by the Fan object
             elif device.category == "cwysj":
                 if function in [DPCODE_FRESET, DPCODE_UV, DPCODE_PRESET, DPCODE_WRESET]:
-                    entities.append(TuyaHaSwitch(device, device_manager, function))
+                    tuya_ha_switch = TuyaHaSwitch(device, device_manager, function)
 
-                if function.startswith(DPCODE_SWITCH):
-                    # Main device switch
+                elif function.startswith(DPCODE_SWITCH):
                     entities.append(TuyaHaSwitch(device, device_manager, function))
-                    continue
+                    tuya_ha_switch = TuyaHaSwitch(device, device_manager, function)
 
             elif device.category == "kfj":
                 if function in [
@@ -137,19 +148,29 @@ def _setup_entities(hass: HomeAssistant, device_ids: list):
                     DPCODE_CLEANING,
                 ]:
                     entities.append(TuyaHaSwitch(device, device_manager, function))
-                    continue
+                    tuya_ha_switch = TuyaHaSwitch(device, device_manager, function)
+					
+            elif device.category == "sd":
+                if function in [DPCODE_VOICE ]:
+                    entities.append(TuyaHaSwitch(device, device_manager, function))
+                    tuya_ha_switch = TuyaHaSwitch(device, device_manager, function)
 
+                    # Main device switch
             else:
                 if function.startswith(DPCODE_START):
-                    entities.append(TuyaHaSwitch(device, device_manager, function))
-                    continue
-                if function.startswith(DPCODE_SWITCH):
-                    entities.append(TuyaHaSwitch(device, device_manager, function))
-                    continue
+                    tuya_ha_switch = TuyaHaSwitch(device, device_manager, function)
+                elif function.startswith(DPCODE_SWITCH):
+                    tuya_ha_switch = TuyaHaSwitch(device, device_manager, function)
+
+            if tuya_ha_switch is not None:
+                entities.append(tuya_ha_switch)
+                hass.data[DOMAIN][entry.entry_id][TUYA_HA_DEVICES].add(
+                    tuya_ha_switch.tuya_device.id
+                )
     return entities
 
 
-class TuyaHaSwitch(TuyaHaDevice, SwitchEntity):
+class TuyaHaSwitch(TuyaHaEntity, SwitchEntity):
     """Tuya Switch Device."""
 
     dp_code_switch = DPCODE_SWITCH
@@ -176,7 +197,7 @@ class TuyaHaSwitch(TuyaHaDevice, SwitchEntity):
     @property
     def name(self) -> str | None:
         """Return Tuya device name."""
-        return self.tuya_device.name + self.channel
+        return f"{self.tuya_device.name}{self.channel}"
 
     @property
     def is_on(self) -> bool:

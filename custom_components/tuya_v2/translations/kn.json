@@ -1,0 +1,29 @@
+{
+    "config": {
+        "flow_title": "Tuya ಸಂರಚನೆ",
+        "step": {
+            "user":{
+                "title":"Tuya ಏಕೀಕರಣ",
+                "data":{
+                  "tuya_project_type": "Tuya ಕ್ಲೌಡ್ ಯೋಜನೆಯ ಪ್ರಕಾರ"
+                }
+            },
+            "login": {
+                "title": "Tuya",
+                "description": "ನಿಮ್ಮ Tuya ರುಜುವಾತು ನಮೂದಿಸಿ.",
+                "data": {
+                    "endpoint": "ಲಭ್ಯತೆ ವಲಯ",
+                    "access_id": "ಆಕ್ಸೇಸ್ ಐಡಿ",
+                    "access_secret": "ಆಕ್ಸೇಸ್ ಸೀಕ್ರೆಟ್",
+                    "tuya_app_type": "ಮೊಬೈಲ್ ಆಪ್",
+                    "country_code": "ಕಂಟ್ರೀ ಕೋಡ್",
+                    "username": "ಅಕೌಂಟ್",
+                    "password": "ಪಾಸ್ವರ್ಡ್"
+                }
+            }
+        },
+        "error": {
+            "invalid_auth": "ಅಮಾನ್ಯ ದದೃಢೀಕರಣ"
+        }
+    }
+}

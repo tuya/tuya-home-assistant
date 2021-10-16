@@ -7,6 +7,9 @@
 [![GitHub watchers](https://img.shields.io/github/watchers/tuya/tuya-home-assistant.svg?style=social&label=Watch)](https://GitHub.com/tuya/tuya-home-assistant/watchers/)
 [![GitHub forks](https://img.shields.io/github/forks/tuya/tuya-home-assistant.svg?style=social&label=Fork)](https://GitHub.com/tuya/tuya-home-assistant/network/)
 [![GitHub stars](https://img.shields.io/github/stars/tuya/tuya-home-assistant.svg?style=social&label=Star)](https://GitHub.com/tuya/tuya-home-assistant/stargazers/)
+
+If you like Tuya Home Assistant Integration - give it a star, or fork it and contribute!
+
 # Tuya Home Assistant Integration
 
 <p align="center">
@@ -75,6 +78,12 @@ Please refer to the [Contributing.md](./contributing.md) for contributing guide.
 ## Issue feedback
 
 You can give feedback on issues you encounter via **GitHub Issue**.
+
+## Related Projects
+
+- [Tuya IoT Python SDK](https://github.com/tuya/tuya-iot-python-sdk)
+
+- [Tuya Connector Python](https://github.com/tuya/tuya-connector-python)
 
 ## LICENSE
 
