@@ -116,14 +116,11 @@ class TuyaHaFan(TuyaHaEntity, FanEntity):
         """Init Tuya Fan Device."""
         super().__init__(device, device_manager)
 
-
-
         self.ha_preset_modes = []
         if DPCODE_MODE in self.tuya_device.function:
             self.ha_preset_modes = json.loads(
                 self.tuya_device.function[DPCODE_MODE].values
             ).get("range", [])
-
 
         # Air purifier fan can be controlled either via the ranged values or via the enum.
         # We will always prefer the enumeration if available
@@ -232,7 +229,6 @@ class TuyaHaFan(TuyaHaEntity, FanEntity):
         if not self.is_on:
             return 0
 
-
         if (
             self.tuya_device.category == "kj"
             and self.air_purifier_speed_range_len > 1
@@ -247,7 +243,6 @@ class TuyaHaFan(TuyaHaEntity, FanEntity):
 
         # some type may not have the fan_speed_percent key
         return self.tuya_device.status.get(DPCODE_FAN_SPEED)
-
 
     @property
     def speed_count(self) -> int:
