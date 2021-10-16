@@ -37,7 +37,7 @@ TUYA_ENDPOINTS = {
     "Western Europe": "https://openapi-weaz.tuyaeu.com",
 }
 
-TUYA_APP_TYPES = {"TuyaSmart": "tuyaSmart", "Smart Life": "smartlife"}
+TUYA_APP_TYPES = {"TuyaSmart": "tuyaSmart", "SmartLife": "smartlife"}
 
 PLATFORMS = [
     "binary_sensor",
