@@ -32,6 +32,7 @@ DPCODE_MODE = "mode"
 DPCODE_COUNTDOWN = "countdown"
 DPCODE_WORK_MODE = "work_mode"
 DPCODE_DIRECTIONCONTROL = "direction_control"
+DPCODE_SUCTION = "suction"
 
 # Coffee Maker
 # https://developer.tuya.com/en/docs/iot/f?id=K9gf4701ox167
@@ -47,7 +48,8 @@ AUTO_GENERATE_DP_LIST = [
     DPCODE_MATERIAL,
     DPCODE_CONCENTRATIONSET,
     DPCODE_CUPNUMBER,
-    DPCODE_DIRECTIONCONTROL
+    DPCODE_DIRECTIONCONTROL,
+    DPCODE_SUCTION
 ]
 
 
