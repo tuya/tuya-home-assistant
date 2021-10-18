@@ -6,24 +6,25 @@ import json
 import logging
 from typing import Any
 
-from tuya_iot import TuyaDevice, TuyaDeviceManager
-
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
     ATTR_COLOR_TEMP,
+    ATTR_EFFECT,
     ATTR_HS_COLOR,
-    COLOR_MODE_BRIGHTNESS,
-    COLOR_MODE_COLOR_TEMP,
-    COLOR_MODE_HS,
-    COLOR_MODE_ONOFF,
     DOMAIN as DEVICE_DOMAIN,
+    SUPPORT_BRIGHTNESS,
+    SUPPORT_COLOR,
+    SUPPORT_COLOR_TEMP,
+    SUPPORT_EFFECT,
     LightEntity,
 )
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_ENTITIES, CONF_ID
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from tuya_iot import TuyaDevice, TuyaDeviceManager
 
 from .base import TuyaHaEntity
 from .const import (
@@ -31,11 +32,10 @@ from .const import (
     TUYA_DEVICE_MANAGER,
     TUYA_DISCOVERY_NEW,
     TUYA_HA_DEVICES,
-    TUYA_HA_TUYA_MAP,
+    TUYA_HA_TUYA_MAP
 )
 
 _LOGGER = logging.getLogger(__name__)
-
 
 # Light(dj)
 # https://developer.tuya.com/en/docs/iot/f?id=K9i5ql3v98hn3
@@ -46,6 +46,7 @@ DPCODE_TEMP_VALUE = "temp_value"
 DPCODE_COLOUR_DATA = "colour_data"
 DPCODE_COLOUR_DATA_V2 = "colour_data_v2"
 DPCODE_LIGHT = "light"
+DPCODE_SCENE_DATA = "scene_data"
 
 MIREDS_MAX = 500
 MIREDS_MIN = 153
@@ -57,6 +58,7 @@ HSV_HA_SATURATION_MAX = 100
 
 WORK_MODE_WHITE = "white"
 WORK_MODE_COLOUR = "colour"
+WORK_MODE_SCENE = 'scene'
 
 TUYA_SUPPORT_TYPE = {
     "dj",  # Light
@@ -79,6 +81,54 @@ DEFAULT_HSV_V2 = {
     "h": {"min": 1, "scale": 0, "unit": "", "max": 360, "step": 1},
     "s": {"min": 1, "scale": 0, "unit": "", "max": 1000, "step": 1},
     "v": {"min": 1, "scale": 0, "unit": "", "max": 1000, "step": 1},
+}
+
+# These Scenes were lifted from the tuya debug interface.
+SCENE_LIST_RGBW_1000 = {
+    "Night": {"scene_num": 1, "scene_units": [
+        {"bright": 200, "h": 0, "s": 0, "temperature": 0, "unit_change_mode": "static", "unit_gradient_duration": 13,
+         "unit_switch_duration": 14, "v": 0}]},
+    "Read": {"scene_num": 2, "scene_units": [
+        {"bright": 1000, "h": 0, "s": 0, "temperature": 500, "unit_change_mode": "static", "unit_gradient_duration": 13,
+         "unit_switch_duration": 14, "v": 0}]},
+    "Meeting": {"scene_num": 3, "scene_units": [
+        {"bright": 1000, "h": 0, "s": 0, "temperature": 1000, "unit_change_mode": "static",
+         "unit_gradient_duration": 13, "unit_switch_duration": 14, "v": 0}]},
+    "Leisure": {"scene_num": 4, "scene_units": [
+        {"bright": 500, "h": 0, "s": 0, "temperature": 500, "unit_change_mode": "static", "unit_gradient_duration": 13,
+         "unit_switch_duration": 14, "v": 0}]},
+    "Soft": {"scene_num": 5, "scene_units": [
+        {"bright": 0, "h": 120, "s": 1000, "temperature": 0, "unit_change_mode": "gradient",
+         "unit_gradient_duration": 70, "unit_switch_duration": 70, "v": 1000},
+        {"bright": 0, "h": 120, "s": 1000, "temperature": 0, "unit_change_mode": "gradient",
+         "unit_gradient_duration": 70, "unit_switch_duration": 70, "v": 10}]},
+    "Rainbow": {"scene_num": 6, "scene_units": [
+        {"bright": 0, "h": 0, "s": 1000, "temperature": 0, "unit_change_mode": "jump", "unit_gradient_duration": 70,
+         "unit_switch_duration": 70, "v": 1000},
+        {"bright": 0, "h": 120, "s": 1000, "temperature": 0, "unit_change_mode": "jump", "unit_gradient_duration": 70,
+         "unit_switch_duration": 70, "v": 1000},
+        {"bright": 0, "h": 240, "s": 1000, "temperature": 0, "unit_change_mode": "jump", "unit_gradient_duration": 70,
+         "unit_switch_duration": 70, "v": 1000}]},
+    "Shine": {"scene_num": 7, "scene_units": [
+        {"bright": 0, "h": 0, "s": 1000, "temperature": 0, "unit_change_mode": "jump", "unit_gradient_duration": 70,
+         "unit_switch_duration": 70, "v": 1000},
+        {"bright": 0, "h": 120, "s": 1000, "temperature": 0, "unit_change_mode": "jump", "unit_gradient_duration": 70,
+         "unit_switch_duration": 70, "v": 1000},
+        {"bright": 0, "h": 240, "s": 1000, "temperature": 0, "unit_change_mode": "jump", "unit_gradient_duration": 70,
+         "unit_switch_duration": 70, "v": 1000}]},
+    "Beautiful": {"scene_num": 8, "scene_units": [
+        {"bright": 0, "h": 0, "s": 1000, "temperature": 0, "unit_change_mode": "gradient", "unit_gradient_duration": 70,
+         "unit_switch_duration": 70, "v": 1000},
+        {"bright": 0, "h": 120, "s": 1000, "temperature": 0, "unit_change_mode": "gradient",
+         "unit_gradient_duration": 70, "unit_switch_duration": 70, "v": 1000},
+        {"bright": 0, "h": 240, "s": 1000, "temperature": 0, "unit_change_mode": "gradient",
+         "unit_gradient_duration": 70, "unit_switch_duration": 70, "v": 1000},
+        {"bright": 0, "h": 61, "s": 1000, "temperature": 0, "unit_change_mode": "gradient",
+         "unit_gradient_duration": 70, "unit_switch_duration": 70, "v": 1000},
+        {"bright": 0, "h": 174, "s": 1000, "temperature": 0, "unit_change_mode": "gradient",
+         "unit_gradient_duration": 70, "unit_switch_duration": 70, "v": 1000},
+        {"bright": 0, "h": 275, "s": 1000, "temperature": 0, "unit_change_mode": "gradient",
+         "unit_gradient_duration": 70, "unit_switch_duration": 70, "v": 1000}]},
 }
 
 
@@ -120,7 +170,7 @@ def _setup_entities(
 ) -> list[TuyaHaLight]:
     """Set up Tuya Light device."""
     device_manager = hass.data[DOMAIN][entry.entry_id][TUYA_DEVICE_MANAGER]
-    entities:list[Entity] = []
+    entities: list[Entity] = []
     for device_id in device_ids:
         device = device_manager.device_map[device_id]
         if device is None:
@@ -133,6 +183,14 @@ def _setup_entities(
         )
 
     return entities
+
+
+def get_entity_config(config_entry, dp_id):
+    """Return entity config for a given DPS id."""
+    for entity in config_entry.data[CONF_ENTITIES]:
+        if entity[CONF_ID] == dp_id:
+            return entity
+    raise Exception(f"missing entity config for id {dp_id}")
 
 
 class TuyaHaLight(TuyaHaEntity, LightEntity):
@@ -151,7 +209,11 @@ class TuyaHaLight(TuyaHaEntity, LightEntity):
                 self.dp_code_temp = key
             elif key.startswith(DPCODE_COLOUR_DATA):
                 self.dp_code_colour = key
+            elif key.startswith(DPCODE_SCENE_DATA):
+                self.dp_code_scene = key
 
+        self._scenes = SCENE_LIST_RGBW_1000
+        self._effect_list = list(self._scenes.keys())
         super().__init__(device, device_manager)
 
     @property
@@ -172,6 +234,14 @@ class TuyaHaLight(TuyaHaEntity, LightEntity):
         else:
             commands += [{"code": DPCODE_SWITCH, "value": True}]
 
+        if ATTR_EFFECT in kwargs:
+            if self.tuya_device.status[DPCODE_WORK_MODE] != WORK_MODE_SCENE:
+                commands += [{"code": DPCODE_WORK_MODE, "value": WORK_MODE_SCENE}]
+                scene_name = kwargs[ATTR_EFFECT]
+                commands += [
+                    {"code": self.dp_code_scene, "value": self._scenes[scene_name]}
+                ]
+
         if ATTR_BRIGHTNESS in kwargs:
             if self._work_mode().startswith(WORK_MODE_COLOUR):
                 colour_data = self._get_hsv()
@@ -180,7 +250,7 @@ class TuyaHaLight(TuyaHaEntity, LightEntity):
                     self.remap(kwargs[ATTR_BRIGHTNESS], 0, 255, v_range[0], v_range[1])
                 )
                 commands += [
-                    {"code": self.dp_code_colour, "value": json.dumps(colour_data)}
+                    {"code": self.dp_code_colour, "value": colour_data}
                 ]
             else:
                 new_range = self._tuya_brightness_range()
@@ -190,6 +260,8 @@ class TuyaHaLight(TuyaHaEntity, LightEntity):
                     )
                 )
                 commands += [{"code": self.dp_code_bright, "value": tuya_brightness}]
+                if self.tuya_device.status[DPCODE_WORK_MODE] != WORK_MODE_WHITE:
+                    commands += [{"code": DPCODE_WORK_MODE, "value": WORK_MODE_WHITE}]
 
         if ATTR_HS_COLOR in kwargs:
             colour_data = self._get_hsv()
@@ -213,10 +285,10 @@ class TuyaHaLight(TuyaHaEntity, LightEntity):
             colour_data["v"] = int(self.remap(ha_v, 0, 255, v_range[0], v_range[1]))
 
             commands += [
-                {"code": self.dp_code_colour, "value": json.dumps(colour_data)}
+                {"code": self.dp_code_colour, "value": colour_data}
             ]
-            if self.tuya_device.status[DPCODE_WORK_MODE] != "colour":
-                commands += [{"code": DPCODE_WORK_MODE, "value": "colour"}]
+            if self.tuya_device.status[DPCODE_WORK_MODE] != WORK_MODE_COLOUR:
+                commands += [{"code": DPCODE_WORK_MODE, "value": WORK_MODE_COLOUR}]
 
         if ATTR_COLOR_TEMP in kwargs:
             # temp color
@@ -238,8 +310,8 @@ class TuyaHaLight(TuyaHaEntity, LightEntity):
             )
             commands += [{"code": self.dp_code_bright, "value": int(tuya_brightness)}]
 
-            if self.tuya_device.status[DPCODE_WORK_MODE] != "white":
-                commands += [{"code": DPCODE_WORK_MODE, "value": "white"}]
+            if self.tuya_device.status[DPCODE_WORK_MODE] != WORK_MODE_WHITE:
+                commands += [{"code": DPCODE_WORK_MODE, "value": WORK_MODE_WHITE}]
 
         self._send_command(commands)
 
@@ -357,9 +429,9 @@ class TuyaHaLight(TuyaHaEntity, LightEntity):
             return None
         colour_data = json.loads(colour_json)
         if (
-            self.dp_code_colour == DPCODE_COLOUR_DATA_V2
-            or colour_data.get("v", 0) > 255
-            or colour_data.get("s", 0) > 255
+                self.dp_code_colour == DPCODE_COLOUR_DATA_V2
+                or colour_data.get("v", 0) > 255
+                or colour_data.get("s", 0) > 255
         ):
             return DEFAULT_HSV_V2
         return DEFAULT_HSV
@@ -371,18 +443,32 @@ class TuyaHaLight(TuyaHaEntity, LightEntity):
         return json.loads(self.tuya_device.status[self.dp_code_colour])
 
     @property
-    def supported_color_modes(self) -> set[str] | None:
-        """Flag supported color modes."""
-        color_modes = [COLOR_MODE_ONOFF]
+    def supported_features(self):
+        """Flag supported features."""
+        supports = 0
         if self.dp_code_bright in self.tuya_device.status:
-            color_modes.append(COLOR_MODE_BRIGHTNESS)
-
+            supports |= SUPPORT_BRIGHTNESS
         if self.dp_code_temp in self.tuya_device.status:
-            color_modes.append(COLOR_MODE_COLOR_TEMP)
+            supports |= SUPPORT_COLOR_TEMP
+        if self.dp_code_colour in self.tuya_device.status:
+            supports |= SUPPORT_COLOR | SUPPORT_BRIGHTNESS
+        if self.dp_code_scene in self.tuya_device.status:
+            supports |= SUPPORT_EFFECT
+        return supports
 
-        if (
-            self.dp_code_colour in self.tuya_device.status
-            and len(self.tuya_device.status[self.dp_code_colour]) > 0
-        ):
-            color_modes.append(COLOR_MODE_HS)
-        return set(color_modes)
+    @property
+    def is_scene_mode(self):
+        """Return true if the light is in scene mode."""
+        return self.tuya_device.status[DPCODE_WORK_MODE] == self.dp_code_scene
+
+    @property
+    def effect(self):
+        """Return the current effect for this light."""
+        if self.is_scene_mode:
+            return self.tuya_device.status[DPCODE_SCENE_DATA]
+        return None
+
+    @property
+    def effect_list(self):
+        """Return the list of supported effects for this light."""
+        return self._effect_list
