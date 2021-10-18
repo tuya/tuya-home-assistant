@@ -1,14 +1,12 @@
 """Config flow for Tuya."""
 
-import json
 import logging
 
-import voluptuous as vol
-from homeassistant import config_entries
 from tuya_iot import ProjectType, TuyaOpenAPI
+import voluptuous as vol
 
-from .aes_cbc import AES_ACCOUNT_KEY, KEY_KEY, XOR_KEY
-from .aes_cbc import AesCBC as Aes
+from homeassistant import config_entries
+
 from .const import (
     CONF_ACCESS_ID,
     CONF_ACCESS_SECRET,
@@ -19,25 +17,33 @@ from .const import (
     CONF_PROJECT_TYPE,
     CONF_USERNAME,
     DOMAIN,
-    TUYA_APP_TYPE,
-    TUYA_ENDPOINT,
-    TUYA_PROJECT_TYPE,
+    TUYA_APP_TYPES,
+    TUYA_ENDPOINTS,
+    TUYA_PROJECT_TYPE_SMART_HOME,
+    TUYA_PROJECT_TYPES,
 )
 
 RESULT_SINGLE_INSTANCE = "single_instance_allowed"
 RESULT_AUTH_FAILED = "invalid_auth"
+TUYA_ENDPOINT_BASE = "https://openapi.tuyacn.com"
+TUYA_ENDPOINT_OTHER = "https://openapi.tuyaus.com"
+COUNTRY_CODE_CHINA = ["86", "+86", "China"]
 
 _LOGGER = logging.getLogger(__name__)
 
 # Project Type
 DATA_SCHEMA_PROJECT_TYPE = vol.Schema(
-    {vol.Required(CONF_PROJECT_TYPE, default=0): vol.In(TUYA_PROJECT_TYPE)}
+    {
+        vol.Required(CONF_PROJECT_TYPE, default=TUYA_PROJECT_TYPE_SMART_HOME): vol.In(
+            TUYA_PROJECT_TYPES.keys()
+        )
+    }
 )
 
-# INDUSTRY_SOLUTIONS Schema
+# INDUSTY_SOLUTIONS Schema
 DATA_SCHEMA_INDUSTRY_SOLUTIONS = vol.Schema(
     {
-        vol.Required(CONF_ENDPOINT): vol.In(TUYA_ENDPOINT),
+        vol.Required(CONF_ENDPOINT): vol.In(TUYA_ENDPOINTS.keys()),
         vol.Required(CONF_ACCESS_ID): str,
         vol.Required(CONF_ACCESS_SECRET): str,
         vol.Required(CONF_USERNAME): str,
@@ -50,14 +56,12 @@ DATA_SCHEMA_SMART_HOME = vol.Schema(
     {
         vol.Required(CONF_ACCESS_ID): str,
         vol.Required(CONF_ACCESS_SECRET): str,
-        vol.Required(CONF_APP_TYPE): vol.In(TUYA_APP_TYPE),
+        vol.Required(CONF_APP_TYPE): vol.In(TUYA_APP_TYPES.keys()),
         vol.Required(CONF_COUNTRY_CODE): str,
         vol.Required(CONF_USERNAME): str,
         vol.Required(CONF_PASSWORD): str,
     }
 )
-
-COUNTRY_CODE_CHINA = ["86", "+86", "China"]
 
 
 class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -67,15 +71,12 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Init tuya config flow."""
         super().__init__()
         self.conf_project_type = None
-        self.project_type = ProjectType.SMART_HOME
-        self.is_import = False
 
-    @classmethod
-    def _try_login(cls, user_input):
-        _LOGGER.info(f"TuyaConfigFlow._try_login start, user_input: {user_input}")
+    @staticmethod
+    def _try_login(user_input):
         project_type = ProjectType(user_input[CONF_PROJECT_TYPE])
         api = TuyaOpenAPI(
-            user_input[CONF_ENDPOINT]
+            TUYA_ENDPOINTS[user_input[CONF_ENDPOINT]]
             if project_type == ProjectType.INDUSTY_SOLUTIONS
             else "",
             user_input[CONF_ACCESS_ID],
@@ -88,98 +89,62 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             response = api.login(user_input[CONF_USERNAME], user_input[CONF_PASSWORD])
         else:
             if user_input[CONF_COUNTRY_CODE] in COUNTRY_CODE_CHINA:
-                api.endpoint = "https://openapi.tuyacn.com"
+                api.endpoint = TUYA_ENDPOINT_BASE
             else:
-                api.endpoint = "https://openapi.tuyaus.com"
+                api.endpoint = TUYA_ENDPOINT_OTHER
 
             response = api.login(
                 user_input[CONF_USERNAME],
                 user_input[CONF_PASSWORD],
                 user_input[CONF_COUNTRY_CODE],
-                user_input[CONF_APP_TYPE],
+                TUYA_APP_TYPES[user_input[CONF_APP_TYPE]],
             )
-            if response.get("success", False):
+            if response.get("success", False) and isinstance(
+                api.token_info.platform_url, str
+            ):
                 api.endpoint = api.token_info.platform_url
                 user_input[CONF_ENDPOINT] = api.token_info.platform_url
 
-        _LOGGER.info(f"TuyaConfigFlow._try_login finish, response:, {response}")
         return response
-
-    async def async_step_import(self, user_input=None):
-        """Step import."""
-        self.is_import = True
-        return await self.async_step_user(user_input)
-
-    async def async_step_project_type(self, user_input=None):
-        """Step project type."""
-        self.conf_project_type = user_input[CONF_PROJECT_TYPE]
-        self.project_type = ProjectType(self.conf_project_type)
-        return (
-            self.async_show_form(step_id="user", data_schema=DATA_SCHEMA_SMART_HOME)
-            if self.project_type == ProjectType.SMART_HOME
-            else self.async_show_form(
-                step_id="user", data_schema=DATA_SCHEMA_INDUSTRY_SOLUTIONS
-            )
-        )
 
     async def async_step_user(self, user_input=None):
         """Step user."""
-        _LOGGER.info(
-            f"TuyaConfigFlow.async_step_user start, is_import= {self.is_import}"
-        )
-        _LOGGER.info(f"TuyaConfigFlow.async_step_user start, user_input= {user_input}")
+        if user_input is None:
+            return self.async_show_form(
+                step_id="user", data_schema=DATA_SCHEMA_PROJECT_TYPE
+            )
 
-        if self._async_current_entries():
-            return self.async_abort(reason=RESULT_SINGLE_INSTANCE)
+        self.conf_project_type = user_input[CONF_PROJECT_TYPE]
 
+        return await self.async_step_login()
+
+    async def async_step_login(self, user_input=None):
+        """Step login."""
         errors = {}
         if user_input is not None:
-            if self.conf_project_type is not None:
-                user_input[CONF_PROJECT_TYPE] = self.conf_project_type
+            assert self.conf_project_type is not None
+            user_input[CONF_PROJECT_TYPE] = TUYA_PROJECT_TYPES[self.conf_project_type]
 
             response = await self.hass.async_add_executor_job(
                 self._try_login, user_input
             )
 
             if response.get("success", False):
-                aes = Aes()
-                _LOGGER.info("TuyaConfigFlow.async_step_user login success")
-                cbc_key = aes.random_16()
-                cbc_iv = aes.random_16()
-                access_id = user_input[CONF_ACCESS_ID]
-                access_id_entry = aes.cbc_encrypt(cbc_key, cbc_iv, access_id)
-                c = cbc_key + cbc_iv
-                c_xor_entry = aes.xor_encrypt(c, access_id_entry)
-                # account info encrypted with AES-CBC
-                user_input_encrpt = aes.cbc_encrypt(
-                    cbc_key, cbc_iv, json.dumps(user_input)
-                )
-                # account info encrypted add to cache
+                _LOGGER.debug("Login success: %s", response)
                 return self.async_create_entry(
                     title=user_input[CONF_USERNAME],
-                    data={
-                        AES_ACCOUNT_KEY: user_input_encrpt,
-                        XOR_KEY: c_xor_entry,
-                        KEY_KEY: access_id_entry,
-                    },
+                    data=user_input,
                 )
-
             errors["base"] = RESULT_AUTH_FAILED
-            if self.is_import:
-                return self.async_abort(reason=errors["base"])
+            _LOGGER.error("Login failed: %s", response)
 
-            return (
-                self.async_show_form(
-                    step_id="user", data_schema=DATA_SCHEMA_SMART_HOME, errors=errors
-                )
-                if self.project_type == ProjectType.SMART_HOME
-                else self.async_show_form(
-                    step_id="user",
-                    data_schema=DATA_SCHEMA_INDUSTRY_SOLUTIONS,
-                    errors=errors,
-                )
+        if (ProjectType(TUYA_PROJECT_TYPES[self.conf_project_type]) == ProjectType.SMART_HOME):
+            return self.async_show_form(
+                step_id="login", data_schema=DATA_SCHEMA_SMART_HOME, errors=errors
             )
 
         return self.async_show_form(
-            step_id="project_type", data_schema=DATA_SCHEMA_PROJECT_TYPE, errors=errors
+            step_id="login",
+            data_schema=DATA_SCHEMA_INDUSTRY_SOLUTIONS,
+            errors=errors,
         )

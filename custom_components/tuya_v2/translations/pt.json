@@ -1,22 +1,16 @@
 {
     "config": {
-        "abort": {
-            "cannot_connect": "Falha na conexão",
-            "invalid_auth": "Autenticação inválida",
-            "single_instance_allowed": "Já configurado. Só é possível uma configuração desta integração."
-        },
-        "error": {
-            "invalid_auth": "Autenticação inválida"
-        },
         "flow_title": "Configuração Tuya",
         "step": {
-            "project_type":{
+            "user":{
                 "title":"Integração Tuya",
                 "data":{
                   "tuya_project_type": "Tipo de projeto Tuya Cloud"
                 }
             },
-            "user": {
+            "login": {
+                "title": "Tuya",
+                "description": "Insira as credenciais Tuya.",
                 "data": {
                     "endpoint": "Região",
                     "access_id": "Access ID",
@@ -25,10 +19,11 @@
                     "country_code": "Código do País",
                     "username": "Conta",
                     "password": "Senha"
-                },
-                "description": "Insira as credenciais Tuya.",
-                "title": "Tuya"
+                }
             }
+        },
+        "error": {
+            "invalid_auth": "Autenticação inválida"
         }
     }
 }
