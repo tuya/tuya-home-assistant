@@ -223,7 +223,7 @@ class TuyaHaClimate(TuyaHaEntity, ClimateEntity):
         _LOGGER.debug("climate temp-> %s", kwargs)
         code = DPCODE_TEMP_SET if self.is_celsius() else DPCODE_TEMP_SET_F
         temp_set_scale = self.get_temp_set_scale()
-        if not temp_set_scale:
+        if temp_set_scale is None:
             return
 
         self._send_command(
@@ -266,7 +266,7 @@ class TuyaHaClimate(TuyaHaEntity, ClimateEntity):
             return None
 
         temp_current_scale = self.get_temp_current_scale()
-        if not temp_current_scale:
+        if temp_current_scale is None:
             return None
 
         if self.is_celsius():
@@ -400,8 +400,9 @@ class TuyaHaClimate(TuyaHaEntity, ClimateEntity):
         """Return hvac mode."""
         if not self.tuya_device.status.get(DPCODE_SWITCH, False):
             return HVAC_MODE_OFF
-        if DPCODE_MODE not in self.tuya_device.status:
-            return HVAC_MODE_OFF
+        if DPCODE_MODE not in self.tuya_device.function:
+            if self.tuya_device.status.get(DPCODE_SWITCH, False):
+                return HVAC_MODE_HEAT
         if self.tuya_device.status.get(DPCODE_MODE) is not None:
             return TUYA_HVAC_TO_HA[self.tuya_device.status[DPCODE_MODE]]
         return HVAC_MODE_OFF
@@ -410,7 +411,7 @@ class TuyaHaClimate(TuyaHaEntity, ClimateEntity):
     def hvac_modes(self) -> list[str]:
         """Return hvac modes for select."""
         if DPCODE_MODE not in self.tuya_device.function:
-            return []
+            return [HVAC_MODE_OFF,HVAC_MODE_HEAT]
         modes = json.loads(self.tuya_device.function.get(DPCODE_MODE, {}).values).get(
             "range"
         )
