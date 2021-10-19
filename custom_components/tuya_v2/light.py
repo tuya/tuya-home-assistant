@@ -256,77 +256,77 @@ class TuyaHaLight(TuyaHaEntity, LightEntity):
             commands += [
                 {"code": self.dp_code_scene, "value": self._scenes[scene_name]}
             ]
+        else:
+            if ATTR_BRIGHTNESS in kwargs:
+                if self._work_mode().startswith(WORK_MODE_COLOUR):
+                    colour_data = self._get_hsv()
+                    v_range = self._tuya_hsv_v_range()
+                    colour_data["v"] = int(
+                        self.remap(kwargs[ATTR_BRIGHTNESS], 0, 255, v_range[0], v_range[1])
+                    )
+                    commands += [
+                        {"code": self.dp_code_colour, "value": colour_data}
+                    ]
+                else:
+                    new_range = self._tuya_brightness_range()
+                    tuya_brightness = int(
+                        self.remap(
+                            kwargs[ATTR_BRIGHTNESS], 0, 255, new_range[0], new_range[1]
+                        )
+                    )
+                    commands += [{"code": self.dp_code_bright, "value": tuya_brightness}]
+                    if self.tuya_device.status[DPCODE_WORK_MODE] != WORK_MODE_WHITE:
+                        commands += [{"code": DPCODE_WORK_MODE, "value": WORK_MODE_WHITE}]
 
-        if ATTR_BRIGHTNESS in kwargs:
-            if self._work_mode().startswith(WORK_MODE_COLOUR):
+            if ATTR_HS_COLOR in kwargs:
                 colour_data = self._get_hsv()
-                v_range = self._tuya_hsv_v_range()
-                colour_data["v"] = int(
-                    self.remap(kwargs[ATTR_BRIGHTNESS], 0, 255, v_range[0], v_range[1])
+                # hsv h
+                colour_data["h"] = int(kwargs[ATTR_HS_COLOR][0])
+                # hsv s
+                ha_s = kwargs[ATTR_HS_COLOR][1]
+                s_range = self._tuya_hsv_s_range()
+                colour_data["s"] = int(
+                    self.remap(
+                        ha_s,
+                        HSV_HA_SATURATION_MIN,
+                        HSV_HA_SATURATION_MAX,
+                        s_range[0],
+                        s_range[1],
+                    )
                 )
+                # hsv v
+                ha_v = self.brightness
+                v_range = self._tuya_hsv_v_range()
+                colour_data["v"] = int(self.remap(ha_v, 0, 255, v_range[0], v_range[1]))
+
                 commands += [
                     {"code": self.dp_code_colour, "value": colour_data}
                 ]
-            else:
-                new_range = self._tuya_brightness_range()
-                tuya_brightness = int(
-                    self.remap(
-                        kwargs[ATTR_BRIGHTNESS], 0, 255, new_range[0], new_range[1]
-                    )
+                if self.tuya_device.status[DPCODE_WORK_MODE] != WORK_MODE_COLOUR:
+                    commands += [{"code": DPCODE_WORK_MODE, "value": WORK_MODE_COLOUR}]
+
+            if ATTR_COLOR_TEMP in kwargs:
+                # temp color
+                new_range = self._tuya_temp_range()
+                color_temp = self.remap(
+                    self.max_mireds - kwargs[ATTR_COLOR_TEMP] + self.min_mireds,
+                    self.min_mireds,
+                    self.max_mireds,
+                    new_range[0],
+                    new_range[1],
                 )
-                commands += [{"code": self.dp_code_bright, "value": tuya_brightness}]
+                commands += [{"code": self.dp_code_temp, "value": int(color_temp)}]
+
+                # brightness
+                ha_brightness = self.brightness
+                new_range = self._tuya_brightness_range()
+                tuya_brightness = self.remap(
+                    ha_brightness, 0, 255, new_range[0], new_range[1]
+                )
+                commands += [{"code": self.dp_code_bright, "value": int(tuya_brightness)}]
+
                 if self.tuya_device.status[DPCODE_WORK_MODE] != WORK_MODE_WHITE:
                     commands += [{"code": DPCODE_WORK_MODE, "value": WORK_MODE_WHITE}]
-
-        if ATTR_HS_COLOR in kwargs:
-            colour_data = self._get_hsv()
-            # hsv h
-            colour_data["h"] = int(kwargs[ATTR_HS_COLOR][0])
-            # hsv s
-            ha_s = kwargs[ATTR_HS_COLOR][1]
-            s_range = self._tuya_hsv_s_range()
-            colour_data["s"] = int(
-                self.remap(
-                    ha_s,
-                    HSV_HA_SATURATION_MIN,
-                    HSV_HA_SATURATION_MAX,
-                    s_range[0],
-                    s_range[1],
-                )
-            )
-            # hsv v
-            ha_v = self.brightness
-            v_range = self._tuya_hsv_v_range()
-            colour_data["v"] = int(self.remap(ha_v, 0, 255, v_range[0], v_range[1]))
-
-            commands += [
-                {"code": self.dp_code_colour, "value": colour_data}
-            ]
-            if self.tuya_device.status[DPCODE_WORK_MODE] != WORK_MODE_COLOUR:
-                commands += [{"code": DPCODE_WORK_MODE, "value": WORK_MODE_COLOUR}]
-
-        if ATTR_COLOR_TEMP in kwargs:
-            # temp color
-            new_range = self._tuya_temp_range()
-            color_temp = self.remap(
-                self.max_mireds - kwargs[ATTR_COLOR_TEMP] + self.min_mireds,
-                self.min_mireds,
-                self.max_mireds,
-                new_range[0],
-                new_range[1],
-            )
-            commands += [{"code": self.dp_code_temp, "value": int(color_temp)}]
-
-            # brightness
-            ha_brightness = self.brightness
-            new_range = self._tuya_brightness_range()
-            tuya_brightness = self.remap(
-                ha_brightness, 0, 255, new_range[0], new_range[1]
-            )
-            commands += [{"code": self.dp_code_bright, "value": int(tuya_brightness)}]
-
-            if self.tuya_device.status[DPCODE_WORK_MODE] != WORK_MODE_WHITE:
-                commands += [{"code": DPCODE_WORK_MODE, "value": WORK_MODE_WHITE}]
         for command in commands:
             _LOGGER.debug("light command-> %s", command)
         self._send_command(commands)
