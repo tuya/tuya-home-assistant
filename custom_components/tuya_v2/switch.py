@@ -64,6 +64,8 @@ DPCODE_WRESET = "water_reset"  # Pet Water Feeder - Resetting of water usage day
 DPCODE_START = "start"
 # Coffee Maker
 # https://developer.tuya.com/en/docs/iot/f?id=K9gf4701ox167
+# Smart Kettle
+# https://developer.tuya.com/en/docs/iot/categorybh?id=Kaiuz2kly679h
 DPCODE_PAUSE = "pause"
 DPCODE_WARM = "warm"
 DPCODE_CLEANING = "cleaning"
@@ -139,7 +141,7 @@ def _setup_entities(hass, entry: ConfigEntry, device_ids: list[str]) -> list[Ent
                     entities.append(TuyaHaSwitch(device, device_manager, function))
                     tuya_ha_switch = TuyaHaSwitch(device, device_manager, function)
 
-            elif device.category == "kfj":
+            elif device.category == "kfj" or device.category == "bh":
                 if function in [
                     DPCODE_SWITCH,
                     DPCODE_START,

@@ -26,6 +26,7 @@ from homeassistant.const import (
     MASS_MILLIGRAMS,
     PERCENTAGE,
     TEMP_CELSIUS,
+    TEMP_FAHRENHEIT,
     TIME_DAYS,
     TIME_MINUTES,
 )
@@ -67,6 +68,7 @@ TUYA_SUPPORT_TYPE = [
     "xxj",  # Diffuser
     "zndb",  # Smart Electricity Meter
     "wnykq", # Smart IR
+    "bh",    # Smart Kettle
 ]
 
 # Smoke Detector
@@ -83,6 +85,7 @@ DPCODE_PM100_VALUE = "pm100_value"
 DPCODE_PM25_VALUE = "pm25_value"
 DPCODE_PM10_VALUE = "pm10_value"
 
+DPCODE_TEMP_UNIT_CONVERT = "temp_unit_convert"
 DPCODE_TEMP_CURRENT = "temp_current"
 DPCODE_HUMIDITY_VALUE = "humidity_value"
 
@@ -93,6 +96,8 @@ DPCODE_TOTAL_FORWARD_ENERGY = "total_forward_energy"
 DPCODE_ADD_ELE = "add_ele"
 
 DPCODE_BRIGHT_VALUE = "bright_value"
+
+DPCODE_STATUS = "status"
 
 # Residential Lock
 # https://developer.tuya.com/en/docs/iot/f?id=K9i5ql58frxa2
@@ -278,6 +283,29 @@ def _setup_entities(
                         DPCODE_AP_COUNTDOWN,
                         TIME_MINUTES,
                         None,
+                    )
+                )
+        elif device.category == "bh":
+            if DPCODE_TEMP_CURRENT in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DEVICE_CLASS_TEMPERATURE,
+                        DPCODE_TEMP_CURRENT,
+                        TEMP_FAHRENHEIT if (device.status.get(DPCODE_TEMP_UNIT_CONVERT) == "f") else TEMP_CELSIUS,
+                        STATE_CLASS_MEASUREMENT,
+                    )
+                )
+            if DPCODE_STATUS in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        "Status",
+                        DPCODE_STATUS,
+                        "",
+                        "",
                     )
                 )
         else:
@@ -579,4 +607,4 @@ class TuyaHaSensor(TuyaHaEntity, SensorEntity):
             if __value_range.get("scale") == 0:
                 return int(__state)
             return f"%.{__value_range.get('scale')}f" % __state
-        return ""
+        return __value
