@@ -84,6 +84,21 @@ DEFAULT_HSV_V2 = {
 }
 
 # These Scenes were lifted from the tuya debug interface.
+SCENE_LIST_WHITE_1000 = {
+    "Night": {"scene_num": 1, "scene_units": [
+        {"bright": 200, "h": 0, "s": 0, "temperature": 0, "unit_change_mode": "static", "unit_gradient_duration": 13,
+         "unit_switch_duration": 14, "v": 0}]},
+    "Read": {"scene_num": 2, "scene_units": [
+        {"bright": 1000, "h": 0, "s": 0, "temperature": 500, "unit_change_mode": "static", "unit_gradient_duration": 13,
+         "unit_switch_duration": 14, "v": 0}]},
+    "Meetings": {"scene_num": 3, "scene_units": [
+        {"bright": 1000, "h": 0, "s": 0, "temperature": 1000, "unit_change_mode": "static",
+         "unit_gradient_duration": 13, "unit_switch_duration": 14, "v": 0}]},
+    "Leisure": {"scene_num": 4, "scene_units": [
+        {"bright": 500, "h": 0, "s": 0, "temperature": 500, "unit_change_mode": "static", "unit_gradient_duration": 13,
+         "unit_switch_duration": 14, "v": 0}]}
+}
+
 SCENE_LIST_RGBW_1000 = {
     "Night": {"scene_num": 1, "scene_units": [
         {"bright": 200, "h": 0, "s": 0, "temperature": 0, "unit_change_mode": "static", "unit_gradient_duration": 13,
@@ -237,10 +252,10 @@ class TuyaHaLight(TuyaHaEntity, LightEntity):
         if ATTR_EFFECT in kwargs:
             if self.tuya_device.status[DPCODE_WORK_MODE] != WORK_MODE_SCENE:
                 commands += [{"code": DPCODE_WORK_MODE, "value": WORK_MODE_SCENE}]
-                scene_name = kwargs[ATTR_EFFECT]
-                commands += [
-                    {"code": self.dp_code_scene, "value": self._scenes[scene_name]}
-                ]
+            scene_name = kwargs[ATTR_EFFECT]
+            commands += [
+                {"code": self.dp_code_scene, "value": self._scenes[scene_name]}
+            ]
 
         if ATTR_BRIGHTNESS in kwargs:
             if self._work_mode().startswith(WORK_MODE_COLOUR):
@@ -312,7 +327,8 @@ class TuyaHaLight(TuyaHaEntity, LightEntity):
 
             if self.tuya_device.status[DPCODE_WORK_MODE] != WORK_MODE_WHITE:
                 commands += [{"code": DPCODE_WORK_MODE, "value": WORK_MODE_WHITE}]
-
+        for command in commands:
+            _LOGGER.debug("light command-> %s", command)
         self._send_command(commands)
 
     def turn_off(self, **kwargs: Any) -> None:
@@ -465,7 +481,9 @@ class TuyaHaLight(TuyaHaEntity, LightEntity):
     def effect(self):
         """Return the current effect for this light."""
         if self.is_scene_mode:
-            return self.tuya_device.status[DPCODE_SCENE_DATA]
+            for key, value in SCENE_LIST_RGBW_1000:
+                if value == self.tuya_device.status[DPCODE_SCENE_DATA]:
+                    return key
         return None
 
     @property
