@@ -475,14 +475,15 @@ class TuyaHaLight(TuyaHaEntity, LightEntity):
     @property
     def is_scene_mode(self):
         """Return true if the light is in scene mode."""
-        return self.tuya_device.status[DPCODE_WORK_MODE] == self.dp_code_scene
+        return self.tuya_device.status[DPCODE_WORK_MODE] == WORK_MODE_SCENE
 
     @property
     def effect(self):
         """Return the current effect for this light."""
         if self.is_scene_mode:
-            for key, value in SCENE_LIST_RGBW_1000:
-                if value == self.tuya_device.status[DPCODE_SCENE_DATA]:
+            scene_number = json.loads(self.tuya_device.status[self.dp_code_scene])['scene_num']
+            for key, value in self._scenes.items():
+                if value['scene_num'] == scene_number:
                     return key
         return None
 
