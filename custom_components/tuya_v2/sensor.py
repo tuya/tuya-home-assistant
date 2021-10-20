@@ -28,6 +28,7 @@ from homeassistant.const import (
     TEMP_CELSIUS,
     TIME_DAYS,
     TIME_MINUTES,
+    DEVICE_CLASS_AQI,
 )
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
@@ -75,7 +76,6 @@ DPCODE_BATTERY = "va_battery"
 DPCODE_BATTERY_PERCENTAGE = "battery_percentage"
 DPCODE_BATTERY_CODE = "battery"
 
-
 DPCODE_TEMPERATURE = "va_temperature"
 DPCODE_HUMIDITY = "va_humidity"
 
@@ -85,6 +85,7 @@ DPCODE_PM10_VALUE = "pm10_value"
 
 DPCODE_TEMP_CURRENT = "temp_current"
 DPCODE_HUMIDITY_VALUE = "humidity_value"
+DPCODE_HUMIDITY_CURRENT = "humidity_current"
 
 DPCODE_CURRENT = "cur_current"
 DPCODE_POWER = "cur_power"
@@ -110,6 +111,7 @@ DPCODE_AP_FDAYS = "filter_days"  # Remaining days of the filter cartridge [day]
 DPCODE_AP_TTIME = "total_time"  # Total operating time [minute]
 DPCODE_AP_TPM = "total_pm"  # Total absorption of particles [mg]
 DPCODE_AP_COUNTDOWN = "countdown_left"  # Remaining time of countdown [minute]
+DPCODE_AP_AIR_QUALTITY_INDEX = "air_quality_index"
 
 # Smart Electricity Meter (zndb)
 # https://developer.tuya.com/en/docs/iot/smart-meter?id=Kaiuz4gv6ack7
@@ -496,6 +498,30 @@ def _setup_entities(
                         DPCODE_FORWARD_ENERGY_TOTAL,
                         ENERGY_KILO_WATT_HOUR,
                         STATE_CLASS_TOTAL_INCREASING,
+                    )
+                )
+            if DPCODE_HUMIDITY_CURRENT in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DEVICE_CLASS_HUMIDITY,
+                        DPCODE_HUMIDITY_CURRENT,
+                        json.loads(
+                            device.status_range.get(DPCODE_HUMIDITY_CURRENT).values
+                        ).get("unit", 0),
+                    )
+                )
+            if DPCODE_AP_AIR_QUALTITY_INDEX  in device.status:
+                entities.append(
+                    TuyaHaSensor(
+                        device,
+                        device_manager,
+                        DEVICE_CLASS_AQI,
+                        DPCODE_AP_AIR_QUALTITY_INDEX,
+                        json.loads(
+                            device.status_range.get(DPCODE_AP_AIR_QUALTITY_INDEX).values
+                        ).get("unit", 0),
                     )
                 )
             if device.category == "zndb":
