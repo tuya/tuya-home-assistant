@@ -67,6 +67,7 @@ TUYA_SUPPORT_TYPE = {
     "xdd",  # Ceiling Light
     "xxj",  # Diffuser's light
     "fs",  # Fan
+    "tgq", # Dimmers
 }
 
 DEFAULT_HSV = {
