@@ -17,7 +17,8 @@ If you like Tuya Home Assistant Integration - give it a star, or fork it and con
 </p>
 
 ## Important Note
-We are announcing that the **Tuya v2 integration** hosted on this repository is no longer maintained. Only the related documentation will remain in this repository as shown below:
+
+We are announcing that the **Tuya v2 integration** hosted on this repository is no longer maintained by the Tuya Developer Team. Only the related documentation will be provided in this repository as shown below:
 
 - Tutorials
 - FAQs
