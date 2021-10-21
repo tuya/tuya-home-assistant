@@ -37,7 +37,7 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 
-# Light(dj)
+# RGB Socket(dj)
 # https://developer.tuya.com/en/docs/iot/f?id=K9i5ql3v98hn3
 DPCODE_SWITCH = "switch_led"
 DPCODE_WORK_MODE = "work_mode"
@@ -59,7 +59,7 @@ WORK_MODE_WHITE = "white"
 WORK_MODE_COLOUR = "colour"
 
 TUYA_SUPPORT_TYPE = {
-    "dj",  # Light
+    "dj",  # RGB Socket
     "dd",  # Light strip
     "fwl",  # Ambient light
     "dc",  # Light string

@@ -26,6 +26,7 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 TUYA_SUPPORT_TYPE = {
+    "dj",  # RGB Socket
     "kg",  # Switch
     "cz",  # Socket
     "pc",  # Power Strip
@@ -44,6 +45,8 @@ TUYA_SUPPORT_TYPE = {
 
 # Switch(kg), Socket(cz), Power Strip(pc)
 # https://developer.tuya.com/en/docs/iot/categorykgczpc?id=Kaiuz08zj1l4y
+# RGB Socket(dj)
+# https://developer.tuya.com/en/docs/iot/f?id=K9i5ql3v98hn3
 DPCODE_SWITCH = "switch"
 
 # Air Purifier
@@ -153,6 +156,10 @@ def _setup_entities(hass, entry: ConfigEntry, device_ids: list[str]) -> list[Ent
             elif device.category == "sd":
                 if function in [DPCODE_VOICE ]:
                     entities.append(TuyaHaSwitch(device, device_manager, function))
+                    tuya_ha_switch = TuyaHaSwitch(device, device_manager, function)
+
+            elif device.category == "dj":
+                if function in [DPCODE_SWITCH]:
                     tuya_ha_switch = TuyaHaSwitch(device, device_manager, function)
 
                     # Main device switch
