@@ -16,6 +16,7 @@ If you like Tuya Home Assistant Integration - give it a star, or fork it and con
     <img src="https://images.tuyacn.com/app/hass/ha_tuya.png" width="70%">
 </p>
 
+## Important Note
 We are announcing that the **Tuya v2 integration** hosted on this repository is no longer maintained. Only the related documentation will remain in this repository as shown below:
 
 - Tutorials
@@ -79,8 +80,6 @@ Please download and use the Tuya Smart or Tuya Smart Life apps to pair Tuya devi
 
 - Tuya Smart App: [iOS App](https://apps.apple.com/us/app/tuyasmart/id1034649547) | [Android App](https://play.google.com/store/apps/details?id=com.tuya.smart&hl=en_US&gl=US)
 - Tuya Smart Life App: [iOS App](https://apps.apple.com/us/app/smart-life-smart-living/id1115101477) | [Android App](https://play.google.com/store/apps/details?id=com.tuya.smartlife&hl=en_US&gl=US)
-
-For more information, please check [How to Use Tuya Home Assistant Integration](https://developer.tuya.com/en/docs/iot/Home_Assistant_Integration?id=Kamcjcbvk2mu8&_source=1f6c7c604f6cc5057a3befbe1092b263).
 
 ## Issue feedback
 
