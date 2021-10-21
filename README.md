@@ -10,22 +10,33 @@
 
 If you like Tuya Home Assistant Integration - give it a star, or fork it and contribute!
 
-# Tuya Home Assistant Integration
+# Tuya Home Assistant Integration Documentation
 
 <p align="center">
     <img src="https://images.tuyacn.com/app/hass/ha_tuya.png" width="70%">
 </p>
 
-The Tuya Home Assistant integration (Tuya v2) is developed for controlling **Powered by Tuya (PBT)** devices using the [tuya-iot-python-sdk](https://github.com/tuya/tuya-iot-python-sdk) (a python version of [Tuya Open API](https://developer.tuya.com/en/docs/cloud/?_source=6c7c0e6d9fc9ac8296e1a48954e1d0e4)), and officially maintained by the Tuya Developer Team.
+We are announcing that the **Tuya v2 integration** hosted on this repository is no longer maintained. Only the related documentation will remain in this repository as shown below:
+
+- Tutorials
+- FAQs
+- Supported Device Categories
+- Verified PBT Products List
+
+You can find the official Home Assistant Tuya integration at: <https://www.home-assistant.io/integrations/tuya/>
+
+If you want to contribute to the Tuya integration, please create issues or pull requests in the Home Assistant Core repository directly:
+<https://github.com/home-assistant/core/tree/dev/homeassistant/components/tuya>
+
+We really appreciate your contributions and awesome ideas to this project.
+We are happy to hear your voices at **GitHub Discussions** to make our integration better.
+
+If you want to contribute to the documentation, please create an issue and pull request in this repo.
+
+The Tuya Home Assistant integration is developed for controlling **Powered by Tuya (PBT)** devices using the [tuya-iot-python-sdk](https://github.com/tuya/tuya-iot-python-sdk) (a python version of [Tuya Open API](https://developer.tuya.com/en/docs/cloud/?_source=6c7c0e6d9fc9ac8296e1a48954e1d0e4)), and maintained by the official Tuya Developer Team and Home Assistant Community.
 
 ## Installation
-The [Tuya Home Assistant integration Wiki](https://github.com/tuya/tuya-home-assistant/wiki) contains step-by-step instruction on how to install Tuya Home Assistant Integration.
-
-- [Tuya-IoT-Platform-Configuration](https://github.com/tuya/tuya-home-assistant/wiki/Tuya-IoT-Platform-Configuration-Guide-Using-Smart-Home-PaaS?_source=27c468b2abbb019eb4983fc8cea49b90)
-- [Install-Tuya-v2](https://github.com/tuya/tuya-home-assistant/wiki/Install-Tuya-v2?_source=d10de34623e3daca5b02e3c31528a0c4)
-
-## [Tuya Beta Test Program](https://pages.tuya.com/develop/HomeAssistantBetaTest_V2?_source=df3c37ad796d2388fc5527a8029c7889)
-Welcome to join the [Tuya Beta Test Program](https://pages.tuya.com/develop/HomeAssistantBetaTest_V2?_source=df3c37ad796d2388fc5527a8029c7889) to get your development gifts and make a contribution to the integration. Your feedback is valuable to the whole community.
+The [How to Set Up Tuya Integration in Home Assistant](https://developer.tuya.com/en/docs/iot/Home-assistant-tuya-intergration?id=Kb0eqjig0utdd) contains step-by-step instruction on how to install Tuya Home Assistant Integration.
 
 ## Supported Tuya Device Types
 Six primary categories, 31 secondary categories are supported now!
@@ -71,13 +82,9 @@ Please download and use the Tuya Smart or Tuya Smart Life apps to pair Tuya devi
 
 For more information, please check [How to Use Tuya Home Assistant Integration](https://developer.tuya.com/en/docs/iot/Home_Assistant_Integration?id=Kamcjcbvk2mu8&_source=1f6c7c604f6cc5057a3befbe1092b263).
 
-## Contributing
-
-Please refer to the [Contributing.md](./contributing.md) for contributing guide.
-
 ## Issue feedback
 
-You can give feedback on issues you encounter via **GitHub Issue**.
+You can give feedback on issues you encounter for the documentation via **GitHub Issue**.
 
 ## Related Projects
 
