@@ -25,7 +25,7 @@ We are announcing that the **Tuya v2 integration** hosted on this repository is 
 - Supported Device Categories
 - Verified PBT Products List
 
-You can find the official Home Assistant Tuya integration at: <https://www.home-assistant.io/integrations/tuya/>
+You can find the official Tuya Home Assistant integration at: <https://www.home-assistant.io/integrations/tuya/>
 
 If you want to contribute to the Tuya integration, please create issues or pull requests in the Home Assistant Core repository directly:
 <https://github.com/home-assistant/core/tree/dev/homeassistant/components/tuya>
