@@ -1,48 +1,73 @@
-# Tuya IoT Platform Configuration Guide
 
-[![En](https://img.shields.io/badge/Docs-English-orange)](https://github.com/tuya/tuya-home-assistant/wiki/Tuya-IoT-Platform-Configuration-Guide-Using-Smart-Home-PaaS?_source=27c468b2abbb019eb4983fc8cea49b90) [![Zh](https://img.shields.io/badge/Docs-中文-orange)](https://github.com/tuya/tuya-home-assistant/wiki/%E6%B6%82%E9%B8%A6-IoT-%E5%B9%B3%E5%8F%B0%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97%EF%BC%88%E5%85%A8%E5%B1%8B%E6%99%BA%E8%83%BD-PaaS-%E5%BC%80%E5%8F%91%E6%96%B9%E5%BC%8F%EF%BC%89)
-
-This topic describes how to create a project on the [Tuya IoT Platform](https://iot.tuya.com/cloud/?_source=3a6f90da0e85f686f89c4f85c883e8f0), and connect to devices through the Tuya Smart app or the Smart Life app.
+This topic describes how to create a project on the [Tuya IoT Development Platform](https://iot.tuya.com/) and link devices to this project with an account of the Tuya Smart app or Smart Life app.
 
 ## Prerequisites
 
-You have registered an account on the [**Tuya Smart** or **Smart Life**](https://developer.tuya.com/en/docs/iot/tuya-smart-app-smart-life-app-advantages?id=K989rqa49rluq#title-1-Download) app.
+You have [registered](https://developer.tuya.com/en/docs/iot/tuya-smart-app-smart-life-app-advantages?id=K989rqa49rluq#title-3-Account) with the **Tuya Smart** app or **Smart Life** app.
 
 ## Create a project
 
-1. Log in to the [Tuya IoT Platform](https://iot.tuya.com/cloud/?_source=3a6f90da0e85f686f89c4f85c883e8f0).
-2. In the left-side navigation bar, choose **Cloud**.
+1. Log in to the [Tuya IoT Development Platform](https://iot.tuya.com/).
+2. In the left navigation pane, click **Cloud**.
 3. On the page that appears, click **Create Cloud Project**.
-4. In the **Create Project** dialog box, set **Project Name**, **Description**, **Industry**, **Development Method**, and **Data Center**. From the **Development Method** drop-down list, select **Smart Home**.
+4. In the **Create Cloud Project** dialog, set the required parameters.
 
-   > **Note**: Open the **Tuya Smart** or **Smart Life** app. Tap **Me** and the **Setting** icon in the top right corner of the page, and find **Account and Security**. The **Region** field is what to be entered in **Data Center**. For more information about the data centers, see **Correspondence of regions and data centers**.
+   | Parameters | Description |
+   |:----|:----|
+   | Project Name | User-defined |
+   | Description | User-defined |
+   | Industry | Select one as per your needs. |
+   | Development Method | Select **Smart Home**. |
+   | Data Center | Select the correct data center to serve your project. For more information, see [Mappings Between OEM App Accounts and Data Centers](https://developer.tuya.com/en/docs/iot/oem-app-data-center-distributed?id=Kafi0ku9l07qb). |
 
-   <img src="https://images.tuyacn.com/app/hass/create_project.png" height="350pt"/>
+   <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/1634629165d82cd408355.png"  width="75%">
 
-5. Click **Create** to complete project creation.
-6. On the **Authorize API Products** page, subscribe to the API product **Device status notification**.
+5. Click **Create** to continue with project configuration.
+6. In the **Authorize API Services** dialog, select **Device Status Notification**.
 
-   <img src="https://images.tuyacn.com/app/hass/device_notification.png" width="50%"/>
-
-> **Note**: **Smart home** API products have been selected by default.
+   <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16346291662b7ba953b74.png" width="80%">
 
 7. Click **Authorize**.
 
 ## Get authorization key
 
-Click the newly created project to enter the **Project Overview** page and get the **Authorization Key** used to make API requests.
+Click the newly created project to enter the **Overview** page and get the **Authorization Key** used to make API requests.
 
-<img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/162208268849af51b8af3.png" height="300pt"/>
+<img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16346291664299d920f92.png" width="80%"/>
 
 ## Link devices by app account
 
-Link the device by your app account and copy the **Device ID** on the **Device List** page as the value of `device_id`.
 
-1. Go to the **Devices** page.
-2. Choose **Link Tuya App Account** > **Add App Account**. ![image.png](https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16272719727a6df1eb14f.png)
+1. Click the **Devices** tab.
+2. Choose **Link Tuya App Account** > **Add App Account**. A QR code will appear.
+
+   ![Image](https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16346291664e386e176aa.png)
+
+   <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/1634629166ff59d491c09.png" height="300pt"/>
+
 3. Scan the QR code with the **Tuya Smart** app or **Smart Life** app.
 
-   <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16220137160a864a6099d.png" height="300pt"/>
+   :::important
+   The data center selected for your cloud project must be capable of serving the region of your app account. Here is how to find the region: open the mobile app you use and tap **Me** > **Setting** > **Account and Security** > **Region**. For more information, see [Mappings Between OEM App Accounts and Data Centers](https://developer.tuya.com/en/docs/iot/oem-app-data-center-distributed?id=Kafi0ku9l07qb).
+   :::
 
-4. Click **Confirm login** on the **Tuya Smart** app or **Smart Life** app.
-5. Click the **All Devices** tab. You can see the devices linked with your **Tuya Smart** app or **Smart Life** app account.
+   ![Mappings](https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/1634629166d85e498a612.png)
+
+4. Tap **Confirm** on the app.
+
+5. Click **All Devices**. You will find all your smart devices that have been added to this mobile app are listed here.
+
+## Mappings between regions and data centers
+
+Make sure the **data center** you select for your cloud project can serve the **region** of your app account.
+
+- Region: the region you have selected when you register with the Tuya Smart app or Smart Life app. Here is how to find the region: open the mobile app you use and tap **Me** > **Setting** > **Account and Security** > **Region**.
+
+   <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16346317858db898f9179.png"  height="500pt"/>
+
+
+- Data center: The server that your cloud project is hosted on. You must select the correct data center that can serve your **region**. Otherwise, your devices cannot be connected to the [Tuya IoT Development Platform](https://iot.tuya.com/).
+
+   <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/1634629166444cfcf18ed.png"  width="75%">
+
+   For more information, see [Mappings Between OEM App Accounts and Data Centers](https://developer.tuya.com/en/docs/iot/oem-app-data-center-distributed?id=Kafi0ku9l07qb).
