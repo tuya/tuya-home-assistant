@@ -20,7 +20,7 @@ You have [registered](https://developer.tuya.com/en/docs/iot/tuya-smart-app-smar
    | Development Method | Select **Smart Home**. |
    | Data Center | Select the correct data center to serve your project. For more information, see [Mappings Between OEM App Accounts and Data Centers](https://developer.tuya.com/en/docs/iot/oem-app-data-center-distributed?id=Kafi0ku9l07qb). |
 
-   <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/1634629165d82cd408355.png"  width="75%">
+   <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16351559390cfd4b61c30.png"  width="75%">
 
 5. Click **Create** to continue with project configuration.
 6. In the **Authorize API Services** dialog, select **Device Status Notification**.
