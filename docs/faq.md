@@ -32,11 +32,11 @@
 
   5. Scan the QR code again to link devices.
 
-<font color=black  size="4"><b>Q3: Will I be billed after the 1-year free trial of the API service expires?</b></font>
+<font color=black  size="4"><b>Q3: Will I be billed after the free trial of the API service expires?</b></font>
 
-- After expiration, you can renew the subscription for free. The Trial Edition allows you to use all free API services but puts limits on the quota of API calls. For more information about the quota, see [Pricing](https://developer.tuya.com/en/docs/iot/membership-service?id=K9m8k45jwvg9j).
+- After expiration, you can visit [Tuya IoT Platform](https://iot.tuya.com) and click Cloud > My Services in the left navigation pane to extend your subscription to the trial edition again.
 
-- The **Device Connection Service** offers a 1-month trial edition. After it expires, you can visit Tuya IoT Platform and click Cloud > My Services in the left navigation pane to extend your subscription to the trial edition for another 6 months.
+- The Trial Edition allows you to use all free API services but puts limits on the quota of API calls. For more information about the quota, see [Pricing](https://developer.tuya.com/en/docs/iot/membership-service?id=K9m8k45jwvg9j).
 
 <font color=black  size="4"><b>Q4: Can I request Tuya's cloud services from an IP address outside the data center region?</b></font>
 
