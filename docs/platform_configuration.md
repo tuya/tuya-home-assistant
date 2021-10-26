@@ -21,12 +21,12 @@ You have [registered](https://developer.tuya.com/en/docs/iot/tuya-smart-app-smar
    | Development Method | Select **Smart Home**. |
    | Data Center | Select the correct data center to serve your project. For more information, see [Mappings Between OEM App Accounts and Data Centers](https://developer.tuya.com/en/docs/iot/oem-app-data-center-distributed?id=Kafi0ku9l07qb). |
 
-   <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16351559390cfd4b61c30.png"  width="75%">
+   <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/1634629165d82cd408355.png"  width="75%">
 
 5. Click **Create** to continue with project configuration.
 6. In the **Authorize API Services** dialog, select **Device Status Notification**.
 
-   <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16346291662b7ba953b74.png" width="80%">
+   <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16351559390cfd4b61c30.png" width="80%">
 
 7. Click **Authorize**.
 
@@ -48,9 +48,8 @@ Click the newly created project to enter the **Overview** page and get the **Aut
 
 3. Scan the QR code with the **Tuya Smart** app or **Smart Life** app.
 
-   :::important
+   > **important**：
    The data center selected for your cloud project must be capable of serving the region of your app account. Here is how to find the region: open the mobile app you use and tap **Me** > **Setting** > **Account and Security** > **Region**. For more information, see [Mappings Between OEM App Accounts and Data Centers](https://developer.tuya.com/en/docs/iot/oem-app-data-center-distributed?id=Kafi0ku9l07qb).
-   :::
 
    ![Mappings](https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/1634629166d85e498a612.png)
 
