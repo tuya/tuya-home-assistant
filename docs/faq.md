@@ -1,4 +1,4 @@
-# FAQs
+# Tuya Integration FAQs
 
 <font color=black  size="4"><b>Q1: I got an error saying 'Config flow could not be loaded' when setting up the Tuya integration. How to fix it?</b></font>
 
@@ -36,7 +36,7 @@
 
 - After expiration, you can renew the subscription for free. The Trial Edition allows you to use all free API services but puts limits on the quota of API calls. For more information about the quota, see [Pricing](https://developer.tuya.com/en/docs/iot/membership-service?id=K9m8k45jwvg9j).
 
-- For "Device Connection Service", it has only 1 month trail edition. You may need to visit "Tuya IoT Platform" -> "My Sercies" to apply for up to 6 months' extension of it when it's expired.
+- The **Device Connection Service** offers a 1-month trial edition. After it expires, you can visit Tuya IoT Platform and click Cloud > My Services in the left navigation pane to extend your subscription to the trial edition for another 6 months.
 
 <font color=black  size="4"><b>Q4: Can I request Tuya's cloud services from an IP address outside the data center region?</b></font>
 

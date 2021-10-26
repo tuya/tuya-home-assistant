@@ -37,15 +37,36 @@ If you want to contribute to the documentation, please create an issue and pull 
 
 The Tuya Home Assistant integration is developed for controlling **Powered by Tuya (PBT)** devices using the [tuya-iot-python-sdk](https://github.com/tuya/tuya-iot-python-sdk) (a python version of [Tuya Open API](https://developer.tuya.com/en/docs/cloud/?_source=6c7c0e6d9fc9ac8296e1a48954e1d0e4)), and maintained by the official Tuya Developer Team and Home Assistant Community.
 
+## Tuya IoT Platform Configuration
+
+The [Tuya IoT Platform Configuration Guide](./docs/platform_configuration.md) describes how to create a project on the **Tuya IoT Platform** and link devices to this project with an account of the Tuya Smart app or Smart Life app.
+
 ## Installation
-The [How to Set Up Tuya Integration in Home Assistant](https://developer.tuya.com/en/docs/iot/Home-assistant-tuya-intergration?id=Kb0eqjig0utdd) contains step-by-step instruction on how to install Tuya Home Assistant Integration.
+
+The [Install Tuya Integration](./docs/install.md) contains step-by-step instruction on how to install Tuya Home Assistant Integration.
+
+## FAQs
+
+You can check the [Tuya Integration FAQs](./docs/faq.md) to know more about the common questions when using the integration.
+
+## Error Code and Troubleshooting
+
+You can check the [Error Code and Troubleshooting](./docs/error_code.md) to know more about the error code and troubleshooting guide when using the integration.
+
+## Country Regions and Tuya Data Center
+
+The [Country Regions and Data Center](./docs/regions_dataCenters.md) describes the data centers in which Tuya Smart or Smart Life app accounts are served based on the app account locations. 
 
 ## Supported Tuya Device Types
-Six primary categories, 31 secondary categories are supported now!
+Seven primary categories, 35 secondary categories are supported now!
 
-:clap: [Supported Device Category](https://github.com/tuya/tuya-home-assistant/wiki/Supported-Device-Category?_source=f5f782752be3c4a9157ec47514d6091b)
+:clap: [Supported Device Category](./docs/supported_devices.md)
 
- :tada: :tada: :tada: [Vote for Tuya v2 Integration New Device Driver Support!](https://github.com/tuya/tuya-home-assistant/discussions/86) :tada::tada::tada:
+ :tada: :tada: :tada: [Vote for Tuya Integration New Device Driver Support!](https://github.com/tuya/tuya-home-assistant/discussions/86) :tada::tada::tada:
+
+## Not-Supported Tuya Devices
+
+You can check the [Not Supported Device Category](./docs/not_supported_devices.md) to know which Tuya devices is not supported by the integration.
 
 ## Verified PBT Products List
 
@@ -68,19 +89,6 @@ We appreciate your contribution!
 - <img src="https://img.icons8.com/color/48/000000/discord-logo.png"/>  [Discord](https://discord.gg/E2Xs97N9RK)
 
 Follow us to get more information and leading technology on the Internet of Things, as well as updates and activities on the [Tuya IoT Developer Platform](https://developer.tuya.com/?_source=6d8d369b1b09336f622047669af507c4)
-
-## Documentation
-
-- :computer: [How to Get the Log](https://github.com/tuya/tuya-home-assistant/wiki/How-to-Get-the-Log?_source=f75a22f47cc75545545c239077c07e53)
-- **🎨** [How to Develop a New Driver](https://github.com/tuya/tuya-home-assistant/wiki/How-to-Develop-a-New-Driver?_source=dbf3bf17966af48325e4328b2535eefe)
-- :grey_question:  [Why does my device not update automatically?](https://github.com/tuya/tuya-home-assistant/discussions/113)
-
-## Link Tuya Devices to Home Assistant
-
-Please download and use the Tuya Smart or Tuya Smart Life apps to pair Tuya devices to the Home Assistant for controlling. You can check the following links to download the apps.
-
-- Tuya Smart App: [iOS App](https://apps.apple.com/us/app/tuyasmart/id1034649547) | [Android App](https://play.google.com/store/apps/details?id=com.tuya.smart&hl=en_US&gl=US)
-- Tuya Smart Life App: [iOS App](https://apps.apple.com/us/app/smart-life-smart-living/id1115101477) | [Android App](https://play.google.com/store/apps/details?id=com.tuya.smartlife&hl=en_US&gl=US)
 
 ## Issue feedback
 
