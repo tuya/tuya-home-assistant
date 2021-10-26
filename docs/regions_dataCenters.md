@@ -1,3 +1,5 @@
+# Country Regions and Data Center
+
 This topic describes the data centers in which Tuya Smart or Smart Life app accounts are served based on the app account locations. 
 
 ## Correspondence table of regions and data centers

@@ -1,3 +1,5 @@
+# Install Tuya Integration
+
 This topic describes how to install and use the official Tuya integration in Home Assistant.
 
 ## Prerequisites

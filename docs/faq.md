@@ -1,6 +1,6 @@
 # FAQs
 
-<font color=blue  size="4"><b>Q1: I got an error saying 'Config flow could not be loaded' when setting up the Tuya integration. How to fix it?</b></font>
+<font color=black  size="4"><b>Q1: I got an error saying 'Config flow could not be loaded' when setting up the Tuya integration. How to fix it?</b></font>
 
 <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16346315144df2e7c7a74.png" width="45%">
 
@@ -10,7 +10,7 @@
 
    <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16238163372b1ef921aab.png" width="40%" alt="Install Tuya Integration">
 
-<font color=blue  size="4"><b>Q2: I got an error shown in the following screenshot when I tried to scan a QR code to link my devices to my cloud project. How to fix it?</b></font>
+<font color=black  size="4"><b>Q2: I got an error shown in the following screenshot when I tried to scan a QR code to link my devices to my cloud project. How to fix it?</b></font>
 
 <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/1634631751250784f4038.png" width="35%">
 
@@ -32,11 +32,12 @@
 
   5. Scan the QR code again to link devices.
 
-<font color=blue  size="4"><b>Q3: Will I be billed after the 1-year free trial of the API service expires?</b></font>
+<font color=black  size="4"><b>Q3: Will I be billed after the 1-year free trial of the API service expires?</b></font>
 
 - After expiration, you can renew the subscription for free. The Trial Edition allows you to use all free API services but puts limits on the quota of API calls. For more information about the quota, see [Pricing](https://developer.tuya.com/en/docs/iot/membership-service?id=K9m8k45jwvg9j).
 
+- For "Device Connection Service", it has only 1 month trail edition. You may need to visit "Tuya IoT Platform" -> "My Sercies" to apply for up to 6 months' extension of it when it's expired.
 
-<font color=blue  size="4"><b>Q4: Can I request Tuya's cloud services from an IP address outside the data center region?</b></font>
+<font color=black  size="4"><b>Q4: Can I request Tuya's cloud services from an IP address outside the data center region?</b></font>
 
 Please note that data transfer across regions has a risk of violation of the data security regulations. If you request Tuya's cloud services from an IP address outside the data center region, you are at risk of illegally transferring data. For example, using an IP address in the U.S.A. to access cloud services in China's data centers will be regarded as data transfer across regions, and vice versa. Tuya will completely prohibit cross-region API calls and message subscriptions. Please deploy your cloud services properly to ensure data security.

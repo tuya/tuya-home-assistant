@@ -1,5 +1,6 @@
+# Tuya IoT Platform Configuration Guide
 
-This topic describes how to create a project on the [Tuya IoT Development Platform](https://iot.tuya.com/) and link devices to this project with an account of the Tuya Smart app or Smart Life app.
+This topic describes how to create a project on the [Tuya IoT Platform](https://iot.tuya.com/) and link devices to this project with an account of the Tuya Smart app or Smart Life app.
 
 ## Prerequisites
 
