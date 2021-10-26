@@ -1,302 +1,234 @@
-# Correspondence table of regions and data centers
-
-[![En](https://img.shields.io/badge/Docs-English-orange)](https://github.com/tuya/tuya-home-assistant/wiki/Error-code-and-Troubleshooting?_source=16b7d861430c5a96205b33a22ded1a29) [![Zh](https://img.shields.io/badge/Docs-中文-orange)](https://github.com/tuya/tuya-home-assistant/wiki/%E9%94%99%E8%AF%AF%E7%A0%81%E5%92%8C%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5#config)
-
 This topic describes the data centers in which Tuya Smart or Smart Life app accounts are served based on the app account locations. 
 
-## Background information
-The countries or regions not listed in the following tables are mapped to **Western America Data Center**.
+## Correspondence table of regions and data centers
 
-## Western America Data Center
+> **Note**: The countries or regions not listed in the following tables are mapped to **Western America Data Center**.
 
-| Country code | Country or region |
-| ---- | ---- |
-| 1 | United States |
-| 1 | Canada |
-| 1787 | Puerto Rico |
-| 1809 | Dominican Republic (1-809) |
-| 1829 | Dominican Republic (1-829) |
-| 1849 | Dominican Republic (1-849) |
-| 502 | Guatemala |
-| 51 | Peru |
-| 52 | Mexico |
-| 54 | Argentina |
-| 55 | Brazil |
-| 56 | Chile |
-| 57 | Colombia |
-| 58 | Venezuela |
-| 591 | Bolivia |
-| 593 | Ecuador |
-| 595 | Paraguay |
-| 597 | Suriname |
-| 598 | Uruguay |
-| 5999 | Curaçao |
-| 60 | Malaysia |
-| 62 | Indonesia |
-| 63 | Philippines |
-| 64 | New Zealand |
-| 66 | Thailand |
-| 81 | Japan |
-| 82 | South Korea |
-| 84 | Vietnam |
-| 852 | Hong Kong (People's Republic of China) |
-| 853 | Macao (People's Republic of China) |
-| 886 | Taiwan (People's Republic of China) |
-| 95 | Myanmar |
-| 239 | São Tomé and Príncipe |
-| 245 | Guinea-Bissau |
-| 246 | British Indian Ocean Territory |
-| 500 | Falkland Islands |
-| 594 | French Guiana |
-| 670 | Timor-Leste |
-| 672 | Norfolk Island |
-| 674 | Nauru |
-| 675 | Papua New Guinea |
-| 677 | Solomon Islands |
-| 678 | Vanuatu |
-| 682 | Cook Islands |
-| 683 | Niue |
-| 686 | Kiribati |
-| 690 | Tokelau |
-| 970 | Palestine |
-| 1721 | Sint Maarten |
-| 4779 | Svalbard and Jan Mayen |
-| 35818 | Åland Islands |
-
-## Central Europe Data Center
-
-| Country code | Country or region |
-| ---- | ---- |
-| 1242 | Bahamas |
-| 1246 | Barbados |
-| 1264 | Anguilla |
-| 1268 | Antigua and Barbuda |
-| 1284 | British Virgin Islands |
-| 1340 | U.S. Virgin Islands |
-| 1345 | Cayman Islands |
-| 1441 | Bermuda |
-| 1473 | Grenada |
-| 1649 | Turks and Caicos Islands |
-| 1664 | Montserrat |
-| 1670 | Northern Mariana Islands |
-| 1671 | Guam |
-| 1684 | American Samoa |
-| 1758 | Saint Lucia |
-| 1767 | Dominica |
-| 1784 | Saint Vincent and the Grenadines |
-| 1868 | Trinidad and Tobago |
-| 1869 | Saint Kitts and Nevis |
-| 1876 | Jamaica |
-| 20 | Egypt |
-| 212 | Morocco |
-| 213 | Algeria |
-| 216 | Tunisia |
-| 218 | Libya |
-| 220 | The Gambia |
-| 221 | Senegal |
-| 222 | Mauritania |
-| 223 | Mali |
-| 224 | Guinea |
-| 225 | Côte d'Ivoire |
-| 226 | Burkina Faso |
-| 227 | Niger |
-| 228 | Togo |
-| 229 | Benin |
-| 230 | Mauritius |
-| 231 | Liberia |
-| 232 | Sierra Leone |
-| 233 | Ghana |
-| 234 | Nigeria |
-| 235 | Chad |
-| 236 | Central African Republic |
-| 237 | Cameroon |
-| 238 | Cabo Verde |
-| 240 | Equatorial Guinea |
-| 241 | Gabon |
-| 242 | Congo |
-| 243 | Congo (DRC) |
-| 244 | Angola |
-| 248 | Seychelles |
-| 250 | Rwanda |
-| 251 | Ethiopia |
-| 252 | Somalia |
-| 253 | Djibouti |
-| 254 | Kenya |
-| 255 | Tanzania |
-| 256 | Uganda |
-| 257 | Burundi |
-| 258 | Mozambique |
-| 260 | Zambia |
-| 261 | Madagascar |
-| 262 | Mayotte |
-| 263 | Zimbabwe |
-| 264 | Namibia |
-| 265 | Malawi |
-| 266 | Lesotho |
-| 267 | Botswana |
-| 268 | Swaziland |
-| 269 | Comoros |
-| 27 | South Africa |
-| 291 | Eritrea |
-| 297 | Aruba |
-| 298 | Faroe Islands |
-| 299 | Greenland |
-| 30 | Greece |
-| 31 | Netherlands |
-| 32 | Belgium |
-| 33 | France |
-| 34 | Spain |
-| 350 | Gibraltar |
-| 351 | Portugal |
-| 352 | Luxembourg |
-| 353 | Ireland |
-| 354 | Iceland |
-| 355 | Albania |
-| 356 | Malta |
-| 357 | Cyprus |
-| 358 | Finland |
-| 359 | Bulgaria |
-| 36 | Hungary |
-| 370 | Lithuania |
-| 371 | Latvia |
-| 372 | Estonia |
-| 373 | Moldova |
-| 374 | Armenia |
-| 375 | Belarus |
-| 376 | Andorra |
-| 377 | Monaco |
-| 378 | San Marino |
-| 379 | Vatican City |
-| 380 | Ukraine |
-| 381 | Serbia |
-| 382 | Montenegro |
-| 385 | Croatia |
-| 386 | Slovenia |
-| 387 | Bosnia and Herzegovina |
-| 389 | Macedonian |
-| 39 | Italy |
-| 40 | Romania |
-| 41 | Switzerland |
-| 420 | Czech Republic |
-| 421 | Slovakia |
-| 423 | Liechtenstein |
-| 43 | Austria |
-| 44 | United Kingdom |
-| 45 | Denmark |
-| 46 | Sweden |
-| 47 | Norway |
-| 48 | Poland |
-| 49 | Germany |
-| 501 | Belize |
-| 503 | El Salvador |
-| 504 | Honduras |
-| 505 | Nicaragua |
-| 506 | Costa Rica |
-| 507 | Panama |
-| 508 | Saint Pierre and Miquelon |
-| 509 | Haiti |
-| 590 | Saint Martin |
-| 592 | Guyana |
-| 596 | Martinique |
-| 61 | Australia |
-| 65 | Singapore |
-| 673 | Brunei |
-| 676 | Tonga |
-| 679 | Fiji |
-| 680 | Palau |
-| 681 | Wallis and Futuna |
-| 685 | Samoa |
-| 687 | New Caledonia |
-| 688 | Tuvalu |
-| 689 | French Polynesia |
-| 691 | Federated States of Micronesia |
-| 692 | Marshall Islands |
-| 7 | Russia |
-| 855 | Cambodia |
-| 856 | Laos |
-| 880 | Bangladesh |
-| 90 | Turkey |
-| 92 | Pakistan |
-| 93 | Afghanistan |
-| 94 | Sri Lanka |
-| 960 | Maldives |
-| 961 | Lebanon |
-| 962 | Jordan |
-| 964 | Iraq |
-| 965 | Kuwait |
-| 966 | Saudi Arabia |
-| 967 | Yemen |
-| 968 | Oman |
-| 971 | United Arab Emirates |
-| 972 | Israel |
-| 973 | Bahrain |
-| 974 | Qatar |
-| 975 | Bhutan |
-| 976 | Mongolia |
-| 977 | Nepal |
-| 992 | Tajikistan |
-| 993 | Turkmenistan |
-| 994 | Azerbaijan |
-| 995 | Georgia |
-| 996 | Kyrgyzstan |
-| 998 | Uzbekistan |
-
-## India Data Center
-
-| Country code | Country or region |
-| ---- | ---- |
-| 91 | India |
-
-## China Data Center
-
-| Country code | Country or region |
-| ---- | ---- |
-| 86 | China |
-
-<a id="cdata"></a>
-
-##  Countries or regions supporting only certain data centers
-
-If a country or region supports only one data center, the user accounts registered in this country or region cannot be migrated to other data centers. The following mappings do not apply to Eastern America Data Center or Western Europe Data Center.
-
-| Country or region | Central Europe Data Center | Western America Data Center | India Data Center | China Data Center |
-| ---- | ---- | ---- | ---- | ---- |
-| Argentina | Y | | | |
-| Austria | Y | | | |
-| Belgium | Y | | | |
-| Brazil | Y | | | |
-| Bulgaria | Y | | | |
-| United States/Canada |  | Y | | |
-| China | | | | Y |
-| Croatia | Y | | | |
-| Cyprus | Y | | | |
-| Czechia | Y | | | |
-| Denmark | Y | | | |
-| Estonia | Y | | | |
-| Finland | Y | | | |
-| France | Y | | | |
-| Germany | Y | | | |
-| Greece | Y | | | |
-| Hungary | Y | | | |
-| Iceland | Y | | | |
-| India | | | Y | |
-| Ireland | Y | | | |
-| Italy | Y | | | |
-| Japan | Y | Y | | |
-| Latvia | Y | | | |
-| Liechtenstein | Y | | | |
-| Lithuania | Y | | | |
-| Luxembourg | Y | | | |
-| Malta | Y | | | |
-| Netherlands | Y | | | |
-| Svalbard and Jan Mayen | Y | | | |
-| Poland | Y | | | |
-| Portugal | Y | | | |
-| Romania | Y | | | |
-| Russia | Y | | | |
-| Slovakia | Y | | | |
-| Slovenia | Y | | | |
-| Spain | Y | | | |
-| Sweden | Y | | | |
-| United Kingdom | Y | | | |
-
+| Country code | Country or region | Data Center | Endpoint |
+|:----|:----|:----|:----|
+| 1        | United States | Western America Data Center | https://openapi.tuyaus.com |
+| 1        | Canada        | Western America Data Center | https://openapi.tuyaus.com |
+| 1787     | Puerto Rico   | Western America Data Center | https://openapi.tuyaus.com |
+| 1809     | Dominican Republic (1-809)             | Western America Data Center | https://openapi.tuyaus.com |
+| 1829     | Dominican Republic (1-829)             | Western America Data Center | https://openapi.tuyaus.com |
+| 1849     | Dominican Republic (1-849)             | Western America Data Center | https://openapi.tuyaus.com |
+| 502      | Guatemala     | Western America Data Center | https://openapi.tuyaus.com |
+| 51       | Peru          | Western America Data Center | https://openapi.tuyaus.com |
+| 52       | Mexico        | Western America Data Center | https://openapi.tuyaus.com |
+| 54       | Argentina     | Western America Data Center | https://openapi.tuyaus.com |
+| 55       | Brazil        | Western America Data Center | https://openapi.tuyaus.com |
+| 56       | Chile         | Western America Data Center | https://openapi.tuyaus.com |
+| 57       | Colombia      | Western America Data Center | https://openapi.tuyaus.com |
+| 58       | Venezuela     | Western America Data Center | https://openapi.tuyaus.com |
+| 591      | Bolivia       | Western America Data Center | https://openapi.tuyaus.com |
+| 593      | Ecuador       | Western America Data Center | https://openapi.tuyaus.com |
+| 595      | Paraguay      | Western America Data Center | https://openapi.tuyaus.com |
+| 597      | Suriname      | Western America Data Center | https://openapi.tuyaus.com |
+| 598      | Uruguay       | Western America Data Center | https://openapi.tuyaus.com |
+| 5999     | Curaçao       | Western America Data Center | https://openapi.tuyaus.com |
+| 60       | Malaysia      | Western America Data Center | https://openapi.tuyaus.com |
+| 62       | Indonesia     | Western America Data Center | https://openapi.tuyaus.com |
+| 63       | Philippines   | Western America Data Center | https://openapi.tuyaus.com |
+| 64       | New Zealand   | Western America Data Center | https://openapi.tuyaus.com |
+| 66       | Thailand      | Western America Data Center | https://openapi.tuyaus.com |
+| 81       | Japan         | Western America Data Center | https://openapi.tuyaus.com |
+| 82       | South Korea   | Western America Data Center | https://openapi.tuyaus.com |
+| 84       | Vietnam       | Western America Data Center | https://openapi.tuyaus.com |
+| 852      | Hong Kong (People’s Republic of China) | Western America Data Center | https://openapi.tuyaus.com |
+| 853      | Macao (People’s Republic of China)     | Western America Data Center | https://openapi.tuyaus.com |
+| 886      | Taiwan (People’s Republic of China)    | Western America Data Center | https://openapi.tuyaus.com |
+| 95       | Myanmar       | Western America Data Center | https://openapi.tuyaus.com |
+| 239      | São Tomé and Príncipe | Western America Data Center | https://openapi.tuyaus.com |
+| 245      | Guinea-Bissau | Western America Data Center | https://openapi.tuyaus.com |
+| 246      | British Indian Ocean Territory         | Western America Data Center | https://openapi.tuyaus.com |
+| 500      | Falkland Islands | Western America Data Center | https://openapi.tuyaus.com |
+| 594      | French Guiana | Western America Data Center | https://openapi.tuyaus.com |
+| 670      | Timor-Leste   | Western America Data Center | https://openapi.tuyaus.com |
+| 672      | Norfolk Island | Western America Data Center | https://openapi.tuyaus.com |
+| 674      | Nauru         | Western America Data Center | https://openapi.tuyaus.com |
+| 675      | Papua New Guinea | Western America Data Center | https://openapi.tuyaus.com |
+| 677      | Solomon Islands | Western America Data Center | https://openapi.tuyaus.com |
+| 678      | Vanuatu       | Western America Data Center | https://openapi.tuyaus.com |
+| 682      | Cook Islands  | Western America Data Center | https://openapi.tuyaus.com |
+| 683      | Niue          | Western America Data Center | https://openapi.tuyaus.com |
+| 686      | Kiribati      | Western America Data Center | https://openapi.tuyaus.com |
+| 690      | Tokelau       | Western America Data Center | https://openapi.tuyaus.com |
+| 970      | Palestine     | Western America Data Center | https://openapi.tuyaus.com |
+| 1721     | Sint Maarten  | Western America Data Center | https://openapi.tuyaus.com |
+| 4779     | Svalbard and Jan Mayen | Western America Data Center | https://openapi.tuyaus.com |
+| 35818    | Åland Islands | Western America Data Center | https://openapi.tuyaus.com |
+| 1242     | Bahamas       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 1246     | Barbados      | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 1264     | Anguilla      | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 1268     | Antigua and Barbuda | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 1284     | British Virgin Islands | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 1340     | U.S. Virgin Islands | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 1345     | Cayman Islands | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 1441     | Bermuda       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 1473     | Grenada       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 1649     | Turks and Caicos Islands               | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 1664     | Montserrat    | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 1670     | Northern Mariana Islands               | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 1671     | Guam          | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 1684     | American Samoa | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 1758     | Saint Lucia   | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 1767     | Dominica      | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 1784     | Saint Vincent and the Grenadines       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 1868     | Trinidad and Tobago | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 1869     | Saint Kitts and Nevis | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 1876     | Jamaica       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 20       | Egypt         | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 212      | Morocco       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 213      | Algeria       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 216      | Tunisia       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 218      | Libya         | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 220      | The Gambia    | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 221      | Senegal       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 222      | Mauritania    | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 223      | Mali          | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 224      | Guinea        | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 225      | Côte d’Ivoire | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 226      | Burkina Faso  | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 227      | Niger         | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 228      | Togo          | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 229      | Benin         | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 230      | Mauritius     | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 231      | Liberia       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 232      | Sierra Leone  | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 233      | Ghana         | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 234      | Nigeria       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 235      | Chad          | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 236      | Central African Republic               | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 237      | Cameroon      | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 238      | Cabo Verde    | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 240      | Equatorial Guinea | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 241      | Gabon         | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 242      | Congo         | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 243      | Congo (DRC)   | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 244      | Angola        | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 248      | Seychelles    | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 250      | Rwanda        | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 251      | Ethiopia      | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 252      | Somalia       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 253      | Djibouti      | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 254      | Kenya         | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 255      | Tanzania      | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 256      | Uganda        | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 257      | Burundi       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 258      | Mozambique    | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 260      | Zambia        | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 261      | Madagascar    | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 262      | Mayotte       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 263      | Zimbabwe      | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 264      | Namibia       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 265      | Malawi        | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 266      | Lesotho       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 267      | Botswana      | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 268      | Swaziland     | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 269      | Comoros       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 27       | South Africa  | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 291      | Eritrea       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 297      | Aruba         | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 298      | Faroe Islands | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 299      | Greenland     | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 30       | Greece        | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 31       | Netherlands   | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 32       | Belgium       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 33       | France        | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 34       | Spain         | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 350      | Gibraltar     | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 351      | Portugal      | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 352      | Luxembourg    | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 353      | Ireland       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 354      | Iceland       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 355      | Albania       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 356      | Malta         | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 357      | Cyprus        | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 358      | Finland       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 359      | Bulgaria      | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 36       | Hungary       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 370      | Lithuania     | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 371      | Latvia        | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 372      | Estonia       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 373      | Moldova       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 374      | Armenia       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 375      | Belarus       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 376      | Andorra       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 377      | Monaco        | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 378      | San Marino    | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 379      | Vatican City  | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 380      | Ukraine       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 381      | Serbia        | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 382      | Montenegro    | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 385      | Croatia       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 386      | Slovenia      | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 387      | Bosnia and Herzegovina | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 389      | Macedonian    | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 39       | Italy         | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 40       | Romania       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 41       | Switzerland   | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 420      | Czech Republic | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 421      | Slovakia      | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 423      | Liechtenstein | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 43       | Austria       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 44       | United Kingdom | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 45       | Denmark       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 46       | Sweden        | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 47       | Norway        | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 48       | Poland        | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 49       | Germany       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 501      | Belize        | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 503      | El Salvador   | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 504      | Honduras      | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 505      | Nicaragua     | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 506      | Costa Rica    | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 507      | Panama        | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 508      | Saint Pierre and Miquelon              | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 509      | Haiti         | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 590      | Saint Martin  | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 592      | Guyana        | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 596      | Martinique    | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 61       | Australia     | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 65       | Singapore     | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 673      | Brunei        | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 676      | Tonga         | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 679      | Fiji          | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 680      | Palau         | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 681      | Wallis and Futuna | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 685      | Samoa         | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 687      | New Caledonia | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 688      | Tuvalu        | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 689      | French Polynesia | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 691      | Federated States of Micronesia         | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 692      | Marshall Islands | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 7        | Russia        | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 855      | Cambodia      | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 856      | Laos          | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 880      | Bangladesh    | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 90       | Turkey        | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 92       | Pakistan      | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 93       | Afghanistan   | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 94       | Sri Lanka     | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 960      | Maldives      | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 961      | Lebanon       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 962      | Jordan        | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 964      | Iraq          | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 965      | Kuwait        | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 966      | Saudi Arabia  | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 967      | Yemen         | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 968      | Oman          | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 971      | United Arab Emirates | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 972      | Israel        | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 973      | Bahrain       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 974      | Qatar         | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 975      | Bhutan        | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 976      | Mongolia      | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 977      | Nepal         | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 992      | Tajikistan    | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 993      | Turkmenistan  | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 994      | Azerbaijan    | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 995      | Georgia       | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 996      | Kyrgyzstan    | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 998      | Uzbekistan    | Central Europe Data Center  | https://openapi.tuyaeu.com |
+| 91       | India         | India Data Center           | https://openapi.tuyain.com |
+| 86       | China         | China Data Center           | https://openapi.tuyacn.com | |

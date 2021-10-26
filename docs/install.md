@@ -1,67 +1,52 @@
-# Install Tuya Integration
+This topic describes how to install and use the official Tuya integration in Home Assistant.
 
-[![En](https://img.shields.io/badge/Docs-English-orange)](https://github.com/tuya/tuya-home-assistant/wiki/Install-Tuya-v2?_source=d10de34623e3daca5b02e3c31528a0c4) [![Zh](https://img.shields.io/badge/Docs-中文-orange)](https://github.com/tuya/tuya-home-assistant/wiki/%E5%AE%89%E8%A3%85-Tuya-v2)
+## Prerequisites
 
-### 1. Home Assistant Installation
+* You have created a cloud project of Smart Home type on the [Tuya IoT Development Platform](https://iot.tuya.com/), added at least one real device or one virtual device, and authorized your project to use the required API services. For more information, see [Configuration Wizard of Smart Home PaaS](https://developer.tuya.com/en/docs/iot/Platform_Configuration_smarthome?id=Kamcgamwoevrx).
 
-Please refer to the [Home Assistant Official Installation](https://www.home-assistant.io/installation/) documentation to install **Home Assistant Core**.
+    > **Note**: If your cloud project was created before May 25, 2021, you need to perform project migration. For more information, see [How to Migrate to the Tuya Home Assistant Integration](https://developer.tuya.com/en/docs/iot/migrate-from-an-older-version?id=Kamee9wtbd00b#title-3-Operation%20on%20the%20Tuya%20IoT%20Platform).
 
-You can also get help from [Set up Home Assistant Development Environment on Raspberry Pi](https://developer.tuya.com/en/demo/setuphomeassistantdevenv/?_source=b1441bb02314be3e594a0448891aac58) in Tuya Developer Demo Center.
-
-### 2. Tuya Home Assistant Integration Installation
-
->**Note**：The new version of Tuya Home Assistant integration (Tuya v2) can be compatible with the old version. Both versions can be installed at the same time. You don’t need to uninstall the old version before installing the new version.
-
-There are two methods to install the integration:
-
-* Home Assistant Custom Components Installation
-* Install by [HACS](https://hacs.xyz/)
-
-#### 2.1 Home Assistant Custom Components Installation
-
-1. Download the [tuya-home-assistant repo](https://github.com/tuya/tuya-home-assistant?_source=a8502ebc9cd2966eaef661d1945d4284).
-2. Unzip it and copy the `custom_components/tuya/` folder to the Home Assistant configuration directory, for example, `~/.homeassistant`.
-
-    <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16238163372b1ef921aab.png" width="30%" alt="Installation">
-
-#### 2.2 Install by HACS
-
-1. See [HACS Official Installation Guide](https://hacs.xyz/docs/installation/installation/) and install HACS.
-
-2. See [Initial Configuration Guide](https://hacs.xyz/docs/configuration/basic) and complete initial configuration.
-
-3. Open Home Assistant. Click **HACS** > **Integrations** > **⋮** > **Custom repositories**.
-    <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16221073906e836eba5eb.png" width="90%" />
-4. Enter `https://github.com/tuya/tuya-home-assistant` in the address bar at the bottom left of the window. Select **Integration** from the **Category** list and click **ADD**.
-    <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/162384530830e42682b3c.png" width="70%" />
-5. In the dialog box that appears, click **INSTALL**.
-    <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16238453803774d728b74.png" width="70%" />
-
-#### 2.3 Restart Home Assistant
-
-You can restart the Home Assistant server in **Configuration** > **Server Controls** > **RESTART**.
-    <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16242415480daab38307a.png" width="70%" />
+* You have installed Python 3.8 (including python3-dev) or a later version on your system.
 
 
-#### 2.4 Set up the Tuya Integration
+## Set up
 
-In **Configuration** > **Integrations** > **ADD INTEGRATION**, search for the keyword **tuya** and select **Tuya v2**.
+After you have installed Home Assistant Core, you can search for and set up the Tuya integration in Home Assistant.
 
-<img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/162320853943fdfc9239d.png" width="50%" />
+> **Note**:
+Only Home Assistant 2021.10.4 and later versions support the official Tuya integration.
 
-### 3. Enter your Tuya credential
+<img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/163463819292e82c8a3e7.png" width="45%">
 
-In the Tuya Integration window, select **Smart Home PaaS** and click **SUBMIT**.
+1. Enter `localhost:8123` into the address bar in your browser and hit Enter to connect to Home Assistant.
+2. Register and log in.
+3. Click **Configuration** > **Integrations**.
 
-<img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16256397792068fafbcc9.png" width="30%"/>
+   <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/163463151418c9efa14e6.png" width="70%" alt="Integrations">
 
-See the following table and enter your Tuya credential. 
+4. On the **Integrations** page in the configurations panel, click the **+** button in the lower right and search for Tuya.
+   <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/1634631514a5affae4b40.png" width="70%" alt="Add integration">
 
-| Field | Description |
-| ------- | -------- |
-| Access ID and Access Secret| Go to your cloud project on [Tuya IoT Platform](https://iot.tuya.com/cloud/?_source=3a6f90da0e85f686f89c4f85c883e8f0). Find the **Access ID** and **Access Secret** on the **Project Overview** tab.|
-| Mobile App | Must select the one you used to link devices on the Tuya IoT Platform. |
-| Country Code | The country you select on logging in to Tuya Smart or Smart Life app.  |
-| Account | Tuya Smart or Smart Life app account. |
-| Password | The password of your app account. |
-> **Note**: The app mentioned in the table must be the one you used to link devices on the Tuya IoT Platform.
+5. Select **Tuya** and set up the integration.
+
+   <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/1634631514c5d0133715b.png" width="65%">
+<a id="config"></a>
+6. Enter your Tuya credentials.
+
+   <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/1634631514b892f2c717c.png" width="50%" alt="Smart Home">
+
+   | Fields | Description |
+   | ------- | -------- |
+   | Country | Select the region of your account of the Tuya Smart app or Smart Life app.<blockquote>**Note**: Open the mobile app you use and tap **Me** > **Setting** > **Account and Security** > **Region**. |
+   | Tuya IoT Access ID and Tuya IoT Access Secret | Go to the [Tuya IoT Development Platform](https://iot.tuya.com/cloud/) and select your cloud project. Click the **Overview** tab and find the **Access ID** and **Access Secret** in the **Authorization Key** area. |
+   | Account | Your account of the Tuya Smart app or Smart Life app. <blockquote><b>Attention</b>：Do not use the Tuya IoT Development platform account to log in.  |
+   | Password | Your password of the Tuya Smart app or Smart Life app. |
+
+   > **Note**：
+   The mobile app mentioned in the above table must be the one you use to scan the QR code for linking devices to your cloud project on the [Tuya IoT Development Platform](https://iot.tuya.com/).
+
+7. Click **Submit**.
+
+   Click **Overview** in the sidebar on the left. You will find all the smart devices linked to your cloud project created on the [Tuya IoT Development Platform](https://iot.tuya.com/).
+
+   ![Image](https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/1634631514c040ab52f07.png)

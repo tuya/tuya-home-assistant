@@ -36,24 +36,7 @@
 
 - After expiration, you can renew the subscription for free. The Trial Edition allows you to use all free API services but puts limits on the quota of API calls. For more information about the quota, see [Pricing](https://developer.tuya.com/en/docs/iot/membership-service?id=K9m8k45jwvg9j).
 
-<font color=blue  size="4"><b>Q4: How to deal with the following errors?</b></font>
 
-**Error code sample**:
+<font color=blue  size="4"><b>Q4: Can I request Tuya's cloud services from an IP address outside the data center region?</b></font>
 
-```
-[tuya-openapi] Response: {
-  "code": 2406,
-  "msg": "skill id invalid",
-  "success": false,
-  "t": 1624477851701
-}
-```
-
-<br>
-
-| Error code | Message | Troubleshooting |
-|:----|:----|:----|
-| 1004 | sign invalid | The Access ID and Access Secret you entered are not correct. For more information, see [Credentials Configuration](#config). |
-| 1106 | permission deny | <ul><li> Your app account is not linked to your cloud project. This operation is a must-do. For more information, see [Link devices by app account](https://developer.tuya.com/en/docs/iot/Platform_Configuration_smarthome?id=Kamcgamwoevrx#title-3-Link%20devices%20by%20app%20account).</li><li> Incorrect account or password. You must enter the account and password of the mobile app that you use to scan the QR code for linking devices to your cloud project on the [Tuya IoT Development Platform](https://iot.tuya.com/).</li><li>Incorrect country. You must select the region of your account of the Tuya Smart app or Smart Life app.</li></ul> |
-| 2406 | skill id invalid | Your cloud project on the [Tuya IoT Development Platform](https://iot.tuya.com) should be created after May 25, 2021. Otherwise, you need to create a new project. For more information, see [Operation on the Tuya IoT Development Platform](https://developer.tuya.com/en/docs/iot/migrate-from-an-older-version?id=Kamee9wtbd00b#title-3-Operation%20on%20the%20Tuya%20IoT%20Platform). |
-| 28841105 | No permissions. This project is not authorized to call this API | Insufficient API permissions. You need to subscribe to the required [API services](https://developer.tuya.com/en/docs/iot/applying-for-api-group-permissions?id=Ka6vf012u6q76#title-2-Subscribe%20to%20API%20services) and [authorize](https://developer.tuya.com/en/docs/iot/applying-for-api-group-permissions?id=Ka6vf012u6q76#title-3-Authorize%20project%20to%20call%20APIs) your cloud project to use these API services. The following API services are required.<ul><li>Authorization</li><li>Device Connection Service</li><li>Smart Home Scene Linkage</li><li>IoT Data Analytics</li><li>Device Status Notification</li></ul> |
+Please note that data transfer across regions has a risk of violation of the data security regulations. If you request Tuya's cloud services from an IP address outside the data center region, you are at risk of illegally transferring data. For example, using an IP address in the U.S.A. to access cloud services in China's data centers will be regarded as data transfer across regions, and vice versa. Tuya will completely prohibit cross-region API calls and message subscriptions. Please deploy your cloud services properly to ensure data security.
