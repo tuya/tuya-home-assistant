@@ -72,7 +72,7 @@ You can check the [Not Supported Device Category](./docs/not_supported_devices.m
 
 If you have tested and confirmed any Tuya compatible PBT (Powered by Tuya) device, please help to contribute to [Mark Watt Tech's page](https://github.com/MarkWattTech/Tuya-v2-Supported-Devices)
 
-It's a collection of known working PBT Products that are compatible with Home Assistant and the Tuya v2 integration.
+It's a collection of known working PBT Products that are compatible with Home Assistant and the Tuya integration.
 
 We appreciate your contribution!
 
