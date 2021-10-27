@@ -1,14 +1,14 @@
 # Tuya IoT Platform Configuration Guide
 
-This topic describes how to create a project on the [Tuya IoT Platform](https://iot.tuya.com/) and link devices to this project with an account of the Tuya Smart app or Smart Life app.
+This topic describes how to create a project on the [Tuya IoT Platform](https://iot.tuya.com/?_source=a4c65f56395e05cf64cc8d4abb7396b6) and link devices to this project with an account of the Tuya Smart app or Smart Life app.
 
 ## Prerequisites
 
-You have [registered](https://developer.tuya.com/en/docs/iot/tuya-smart-app-smart-life-app-advantages?id=K989rqa49rluq#title-3-Account) with the **Tuya Smart** app or **Smart Life** app.
+You have [registered](https://developer.tuya.com/en/docs/iot/tuya-smart-app-smart-life-app-advantages?id=K989rqa49rluq&_source=8be1a69406ca50092cd1e37cf64c8f38#title-3-Account) with the **Tuya Smart** app or **Smart Life** app.
 
 ## Create a project
 
-1. Log in to the [Tuya IoT Development Platform](https://iot.tuya.com/).
+1. Log in to the [Tuya IoT Development Platform](https://iot.tuya.com/?_source=a4c65f56395e05cf64cc8d4abb7396b6).
 2. In the left navigation pane, click **Cloud**.
 3. On the page that appears, click **Create Cloud Project**.
 4. In the **Create Cloud Project** dialog, set the required parameters.
