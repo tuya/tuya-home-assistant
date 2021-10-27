@@ -26,7 +26,7 @@ You have [registered](https://developer.tuya.com/en/docs/iot/tuya-smart-app-smar
 5. Click **Create** to continue with project configuration.
 6. In the **Authorize API Services** dialog, select **Device Status Notification**.
 
-   <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16351559390cfd4b61c30.png" width="80%">
+   <img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/1635307284f7e8a7381eb.png" width="60%">
 
 7. Click **Authorize**.
 
@@ -34,7 +34,7 @@ You have [registered](https://developer.tuya.com/en/docs/iot/tuya-smart-app-smar
 
 Click the newly created project to enter the **Overview** page and get the **Authorization Key** used to make API requests.
 
-<img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16346291664299d920f92.png" width="80%"/>
+<img src="https://airtake-public-data-1254153901.cos.ap-shanghai.myqcloud.com/content-platform/hestia/16346291664299d920f92.png" width="60%"/>
 
 ## Link devices by app account
 
