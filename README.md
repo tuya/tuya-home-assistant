@@ -37,9 +37,9 @@ We are happy to hear your voices at **GitHub Discussions** to make our integrati
 
 The Tuya Home Assistant integration is developed for controlling **Powered by Tuya (PBT)** devices using the [tuya-iot-python-sdk](https://github.com/tuya/tuya-iot-python-sdk) (a python version of [Tuya Open API](https://developer.tuya.com/en/docs/cloud/?_source=6c7c0e6d9fc9ac8296e1a48954e1d0e4)), and maintained by the official Tuya Developer Team and Home Assistant Community.
 
-## Tuya IoT Platform Configuration
+## [Tuya IoT Platform](https://iot.tuya.com/cloud/?_source=3a6f90da0e85f686f89c4f85c883e8f0) Configuration
 
-The [Tuya IoT Platform Configuration Guide](./docs/platform_configuration.md) describes how to create a project on the **Tuya IoT Platform** and link devices to this project with an account of the Tuya Smart app or Smart Life app.
+The [Tuya IoT Platform Configuration Guide](./docs/platform_configuration.md) describes how to create a project on the **[Tuya IoT Platform](https://iot.tuya.com/cloud/?_source=3a6f90da0e85f686f89c4f85c883e8f0)** and link devices to this project with an account of the Tuya Smart app or Smart Life app.
 
 ## Installation
 
@@ -97,9 +97,9 @@ You can give feedback on issues you encounter for the documentation via **GitHub
 
 ## Related Projects
 
-- [Tuya IoT Python SDK](https://github.com/tuya/tuya-iot-python-sdk)
+- [Tuya IoT Python SDK](https://github.com/tuya/tuya-iot-python-sdk?_source=df9bd859d17e7610d5b9df34d38a83e9)
 
-- [Tuya Connector Python](https://github.com/tuya/tuya-connector-python)
+- [Tuya Connector Python](https://github.com/tuya/tuya-connector-python?_source=5f909fc5f4f349e687a09dc5c91bac4c)
 
 ## LICENSE
 
