@@ -39,7 +39,7 @@ The Tuya Home Assistant integration is developed for controlling **Powered by Tu
 
 ## Tuya IoT Platform Configuration
 
-The [Tuya IoT Platform Configuration Guide](./docs/platform_configuration.md) describes how to create a project on the **Tuya IoT Platform** and link devices to this project with an account of the Tuya Smart app or Smart Life app.
+The [Tuya IoT Platform Configuration Guide](./docs/platform_configuration.md) describes how to create a project on the **[Tuya IoT Platform]([Tuya IoT Platform Configuration Guide](./docs/platform_configuration.md))** and link devices to this project with an account of the Tuya Smart app or Smart Life app.
 
 ## Installation
 
