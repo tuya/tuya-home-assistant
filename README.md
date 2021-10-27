@@ -58,7 +58,7 @@ You can check the [Error Code and Troubleshooting](./docs/error_code.md) to know
 The [Countries/Regions and Data Center](./docs/regions_dataCenters.md) describes the data centers in which Tuya Smart or Smart Life app accounts are served based on the app account locations. 
 
 ## Supported Tuya Device Categories
-Seven primary categories, 35 secondary categories are supported now!
+Seven primary categories, 50 secondary categories are supported now!
 
 :clap: [Supported Device Category](./docs/supported_devices.md)
 
