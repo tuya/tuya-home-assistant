@@ -5,7 +5,7 @@
 | Large Home Appliances | kt | Air conditioner | Release 2021.10 | Climate, Switch |
 | Small Home Appliances | cwysj | Pet Water Feeder | Release 2021.10 | Switch |
 |  | qn | Heater | Release 2021.10 | Climate, Switch |
-|  | sd | Robot Vaccum | Release 2021.11 | Vacuum |
+|  | sd | Robot Vacuum | Release 2021.11 | Vacuum |
 |  | fs | Fan | Release 2021.10 | Fan,Light |
 |  | cl | Curtain | Release 2021.11 | Cover |
 |  | kj | Air Purifer | Release 2021.10 | Fan, Switch |
