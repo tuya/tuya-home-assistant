@@ -99,10 +99,14 @@ class TuyaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 user_input[CONF_COUNTRY_CODE],
                 TUYA_APP_TYPES[user_input[CONF_APP_TYPE]],
             )
-            if response.get("success", False) and isinstance(
-                api.token_info.platform_url, str
-            ):
-                api.endpoint = api.token_info.platform_url
+
+        if response.get("success", False) and isinstance(
+            api.token_info.platform_url, str
+        ):
+            api.endpoint = api.token_info.platform_url
+            if project_type == ProjectType.INDUSTY_SOLUTIONS:
+                user_input[CONF_ENDPOINT] = TUYA_ENDPOINTS[user_input[CONF_ENDPOINT]]
+            else:
                 user_input[CONF_ENDPOINT] = api.token_info.platform_url
 
         return response
