@@ -1,4 +1,4 @@
-[![En](https://img.shields.io/badge/Docs-English-orange)](https://github.com/tuya/tuya-home-assistant/wiki/How-to-Develop-a-New-Driver) [![Zh](https://img.shields.io/badge/Docs-中文-orange)](https://github.com/tuya/tuya-home-assistant/wiki/%E5%A6%82%E4%BD%95%E5%BC%80%E5%8F%91%E6%96%B0%E9%A9%B1%E5%8A%A8)
+# How to Developer a New Driver
 
 For example, I want my socket called "Living Room Socket" to work in Tuya.
 
