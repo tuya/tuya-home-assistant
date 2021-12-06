@@ -3,7 +3,7 @@
 For example, I want my socket called "Living Room Socket" to work in Tuya.
 
 ## I. Getting information about the device
-First, get the logs according to [How to get logs](https://github.com/tuya/tuya-home-assistant/wiki/How-to-Get-the-Log?_source=f75a22f47cc75545545c239077c07e53) and look up "living room socket" in the logs to get information about the device, such as
+First, get the logs according to [How to get logs](./get_log.md) and look up "living room socket" in the logs to get information about the device, such as
 ```json
 {
       "active_time": 1623229189,
