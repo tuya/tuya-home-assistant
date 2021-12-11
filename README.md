@@ -16,7 +16,7 @@ If you like Tuya Home Assistant Integration, please give it a star or fork it an
     <img src="https://images.tuyacn.com/app/hass/ha_tuya.png" width="70%">
 </p>
 
-The Tuya Home Assistant integration is developed for controlling **Connected by Tuya (CBT)** devices using the [tuya-iot-python-sdk](https://github.com/tuya/tuya-iot-python-sdk?_source=df9bd859d17e7610d5b9df34d38a83e9) (a python version of [Tuya Open API](https://developer.tuya.com/en/docs/cloud/?_source=6c7c0e6d9fc9ac8296e1a48954e1d0e4)), and maintained by the official Tuya Developer Team and Home Assistant Community.
+The Tuya Home Assistant integration is developed for controlling **Powered by Tuya (PBT)** devices using the [tuya-iot-python-sdk](https://github.com/tuya/tuya-iot-python-sdk?_source=df9bd859d17e7610d5b9df34d38a83e9) (a python version of [Tuya Open API](https://developer.tuya.com/en/docs/cloud/?_source=6c7c0e6d9fc9ac8296e1a48954e1d0e4)), and maintained by the official Tuya Developer Team and Home Assistant Community.
 
 ## Important Note
 
@@ -54,11 +54,11 @@ Seven primary categories, 50 secondary categories are supported now!
 
  :tada: :tada: :tada: [Vote for Tuya Integration New Device Driver Support!](https://github.com/tuya/tuya-home-assistant/discussions/86) :tada::tada::tada:
 
-## Verified CBT Products List
+## Verified PBT Products List
 
-If you have tested and confirmed any Tuya compatible CBT (Connected by Tuya) device, please help to contribute to [Mark Watt Tech's page](https://github.com/MarkWattTech/Tuya-v2-Supported-Devices)
+If you have tested and confirmed any Tuya compatible PBT (Powered by Tuya) device, please help to contribute to [Mark Watt Tech's page](https://github.com/MarkWattTech/Tuya-v2-Supported-Devices)
 
-It's a collection of known working CBT Products that are compatible with Home Assistant and the Tuya integration.
+It's a collection of known working PBT Products that are compatible with Home Assistant and the Tuya integration.
 
 We appreciate your contribution!
 
