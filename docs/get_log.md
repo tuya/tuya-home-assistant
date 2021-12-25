@@ -9,7 +9,7 @@ Add the following to your **configuration.yaml** file:
 logger:
   default: critical
   logs:
-    custom_components.tuya_v2: debug
+    homeassistant.components.tuya: debug
 ```
 Then you can get the log from **home-assistant.log** 
 
