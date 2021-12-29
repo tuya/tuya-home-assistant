@@ -46,7 +46,7 @@
 |                       | fsd           | Ceiling Fan Light                | Release 2021.11           | Light                                                |
 |                       | fwd           | Ambient Light                    | Release 2021.11           | Light                                                |
 |                       | gyd           | Motion Sensor Light              | Release 2021.11           | Light                                                |
-|                       | jsq           | Humidifier Light                 | Release 2021.10           | Light, humidifier                                    |
+|                       | jsq           | Humidifier                 | Release 2021.10           | Light, humidifier                                    |
 |                       | tgkg          | Dimmer Switch                    | Release 2021.11           | Light, Number, Select                                |
 |                       | tgq           | Dimmer                           | Release 2021.11           | Light, Number, Select                                |
 |                       | tyndj         | Solar Light                      | Release 2021.11           | Light, Sensor, Switch                                |
