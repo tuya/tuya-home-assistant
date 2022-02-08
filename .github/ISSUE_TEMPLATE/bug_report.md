@@ -29,6 +29,7 @@ If applicable, add screenshots to help explain your problem.
 - e.g. 2021.5.1
 
 **Device info (please complete the following information, which can be found in [log](https://github.com/tuya/tuya-home-assistant/wiki/How-to-get-the-log)):**
+
 like this:
 {
       "active_time": 1623229189,
@@ -77,6 +78,7 @@ like this:
     }
 
 **Device specifications (please complete the following information, which can be found in [log](https://github.com/tuya/tuya-home-assistant/wiki/How-to-get-the-log)):**
+
 Same device's id, like this:
 [2021-07-01 10:18:01,351] [tuya-openapi] Request: method = GET, url = https://openapi.tuyacn.com/v1.0/devices/aaaaaaaaaaa/specifications, params = None, body = None, headers = {'client_id': 'xxxxxxxxxxxx', 'sign': 'xxxxxxxxxxxx', 'sign_method': 'HMAC-SHA256', 'access_token': 'xxxxxxxxxxxxxxxx', 't': '1625105881351', 'lang': 'en'}
 2021-07-01 10:18:01 DEBUG (SyncWorker_1) [tuya iot] Response: {
@@ -127,4 +129,5 @@ Same device's id, like this:
 }
 
 **Additional context**
+
 Add any other context or logs about the problem here.
