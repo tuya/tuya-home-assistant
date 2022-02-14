@@ -19,7 +19,7 @@
 |                       | wk            | 温控器                       | Release 2021.10           | Climate                                              |
 |                       | dlq           | 断路器                  | Release 2021.10           | Switch                                               |
 |                       | ckmkzq        | 车库门控制器               | Release 2021.11           | Cover, Switch                                        |
-| Security & Sensors    | wsdcg         | 温湿度传感器  | Release 2021.11           | Binary Sensor, Sensor                                |
+| 安防 & 传感            | wsdcg         | 温湿度传感器  | Release 2021.11           | Binary Sensor, Sensor                                |
 |                       | mcs           | 门窗传感器               | Release 2021.10           | Sensor, Binary Sensor                                |
 |                       | ywbj          | 烟雾报警器                   | Release 2021.11           | Sensor, Binary Sensor                                |
 |                       | rqbj          | 燃气报警器                     | Release 2021.11           | Sensor, Binary Sensor                                |
