@@ -1,4 +1,4 @@
-# How to Developer a New Driver
+# How to Develop a New Driver
 
 For example, I want my socket called "Living Room Socket" to work in Tuya.
 
