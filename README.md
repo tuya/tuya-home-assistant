@@ -8,7 +8,18 @@
 [![GitHub forks](https://img.shields.io/github/forks/tuya/tuya-home-assistant.svg?style=social&label=Fork)](https://GitHub.com/tuya/tuya-home-assistant/network/)
 [![GitHub stars](https://img.shields.io/github/stars/tuya/tuya-home-assistant.svg?style=social&label=Star)](https://GitHub.com/tuya/tuya-home-assistant/stargazers/)
 
-If you like Tuya Home Assistant Integration, please give it a star or fork it and contribute!
+## Breaking Update:
+Tuya has developed a new HA integration called [Smart Life](https://github.com/tuya/tuya-smart-life), available for free to developers. Currently in beta testing, it eliminates the need to register a cloud development project on Tuya IoT platform and extend the Tuya cloud development IoT Core Service resources when expired. This significantly lowers the access barrier and enhances user experience. If you're interested, please check the following links to get started with the integration:
+
+- Smart Life Integration (Beta): <https://github.com/tuya/tuya-smart-life>
+- Tutorial documentation: <https://developer.tuya.com/en/docs/iot/Smart_Life_Integration?id=Kd0gk9baikbb7>
+- Video Tutorial: <https://images.tuyaus.com/content-platform/hestia/16975151956db23d16f4d.mp4>
+
+Key Features:
+  - The new Smart Life integration is open source, allowing developers to actively contribute and maintain it.
+  - Please note that the new Smart Life integration is not compatible with the existing [Tuya integration](https://www.home-assistant.io/integrations/tuya/), and device migration is not possible. Users will need to use the new plugin to add devices and configure automation scenarios.
+  - The new Smart Life integration supports the same range of products as the [Tuya integration](https://www.home-assistant.io/integrations/tuya/).
+  - Local control is not yet supported in the new [Smart Life Integration](https://github.com/tuya/tuya-smart-life).
 
 # Tuya Home Assistant Integration Documentation
 
